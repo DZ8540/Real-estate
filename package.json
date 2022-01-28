@@ -18,10 +18,16 @@
   },
   "dependencies": {
     "@adonisjs/core": "^5.4.2",
+    "@adonisjs/lucid": "^16.3.2",
     "@adonisjs/repl": "^3.1.8",
     "@adonisjs/session": "^6.1.2",
     "@adonisjs/shield": "^7.0.7",
     "@adonisjs/view": "^6.1.1",
+    "@dz8540/helpers": "^1.1.4",
+    "luxon": "^2.3.0",
+    "pg": "^8.7.1",
+    "phc-argon2": "^1.1.2",
+    "phc-bcrypt": "^1.0.7",
     "proxy-addr": "^2.0.7",
     "reflect-metadata": "^0.1.13",
     "source-map-support": "^0.5.21"

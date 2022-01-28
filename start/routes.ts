@@ -21,5 +21,10 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.get('/', async ({ view }) => {
-  return view.render('welcome')
-})
+  return view.render('pages/index')
+}).as('index')
+
+Route.get('/users', 'UsersController.index').as('users.index')
+Route.get('/users/:id', 'UsersController.show').as('users.show')
+Route.post('/users/block/:id', 'UsersController.block').as('users.block')
+Route.post('/users/unblock/:id', 'UsersController.unblock').as('users.unblock')
