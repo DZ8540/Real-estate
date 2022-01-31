@@ -1,9 +1,11 @@
-import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
+import Role from './Role'
 import Hash from '@ioc:Adonis/Core/Hash'
+import Drive from '@ioc:Adonis/Core/Drive'
+import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { BaseModel, beforeSave, column, computed } from '@ioc:Adonis/Lucid/Orm'
 import { Sex } from 'Contracts/enums'
 import { IMG_PLACEHOLDER } from 'Config/drive'
+import { BaseModel, beforeSave, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm'
 
 export default class User extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
@@ -12,7 +14,7 @@ export default class User extends BaseModel {
     'sex', 'birthday', 'phone',
     'email', 'avatar', 'rating',
     'password', 'isSubscribed', 'isBanned',
-    'isActivated', 'createdAt', 'updatedAt'
+    'isActivated', 'roleId', 'createdAt', 'updatedAt'
   ] as const
 
   @column({ isPrimary: true })
@@ -42,7 +44,7 @@ export default class User extends BaseModel {
   @column()
   public rating: number
 
-  @column()
+  @column({ serializeAs: null })
   public password: string
 
   @column()
@@ -53,6 +55,11 @@ export default class User extends BaseModel {
 
   @column()
   public isActivated: boolean
+
+  @column({
+    columnName: 'role_id'
+  })
+  public roleId: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -78,11 +85,6 @@ export default class User extends BaseModel {
   @computed()
   public get isBannedForUser(): string {
     return this.isBanned ? 'Да' : 'Нет'
-  }
-
-  @computed()
-  public get avatarUrl(): string { // TODO: выводить аватарки нормально
-    return this.avatar ?? IMG_PLACEHOLDER
   }
 
   @computed()
@@ -119,5 +121,12 @@ export default class User extends BaseModel {
   public static async hashPassword(user: User) {
     if (user.$dirty.password)
       user.password = await Hash.make(user.password)
+  }
+
+  @belongsTo(() => Role)
+  public role: BelongsTo<typeof Role>
+
+  public async avatarUrl(): Promise<string> {
+    return this.avatar ? await Drive.getUrl(this.avatar) : IMG_PLACEHOLDER
   }
 }

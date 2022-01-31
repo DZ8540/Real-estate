@@ -20,11 +20,26 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.get('/', async ({ view }) => {
-  return view.render('pages/index')
-}).as('index')
+// * Auth
+Route.group(() => {
+  Route.on('/').redirect('login')
 
-Route.get('/users', 'UsersController.index').as('users.index')
-Route.get('/users/:id', 'UsersController.show').as('users.show')
-Route.post('/users/block/:id', 'UsersController.block').as('users.block')
-Route.post('/users/unblock/:id', 'UsersController.unblock').as('users.unblock')
+  Route.get('/login', 'AuthController.login').as('login')
+  Route.post('/login', 'AuthController.loginAction').as('login.action')
+
+  Route.get('/logout', 'AuthController.logout').as('logout')
+}).prefix('/auth')
+// * Auth
+
+Route.group(() => {
+  Route.get('/', async ({ view }) => {
+    return view.render('pages/index')
+  }).as('index')
+
+  Route.group(() => {
+    Route.get('/', 'UsersController.index').as('users.index')
+    Route.get('/:id', 'UsersController.show').as('users.show')
+    Route.post('/block/:id', 'UsersController.block').as('users.block')
+    Route.post('/unblock/:id', 'UsersController.unblock').as('users.unblock')
+  }).prefix('/users')
+}).middleware('CheckUserForAdmin')

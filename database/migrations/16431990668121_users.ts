@@ -23,6 +23,13 @@ export default class Users extends BaseSchema {
       table.boolean('isBanned').defaultTo(0).notNullable().comment('0 - нет, 1 - да')
       table.boolean('isActivated').defaultTo(0).notNullable().comment('Активация по почте. 0 - аккаунт не активен, 1 - активен')
 
+      table
+        .integer('role_id')
+        .unsigned()
+        .notNullable()
+        .references('roles.id')
+        .onDelete('CASCADE')
+
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
