@@ -7,7 +7,7 @@ export default class RoleService extends BaseService {
     return await Role.all()
   }
 
-  public static async get(name: Roles.ADMIN | Roles.MANAGER | Roles.USER): Promise<Role> {
+  public static async get(name: Roles): Promise<Role> {
     try {
       return (await Role.findBy('name', name))!
     } catch (err: any) {

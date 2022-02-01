@@ -1,16 +1,18 @@
 import Role from './Role'
 import Hash from '@ioc:Adonis/Core/Hash'
 import Drive from '@ioc:Adonis/Core/Drive'
+import RoleService from 'App/Services/RoleService'
 import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { Sex } from 'Contracts/enums'
+import { Roles, Sex } from 'Contracts/enums'
 import { IMG_PLACEHOLDER } from 'Config/drive'
+import { v4 as uuid } from 'uuid'
 import { BaseModel, beforeSave, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm'
 
 export default class User extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
   public static readonly columns = [
-    'id', 'firstName', 'lastName',
+    'id', 'uuid', 'firstName', 'lastName',
     'sex', 'birthday', 'phone',
     'email', 'avatar', 'rating',
     'password', 'isSubscribed', 'isBanned',
@@ -19,6 +21,9 @@ export default class User extends BaseModel {
 
   @column({ isPrimary: true })
   public id: number
+
+  @column()
+  public uuid: string
 
   @column()
   public firstName: string
@@ -106,7 +111,7 @@ export default class User extends BaseModel {
   }
 
   @computed()
-  public get sexForUser(): string | null {
+  public get sexForUser(): string {
     switch (this.sex) {
       case Sex.MAN:
         return 'Мужской'
@@ -118,9 +123,23 @@ export default class User extends BaseModel {
   }
 
   @beforeSave()
+  public static createUuid(user: User) {
+    if (!user.uuid)
+      user.uuid = uuid()
+  }
+
+  @beforeSave()
   public static async hashPassword(user: User) {
     if (user.$dirty.password)
       user.password = await Hash.make(user.password)
+  }
+
+  @beforeSave()
+  public static async setRole(user: User) {
+    if (!user.$dirty.roleId) {
+      let userRole: Role = await RoleService.get(Roles.USER)
+      user.roleId = userRole.id
+    }
   }
 
   @belongsTo(() => Role)

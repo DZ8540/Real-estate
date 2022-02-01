@@ -43,3 +43,15 @@ Route.group(() => {
     Route.post('/unblock/:id', 'UsersController.unblock').as('users.unblock')
   }).prefix('/users')
 }).middleware('CheckUserForAdmin')
+
+// * Api
+Route.group(() => {
+  Route.group(() => {
+
+    Route.post('/register', 'Api/AuthController.register')
+
+    Route.post('/activate', 'Api/AuthController.activate')
+
+  }).prefix('/auth')
+}).prefix('/api')
+// * Api

@@ -10,6 +10,7 @@
   "devDependencies": {
     "@adonisjs/assembler": "^5.4.1",
     "@symfony/webpack-encore": "^1.8.1",
+    "@types/uuid": "^8.3.4",
     "adonis-preset-ts": "^2.1.0",
     "pino-pretty": "^7.5.0",
     "typescript": "~4.5",
@@ -19,6 +20,7 @@
   "dependencies": {
     "@adonisjs/core": "^5.4.2",
     "@adonisjs/lucid": "^16.3.2",
+    "@adonisjs/mail": "^7.2.4",
     "@adonisjs/repl": "^3.1.8",
     "@adonisjs/session": "^6.1.2",
     "@adonisjs/shield": "^7.0.7",
@@ -30,6 +32,7 @@
     "phc-bcrypt": "^1.0.7",
     "proxy-addr": "^2.0.7",
     "reflect-metadata": "^0.1.13",
-    "source-map-support": "^0.5.21"
+    "source-map-support": "^0.5.21",
+    "uuid": "^8.3.2"
   }
 }

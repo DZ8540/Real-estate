@@ -24,6 +24,11 @@
         <div class="basic-form">
 
           <div class="form-group">
+            <label class="mb-1"><strong>Уникальный идентификатор пользователя</strong></label>
+            <input type="string" class="form-control" value="{{ item.uuid }}" disabled>
+          </div>
+
+          <div class="form-group">
             <label class="mb-1"><strong>Имя</strong></label>
             <input type="string" class="form-control" value="{{ item.firstName }}" disabled>
           </div>
