@@ -1,9 +1,9 @@
 import Drive from '@ioc:Adonis/Core/Drive'
 import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { string } from '@ioc:Adonis/Core/Helpers'
-import { BaseModel, beforeSave, column, computed } from '@ioc:Adonis/Lucid/Orm'
+import { createSlug } from '../../helpers'
 import { IMG_PLACEHOLDER } from 'Config/drive'
+import { BaseModel, beforeSave, column, computed } from '@ioc:Adonis/Lucid/Orm'
 
 export default class News extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
@@ -45,10 +45,10 @@ export default class News extends BaseModel {
   @beforeSave()
   public static async setSlug(news: News) {
     if (news.$dirty.slug)
-      news.slug = string.camelCase(news.slug)
+      news.slug = createSlug(news.slug)
 
     if (!news.slug)
-      news.slug = string.camelCase(news.title)
+      news.slug = createSlug(news.title)
   }
 
   @beforeSave()

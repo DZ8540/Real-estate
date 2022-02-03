@@ -44,6 +44,8 @@ Route.group(() => {
   }).prefix('/users')
 
   Route.resource('/news', 'NewsController')
+
+  Route.resource('/realEstateTypes', 'RealEstateTypesController')
 }).middleware('CheckUserForAdmin')
 
 // * Api

@@ -13,13 +13,6 @@ export default class NewsService extends BaseService {
       config.columns = ['id', 'image', 'title', 'slug']
 
     return await News.query().get({ baseURL: config.baseURL, page: config.page })
-
-    // try {
-    //   return await News.query().get({ baseURL: config.baseURL, page: config.page })
-    // } catch (err: any) {
-    //   Logger.error(err)
-    //   throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
-    // }
   }
 
   public static async get({ column, val, trx }: GetConfig<News>): Promise<News> {
@@ -84,7 +77,7 @@ export default class NewsService extends BaseService {
 
   public static async delete(column: typeof News['columns'][number], val: any): Promise<void> {
     try {
-      (await News.findBy(column, val))!.delete()
+      await (await News.findBy(column, val))!.delete()
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error

@@ -27,6 +27,7 @@
     "@adonisjs/shield": "^7.0.7",
     "@adonisjs/view": "^6.1.1",
     "@dz8540/helpers": "^1.1.4",
+    "cyrillic-to-translit-js": "^3.1.0",
     "jsonwebtoken": "^8.5.1",
     "luxon": "^2.3.0",
     "pg": "^8.7.1",

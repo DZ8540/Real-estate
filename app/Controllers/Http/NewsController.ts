@@ -59,7 +59,6 @@ export default class NewsController {
   }
 
   public async update({ request, response, session, params }: HttpContextContract) {
-    console.log('test')
     let id: News['id'] = params.id
     let payload = await request.validate(NewsValidator)
 
