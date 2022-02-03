@@ -1,7 +1,8 @@
-import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import User from 'App/Models/User'
 import BaseController from './BaseController'
 import UserService from 'App/Services/UserService'
-import User from 'App/Models/User'
+import { ResponseMessages } from 'Contracts/response'
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class UsersController extends BaseController {
   public async index({ view, request, route }: HttpContextContract) {
@@ -15,7 +16,7 @@ export default class UsersController extends BaseController {
     let id: number = params.id
 
     try {
-      let item: User = await UserService.get(id)
+      let item: User = await UserService.get({ column: 'id', val: id })
 
       return view.render('pages/users/show', { item })
     } catch (err: Error | any) {
@@ -28,9 +29,9 @@ export default class UsersController extends BaseController {
     let id: number = params.id
 
     try {
-      await UserService.block(id)
+      await UserService.block({ column: 'id', val: id })
 
-      session.flash('success', 'Пользователь был успешно заблокирован!')
+      session.flash('success', ResponseMessages.USER_BLOCKED)
     } catch (err: Error | any) {
       session.flash('error', err.message)
     }
@@ -42,9 +43,9 @@ export default class UsersController extends BaseController {
     let id: number = params.id
 
     try {
-      await UserService.unblock(id)
+      await UserService.unblock({ column: 'id', val: id })
 
-      session.flash('success', 'Пользователь был успешно разблокирован!')
+      session.flash('success', ResponseMessages.USER_UNBLOCKED)
     } catch (err: Error | any) {
       session.flash('error', err.message)
     }

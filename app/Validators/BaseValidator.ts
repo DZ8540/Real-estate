@@ -6,5 +6,6 @@ export default class BaseValidator {
     minLength: '{{ field }} должно содержать от {{ options.minLength }} символов!',
     maxLength: '{{ field }} должно содержать максимум {{ options.maxLength }} символов!',
     mobile: '{{ field }} должно быть в формате телефона!',
+    exists: ' ', // None display message
   }
 }

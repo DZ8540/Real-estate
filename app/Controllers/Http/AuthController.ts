@@ -2,6 +2,8 @@ import User from 'App/Models/User'
 import Logger from '@ioc:Adonis/Core/Logger'
 import AuthService from 'App/Services/AuthService'
 import LoginValidator from 'App/Validators/LoginValidator'
+import { Error } from 'Contracts/services'
+import { ResponseMessages } from 'Contracts/response'
 import { SessionUser, SESSION_USER_KEY } from 'Contracts/auth'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
@@ -14,9 +16,20 @@ export default class AuthController {
   }
 
   public async loginAction({ request, session, response }: HttpContextContract) {
-    try {
-      let payload = await request.validate(LoginValidator)
+    let payload: LoginValidator['schema']['props']
 
+    try {
+      payload = await request.validate(LoginValidator)
+    } catch (err: any) {
+      session.flash({
+        error: ResponseMessages.USER_NOT_FOUND,
+        email: request.input('email', '')
+      })
+
+      return response.redirect().back()
+    }
+
+    try {
       let candidate: User = await AuthService.login(payload)
       session.put(SESSION_USER_KEY, { id: candidate.id, fullName: candidate.fullName } as SessionUser)
 
@@ -24,10 +37,7 @@ export default class AuthController {
     } catch (err: Error | any) {
       Logger.error(err)
 
-      session.flash({
-        error: 'Пользователь не найден!',
-        email: request.input('email', '')
-      })
+      session.flash('error', err.message)
 
       return response.redirect().back()
     }

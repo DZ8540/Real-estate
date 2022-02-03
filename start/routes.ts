@@ -49,7 +49,9 @@ Route.group(() => {
   Route.group(() => {
 
     Route.post('/register', 'Api/AuthController.register')
-
+    Route.post('/login', 'Api/AuthController.login').middleware('CheckUserCredentials')
+    Route.post('/refresh', 'Api/AuthController.refresh').middleware(['CheckUserCredentials', 'CheckToken'])
+    Route.post('/logout', 'Api/AuthController.logout').middleware(['CheckUserCredentials', 'CheckToken'])
     Route.post('/activate', 'Api/AuthController.activate')
 
   }).prefix('/auth')
