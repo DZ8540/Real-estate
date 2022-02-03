@@ -8,17 +8,21 @@
       <div class="card-header">
         <h4 class="card-title">Пользователь - {{ item.fullName }}</h4>
 
-        @if(item.isBanned)
-          <form action="{{ route('users.unblock', { id: item.id }) }}" method="POST">
-            {{ csrfField() }}
-            <button type="submit" class="btn btn-primary btn-sm">Разблокировать</button>
-          </form>
-        @else
-          <form action="{{ route('users.block', { id: item.id }) }}" method="POST">
-            {{ csrfField() }}
-            <button type="submit" class="btn btn-danger btn-sm">Заблокировать</button>
-          </form>
-        @endif
+        <div class="d-flex">
+          @if(item.isBanned)
+            <form action="{{ route('users.unblock', { id: item.id }) }}" method="POST">
+              {{ csrfField() }}
+              <button type="submit" class="btn btn-primary btn-sm">Разблокировать</button>
+            </form>
+          @else
+            <form action="{{ route('users.block', { id: item.id }) }}" method="POST">
+              {{ csrfField() }}
+              <button type="submit" class="btn btn-danger btn-sm">Заблокировать</button>
+            </form>
+          @endif
+
+          <a href="{{ route('users.index') }}" class="ml-3 btn btn-primary btn-sm">Назад</a>
+        </div>
       </div>
       <div class="card-body">
         <div class="basic-form">

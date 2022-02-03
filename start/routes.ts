@@ -42,6 +42,8 @@ Route.group(() => {
     Route.post('/block/:id', 'UsersController.block').as('users.block')
     Route.post('/unblock/:id', 'UsersController.unblock').as('users.unblock')
   }).prefix('/users')
+
+  Route.resource('/news', 'NewsController')
 }).middleware('CheckUserForAdmin')
 
 // * Api
