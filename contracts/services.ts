@@ -3,11 +3,13 @@ import { ResponseCodes, ResponseMessages } from './response'
 import { TransactionClientContract } from '@ioc:Adonis/Lucid/Database'
 import { ExtractModelRelations, LucidRow } from '@ioc:Adonis/Lucid/Orm'
 
-export type GetAllConfig<M extends string[]> = {
+export type GetAllConfig<M extends string> = {
   page: number,
   baseURL: string,
   limit?: number,
-  columns?: M,
+  columns?: M[],
+  orderBy?: 'asc' | 'desc',
+  orderByColumn?: M,
 }
 
 export type GetConfig<M extends LucidRow> = {

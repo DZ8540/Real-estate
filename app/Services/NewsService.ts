@@ -8,19 +8,31 @@ import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, GetAllConfig, GetConfig } from 'Contracts/services'
 
 export default class NewsService extends BaseService {
-  public static async getAll(config: GetAllConfig<typeof News['columns'][number][]>): Promise<News[]> {
-    if (!config.columns)
-      config.columns = ['id', 'image', 'title', 'slug']
+  public static async getAll({ baseURL, page, columns, limit, orderBy, orderByColumn }: GetAllConfig<typeof News['columns'][number]>): Promise<News[]> {
+    if (!columns)
+      columns = ['id', 'image', 'title', 'slug', 'createdAt']
 
-    return await News.query().select(config.columns).get({ baseURL: config.baseURL, page: config.page })
+    return await News.query().select(columns).get({ baseURL, page, limit, orderBy, orderByColumn })
   }
 
   public static async get({ column, val, trx }: GetConfig<News>): Promise<News> {
+    let item: News | null
+
     try {
-      return (await News.findBy(column, val, { client: trx }))!
+      item = await News.findBy(column, val, { client: trx })
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+
+    try {
+      if (!item)
+        throw new Error()
+
+      return item
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.NEWS_NOT_FOUND } as Error
     }
   }
 
@@ -49,15 +61,18 @@ export default class NewsService extends BaseService {
   }
 
   public static async update({ column, val }: GetConfig<News>, payload: NewsValidator['schema']['props']): Promise<News> {
-    let item: News
+    let item: News | null
     let image: News['image'] = undefined
 
     try {
-      item = (await News.findBy(column, val))!
+      item = await News.findBy(column, val)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
+
+    if (!item)
+      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.NEWS_NOT_FOUND } as Error
 
     try {
       if (payload.image) {
@@ -67,20 +82,32 @@ export default class NewsService extends BaseService {
         await payload.image.moveToDisk(NEWS_PATH)
         image = `${NEWS_PATH}/${payload.image.fileName}`
       }
+
+      return await item.merge({ ...payload, image }).save()
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.SERVER_ERROR, message: ResponseMessages.ERROR } as Error
     }
-
-    return await item.merge({ ...payload, image }).save()
   }
 
   public static async delete(column: typeof News['columns'][number], val: any): Promise<void> {
+    let item: News | null
+
     try {
-      await (await News.findBy(column, val))!.delete()
+      item = await News.findBy(column, val)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+
+    try {
+      if (!item)
+        throw new Error()
+
+      await item.delete()
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.NEWS_NOT_FOUND } as Error
     }
   }
 }

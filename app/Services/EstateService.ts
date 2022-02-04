@@ -6,24 +6,36 @@ import { Error, GetAllConfig, GetConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
 export default class EstateService extends BaseService {
-  public static async getAll(config: GetAllConfig<typeof Estate['columns'][number][]>): Promise<Estate[]> {
-    if (!config.columns)
-      config.columns = ['id', 'name', 'slug', 'realEstateTypeId']
+  public static async getAll({ baseURL, page, columns, limit, orderBy, orderByColumn }: GetAllConfig<typeof Estate['columns'][number]>): Promise<Estate[]> {
+    if (!columns)
+      columns = ['id', 'name', 'slug', 'realEstateTypeId']
 
     return await Estate
       .query()
       .preload('realEstateType')
-      .select(config.columns)
+      .select(columns)
       .get({
-        baseURL: config.baseURL,
-        page: config.page,
-        limit: config.limit,
+        baseURL,
+        page,
+        limit,
+        orderBy,
+        orderByColumn,
       })
   }
 
   public static async get({ column, val, relations }: GetConfig<Estate>): Promise<Estate> {
+    let item: Estate | null
+
     try {
-      let item: Estate = (await Estate.findBy(column, val))!
+      item = await Estate.findBy(column, val)
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+
+    try {
+      if (!item)
+        throw new Error()
 
       if (relations) {
         for (let relationItem of relations) {
@@ -34,7 +46,7 @@ export default class EstateService extends BaseService {
       return item
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR } as Error
+      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.ESTATE_NOT_FOUND } as Error
     }
   }
 
@@ -48,20 +60,44 @@ export default class EstateService extends BaseService {
   }
 
   public static async update(column: typeof Estate['columns'][number], val: any, payload: EstateValidator['schema']['props']): Promise<Estate> {
+    let item: Estate | null
+
     try {
-      return await (await Estate.findBy(column, val))!.merge(payload).save()
+      item = await Estate.findBy(column, val)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
+
+    try {
+      if (!item)
+        throw new Error()
+
+      return await item.merge(payload).save()
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.ESTATE_NOT_FOUND } as Error
+    }
   }
 
   public static async delete(column: typeof Estate['columns'][number], val: any): Promise<void> {
+    let item: Estate | null
+
     try {
-      await (await Estate.findBy(column, val))!.delete()
+      item = await Estate.findBy(column, val)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+
+    try {
+      if (!item)
+        throw new Error()
+
+      await item.delete()
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.ESTATE_NOT_FOUND } as Error
     }
   }
 }

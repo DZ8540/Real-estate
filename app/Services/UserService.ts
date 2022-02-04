@@ -7,25 +7,31 @@ import { Error, GetAllConfig, GetConfig } from 'Contracts/services'
 import { TransactionClientContract } from '@ioc:Adonis/Lucid/Database'
 
 export default class UserService extends BaseService {
-  public static async getAll({ page, limit, columns, baseURL }: GetAllConfig<typeof User['columns'][number][]>): Promise<User[]> {
+  public static async getAll({ page, limit, columns, baseURL, orderBy, orderByColumn }: GetAllConfig<typeof User['columns'][number]>): Promise<User[]> {
     if (!columns)
       columns = ['id', 'firstName', 'lastName', 'email', 'isBanned']
 
     try {
-      return await User.query().select(columns).get({ page, limit, baseURL })
+      return await User.query().select(columns).get({ page, limit, baseURL, orderBy, orderByColumn })
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
   }
 
-  // public static async get(id: User['id']): Promise<User> {
-  //   return await this.checkUser(id)
-  // }
-
   public static async get(config: GetConfig<User>): Promise<User> {
+    let item: User | null
+
     try {
-      let item: User = (await User.findBy(config.column, config.val, { client: config.trx }))!
+      item = await User.findBy(config.column, config.val, { client: config.trx })
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+
+    try {
+      if (!item)
+        throw new Error()
 
       if (config.relations) {
         for (let relationItem of config.relations) {
@@ -36,7 +42,7 @@ export default class UserService extends BaseService {
       return item
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.USER_NOT_FOUND } as Error
     }
   }
 

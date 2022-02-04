@@ -28,14 +28,17 @@ export enum ResponseMessages {
   NEWS_CREATED = 'Новость была успешно создана и опубликована!',
   NEWS_UPDATED = 'Новость была успешно обновлена!',
   NEWS_DELETED = 'Новость была успешно удалена!',
+  NEWS_NOT_FOUND = 'Новость не найдена!',
 
   REAL_ESTATE_TYPES_CREATED = 'Тип недвижимости был успешно создана и опубликован!',
   REAL_ESTATE_TYPES_UPDATED = 'Тип недвижимости был успешно обновлен!',
   REAL_ESTATE_TYPES_DELETED = 'Тип недвижимости был успешно удален!',
+  REAL_ESTATE_TYPES_NOT_FOUND = 'Тип недвижимости не найден!',
 
   ESTATE_CREATED = 'Объект был успешно создан и опубликован!',
   ESTATE_UPDATED = 'Объект был успешно обновлен!',
   ESTATE_DELETED = 'Объект был успешно удален!',
+  ESTATE_NOT_FOUND = 'Объект не найден!',
 
   NOT_REGISTERED = 'Пользователь не зарегистрирован',
   NOT_ADMIN = 'Вы не являетесь администратором!',

@@ -38,8 +38,8 @@
             {{ csrfField() }}
 
             <div class="form-group">
-              <label class="mb-1">Тип недвижимости</label>
-              <select class="" name="realEstateTypeId">
+              {{--  <label class="mb-1">Тип недвижимости</label>  --}}
+              <select class="form-control" name="realEstateTypeId">
                 <option value="">Не выбрано</option>
                 @each(item in realEstateTypes)
                   <option value="{{ item.id }}">{{ item.name }}</option>
