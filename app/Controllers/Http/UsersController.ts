@@ -1,6 +1,7 @@
 import User from 'App/Models/User'
 import BaseController from './BaseController'
 import UserService from 'App/Services/UserService'
+import { Error } from 'Contracts/services'
 import { ResponseMessages } from 'Contracts/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 

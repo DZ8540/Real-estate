@@ -1,5 +1,6 @@
 import User from 'App/Models/User'
 import News from 'App/Models/News'
+import Label from 'App/Models/Label'
 import Estate from 'App/Models/Estate'
 import Factory from '@ioc:Adonis/Lucid/Factory'
 import RoleService from 'App/Services/RoleService'
@@ -36,5 +37,11 @@ export const EstateFactory = Factory
       name: faker.lorem.word(),
       realEstateTypeId: (await RealEstateType.query().random()).id,
     }
+  })
+  .build()
+
+export const LabelFactory = Factory
+  .define(Label, async ({ faker }) => {
+    return { name: faker.lorem.words(2) }
   })
   .build()

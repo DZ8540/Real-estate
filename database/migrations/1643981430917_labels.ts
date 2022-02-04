@@ -1,20 +1,12 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class Estates extends BaseSchema {
-  protected tableName = 'estates'
+export default class Labels extends BaseSchema {
+  protected tableName = 'labels'
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.string('slug').unique().notNullable()
-      table.string('name').notNullable()
-
-      table
-        .integer('realEstateType_id')
-        .unsigned()
-        .nullable()
-        .references('realEstateTypes.id')
-        .onDelete('CASCADE')
+      table.string('name').unique().notNullable()
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
@@ -22,7 +14,7 @@ export default class Estates extends BaseSchema {
       table.timestamp('createdAt', { useTz: true })
       table.timestamp('updatedAt', { useTz: true })
 
-      table.comment('По дизайну это объекты')
+      table.comment('По дизайну это предоставляемые услуги, указываются при создании самих услуг')
     })
   }
 

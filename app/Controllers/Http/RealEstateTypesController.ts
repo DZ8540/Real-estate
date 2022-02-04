@@ -1,6 +1,7 @@
 import RealEstateType from 'App/Models/RealEstateType'
 import RealEstateTypeService from 'App/Services/RealEstateTypeService'
 import RealEstateTypeValidator from 'App/Validators/RealEstateTypeValidator'
+import { Error } from 'Contracts/services'
 import { ResponseMessages } from 'Contracts/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
