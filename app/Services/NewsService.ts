@@ -12,7 +12,7 @@ export default class NewsService extends BaseService {
     if (!config.columns)
       config.columns = ['id', 'image', 'title', 'slug']
 
-    return await News.query().get({ baseURL: config.baseURL, page: config.page })
+    return await News.query().select(config.columns).get({ baseURL: config.baseURL, page: config.page })
   }
 
   public static async get({ column, val, trx }: GetConfig<News>): Promise<News> {

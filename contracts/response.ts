@@ -33,6 +33,10 @@ export enum ResponseMessages {
   REAL_ESTATE_TYPES_UPDATED = 'Тип недвижимости был успешно обновлен!',
   REAL_ESTATE_TYPES_DELETED = 'Тип недвижимости был успешно удален!',
 
+  ESTATE_CREATED = 'Объект был успешно создан и опубликован!',
+  ESTATE_UPDATED = 'Объект был успешно обновлен!',
+  ESTATE_DELETED = 'Объект был успешно удален!',
+
   NOT_REGISTERED = 'Пользователь не зарегистрирован',
   NOT_ADMIN = 'Вы не являетесь администратором!',
   ALREADY_ACTIVATED = 'Пользователь уже активировал свой аккаунт!',

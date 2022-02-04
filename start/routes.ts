@@ -46,6 +46,8 @@ Route.group(() => {
   Route.resource('/news', 'NewsController')
 
   Route.resource('/realEstateTypes', 'RealEstateTypesController')
+
+  Route.resource('/estates', 'EstatesController')
 }).middleware('CheckUserForAdmin')
 
 // * Api

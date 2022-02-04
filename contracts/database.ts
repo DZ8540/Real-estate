@@ -6,7 +6,8 @@ declare module '@ioc:Adonis/Lucid/Orm' {
     Result = InstanceType<Model>
   > {
     get(config: PaginationConfig): Promise<Result extends LucidRow ? ModelPaginatorContract<Result> : SimplePaginatorContract<Result>>,
-    getForAPI(config: PaginationConfig): Promise<{ meta: any, data: any[] }>
+    getForAPI(config: PaginationConfig): Promise<{ meta: any, data: any[] }>,
+    random(): Promise<any>,
   }
 }
 

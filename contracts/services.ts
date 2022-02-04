@@ -7,7 +7,7 @@ export type GetAllConfig<M extends string[]> = {
   page: number,
   baseURL: string,
   limit?: number,
-  columns?: M
+  columns?: M,
 }
 
 export type GetConfig<M extends LucidRow> = {
