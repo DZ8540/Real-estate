@@ -50,6 +50,8 @@ Route.group(() => {
   Route.resource('/estates', 'EstatesController')
 
   Route.resource('/labels', 'LabelsController').except(['show'])
+
+  Route.resource('/servicesTypes', 'ServicesTypesController').except(['show'])
 }).middleware('CheckUserForAdmin')
 
 // * Api

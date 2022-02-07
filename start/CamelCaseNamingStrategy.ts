@@ -1,5 +1,5 @@
-import { BaseModel, SnakeCaseNamingStrategy } from '@ioc:Adonis/Lucid/Orm'
 import { string } from '@ioc:Adonis/Core/Helpers'
+import { BaseModel, SnakeCaseNamingStrategy } from '@ioc:Adonis/Lucid/Orm'
 
 export default class CamelCaseNamingStrategy extends SnakeCaseNamingStrategy {
   public tableName(model: typeof BaseModel) {

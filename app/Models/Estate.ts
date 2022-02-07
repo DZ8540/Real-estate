@@ -1,7 +1,7 @@
 import RealEstateType from './RealEstateType'
 import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { createSlug } from '../../helpers'
+import { camelCase } from '../../helpers'
 import { BaseModel, beforeSave, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Estate extends BaseModel {
@@ -34,10 +34,10 @@ export default class Estate extends BaseModel {
   @beforeSave()
   public static async setSlug(estate: Estate) {
     if (estate.$dirty.slug)
-      estate.slug = createSlug(estate.slug)
+      estate.slug = camelCase(estate.slug)
 
     if (!estate.slug)
-      estate.slug = createSlug(estate.name)
+      estate.slug = camelCase(estate.name)
   }
 
   @belongsTo(() => RealEstateType)

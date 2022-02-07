@@ -1,8 +1,10 @@
-node_modules
+.env
+*.bak
+.vscode
+.history
+.DS_STORE
+
+tmp
 build
 coverage
-.vscode
-.DS_STORE
-.env
-tmp
-.history
+node_modules

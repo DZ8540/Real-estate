@@ -35,6 +35,11 @@ export enum ResponseMessages {
   REAL_ESTATE_TYPES_DELETED = 'Тип недвижимости был успешно удален!',
   REAL_ESTATE_TYPES_NOT_FOUND = 'Тип недвижимости не найден!',
 
+  SERVICES_TYPES_CREATED = 'Тип услуги был успешно создан и опубликован!',
+  SERVICES_TYPES_UPDATED = 'Тип услуги был успешно обновлен!',
+  SERVICES_TYPES_DELETED = 'Тип услуги был успешно удален!',
+  SERVICES_TYPES_NOT_FOUND = 'Тип услуги не найден!',
+
   ESTATE_CREATED = 'Объект был успешно создан и опубликован!',
   ESTATE_UPDATED = 'Объект был успешно обновлен!',
   ESTATE_DELETED = 'Объект был успешно удален!',
