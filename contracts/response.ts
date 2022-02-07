@@ -40,6 +40,11 @@ export enum ResponseMessages {
   SERVICES_TYPES_DELETED = 'Тип услуги был успешно удален!',
   SERVICES_TYPES_NOT_FOUND = 'Тип услуги не найден!',
 
+  SERVICE_CREATED = 'Услуга была успешно создана и опубликована!',
+  SERVICE_UPDATED = 'Услуга была успешно обновлена!',
+  SERVICE_DELETED = 'Услуга была успешно удалена!',
+  SERVICE_NOT_FOUND = 'Услуга не найдена!',
+
   ESTATE_CREATED = 'Объект был успешно создан и опубликован!',
   ESTATE_UPDATED = 'Объект был успешно обновлен!',
   ESTATE_DELETED = 'Объект был успешно удален!',

@@ -4,8 +4,8 @@ import Drive from '@ioc:Adonis/Core/Drive'
 import Logger from '@ioc:Adonis/Core/Logger'
 import NewsValidator from 'App/Validators/NewsValidator'
 import { NEWS_PATH } from 'Config/drive'
-import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, GetAllConfig, GetConfig } from 'Contracts/services'
+import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
 export default class NewsService extends BaseService {
   public static async getAll({ baseURL, page, columns, limit, orderBy, orderByColumn }: GetAllConfig<typeof News['columns'][number]>): Promise<News[]> {
@@ -103,6 +103,9 @@ export default class NewsService extends BaseService {
     try {
       if (!item)
         throw new Error()
+
+      if (item.image)
+        await Drive.delete(item.image)
 
       await item.delete()
     } catch (err: any) {

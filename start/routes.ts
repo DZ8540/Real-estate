@@ -52,6 +52,8 @@ Route.group(() => {
   Route.resource('/labels', 'LabelsController').except(['show'])
 
   Route.resource('/servicesTypes', 'ServicesTypesController').except(['show'])
+
+  Route.resource('/services', 'ServicesController').except(['create', 'store'])
 }).middleware('CheckUserForAdmin')
 
 // * Api

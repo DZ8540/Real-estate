@@ -4,6 +4,7 @@ import Logger from '@ioc:Adonis/Core/Logger'
 import LabelValidator from 'App/Validators/LabelValidator'
 import { Error, GetAllConfig, GetConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
+import { TransactionClientContract } from '@ioc:Adonis/Lucid/Database'
 
 export default class LabelService extends BaseService {
   public static async getAll({ baseURL, page, columns, limit, orderBy, orderByColumn }: GetAllConfig<typeof Label['columns'][number]>): Promise<Label[]> {
@@ -29,9 +30,9 @@ export default class LabelService extends BaseService {
     return item
   }
 
-  public static async create(payload: LabelValidator['schema']['props']): Promise<Label> {
+  public static async create(payload: LabelValidator['schema']['props'], trx?: TransactionClientContract): Promise<Label> {
     try {
-      return await Label.create(payload)
+      return await Label.create(payload, { client: trx })
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error

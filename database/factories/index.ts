@@ -2,8 +2,10 @@ import User from 'App/Models/User'
 import News from 'App/Models/News'
 import Label from 'App/Models/Label'
 import Estate from 'App/Models/Estate'
+import Service from 'App/Models/Service'
 import Factory from '@ioc:Adonis/Lucid/Factory'
 import RoleService from 'App/Services/RoleService'
+import ServicesType from 'App/Models/ServicesType'
 import RealEstateType from 'App/Models/RealEstateType'
 import { Roles } from 'Contracts/enums'
 
@@ -44,4 +46,16 @@ export const LabelFactory = Factory
   .define(Label, async ({ faker }) => {
     return { name: faker.lorem.words(2) }
   })
+  .build()
+
+export const ServicesFactory = Factory
+  .define(Service, async ({ faker }) => {
+    return {
+      experienceType: faker.datatype.number(3),
+      description: faker.lorem.paragraphs(3),
+      userId: (await User.query().random()).id,
+      servicesTypeId: (await ServicesType.query().random()).id,
+    }
+  })
+  .relation('labels', () => LabelFactory)
   .build()

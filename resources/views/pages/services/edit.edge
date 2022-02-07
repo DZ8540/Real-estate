@@ -1,0 +1,105 @@
+@layout('layouts/index')
+
+@set('title', `Услуга пользователя - ${item.user.fullName}`)
+
+@section('styles')
+  <link href="/vendor/summernote/summernote.css" rel="stylesheet">
+@endsection
+
+@section('body')
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">{{ title }}</h4>
+        <a href="{{ route('services.index') }}" class="btn btn-primary btn-sm">Назад</a>
+      </div>
+      <div class="card-body">
+        <div class="basic-form">
+          <form action="{{ route('services.update', { id: item.id }, { qs: { _method: 'PATCH' } }) }}" method="POST">
+
+            <input type="hidden" name="userId" value="{{ item.user.id }}">
+
+            <div class="form-group">
+              <label class="mb-1">Опыт работы</label>
+              <select class="form-control" name="experienceType">
+                @each((val, key) in experienceTypes)
+                  <option value="{{ key }}" {{ item.experienceType == key ? 'selected' : '' }}>{{ val }}</option>
+                @endeach
+              </select>
+
+              @if(flashMessages.has('errors.experienceType'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.experienceType')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Описание *</strong></label>
+              <textarea id="summernote" class="summernote" name="description">{{ flashMessages.get('description', item.description) }}</textarea>
+
+              @if(flashMessages.has('errors.description'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.description')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1">Заблокирован</label>
+              <select class="form-control" name="isBanned">
+                <option value="0" {{ item.isBanned ? '' : 'selected' }}>Нет</option>
+                <option value="1" {{ item.isBanned ? 'selected' : '' }}>Да</option>
+              </select>
+
+              @if(flashMessages.has('errors.isBanned'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.isBanned')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1">Тип услуги</label>
+              <select class="form-control" name="servicesTypeId">
+                @each(servicesTypeItem in servicesTypes)
+                  <option value="{{ servicesTypeItem.id }}" {{ servicesTypeItem.id == item.servicesTypeId ? 'selected' : '' }}>{{ servicesTypeItem.name }}</option>
+                @endeach
+              </select>
+
+              @if(flashMessages.has('errors.servicesTypeId'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.servicesTypeId')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Предоставляемые услуги *</strong> (через запятую!)</label>
+              <input type="string" class="form-control" value="{{ labels }}" name="labels">
+
+              @if(flashMessages.has('errors.labels'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.labels')[0] }}
+                </div>
+              @endif
+            </div>
+
+            {{ csrfField() }}
+
+            <div class="text-right">
+              <button type="submit" class="btn btn-primary btn-block">Обновить</button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+@endsection
+
+@section('scripts')
+  <script src="/vendor/summernote/js/summernote.min.js"></script>
+  <script src="/js/plugins-init/summernote-init.js"></script>
+@endsection
