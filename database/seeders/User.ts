@@ -23,6 +23,7 @@ export default class UserSeeder extends BaseSeeder {
 
     await User.createMany([
       {
+        ownerType: 0,
         firstName: 'Admin',
         lastName: 'Admin',
         email: 'admin@mail.ru',
@@ -31,6 +32,7 @@ export default class UserSeeder extends BaseSeeder {
         roleId: adminRole.id,
       },
       {
+        ownerType: 0,
         firstName: 'Manager',
         lastName: 'Manager',
         email: 'manager@mail.ru',
@@ -39,6 +41,7 @@ export default class UserSeeder extends BaseSeeder {
         roleId: managerRole.id,
       },
       {
+        ownerType: 0,
         firstName: 'User',
         lastName: 'User',
         email: 'user@mail.ru',

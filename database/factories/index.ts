@@ -7,12 +7,13 @@ import Factory from '@ioc:Adonis/Lucid/Factory'
 import RoleService from 'App/Services/RoleService'
 import ServicesType from 'App/Models/ServicesType'
 import RealEstateType from 'App/Models/RealEstateType'
-import { Roles } from 'Contracts/enums'
+import { OwnerTypes, Roles } from 'Contracts/enums'
 
 export const UserFactory = Factory
   .define(User, ({ faker }) => {
     return RoleService.get(Roles.USER).then(item => {
       return {
+        ownerType: faker.datatype.number(OwnerTypes.AGENT),
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
         email: faker.internet.email(),

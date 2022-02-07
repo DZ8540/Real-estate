@@ -1,4 +1,5 @@
 import BaseValidator from './BaseValidator'
+import { OwnerTypes } from 'Contracts/enums'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
@@ -27,6 +28,11 @@ export default class RegisterValidator extends BaseValidator {
    *    ```
    */
   public schema = schema.create({
+    ownerType: schema.number([
+      rules.required(),
+      rules.unsigned(),
+      rules.range(OwnerTypes.OWNER, OwnerTypes.AGENT)
+    ]),
     firstName: schema.string({}, [
       rules.required(),
       rules.minLength(2),

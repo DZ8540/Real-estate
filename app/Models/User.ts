@@ -4,15 +4,15 @@ import Drive from '@ioc:Adonis/Core/Drive'
 import RoleService from 'App/Services/RoleService'
 import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { Roles, Sex } from 'Contracts/enums'
-import { IMG_PLACEHOLDER } from 'Config/drive'
 import { v4 as uuid } from 'uuid'
+import { IMG_PLACEHOLDER } from 'Config/drive'
+import { OwnerTypes, Roles, Sex } from 'Contracts/enums'
 import { BaseModel, beforeSave, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm'
 
 export default class User extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
   public static readonly columns = [
-    'id', 'uuid', 'firstName', 'lastName',
+    'id', 'uuid', 'ownerType', 'firstName', 'lastName',
     'sex', 'birthday', 'phone',
     'email', 'avatar', 'rating',
     'password', 'isSubscribed', 'isBanned',
@@ -24,6 +24,9 @@ export default class User extends BaseModel {
 
   @column()
   public uuid: string
+
+  @column()
+  public ownerType: number
 
   @column()
   public firstName: string
@@ -71,6 +74,18 @@ export default class User extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @computed()
+  public get ownerTypeForUser(): string {
+    switch (this.ownerType) {
+      case OwnerTypes.OWNER:
+        return 'Собственник'
+      case OwnerTypes.AGENT:
+        return 'Агент'
+      default:
+        return ''
+    }
+  }
 
   @computed()
   public get fullName(): string {

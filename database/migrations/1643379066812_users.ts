@@ -9,6 +9,7 @@ export default class Users extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.uuid('uuid').unique().notNullable().comment('Использовать только версию 4')
+      table.integer('ownerType').unsigned().notNullable().comment('Владелец. 0 - собственник, 1 - агент')
       table.string('firstName').notNullable()
       table.string('lastName').notNullable()
       table.integer('sex').unsigned().nullable().comment('Пол, 0 - мужчина, 1 - женщина')
