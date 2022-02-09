@@ -1,9 +1,9 @@
 import RealEstate from './RealEstate'
-import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
 import Drive from '@ioc:Adonis/Core/Drive'
+import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 import { IMG_PLACEHOLDER } from 'Config/drive'
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
 export default class RealEstateImage extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()

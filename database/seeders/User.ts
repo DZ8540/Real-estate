@@ -1,8 +1,8 @@
-import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
 import Role from 'App/Models/Role'
 import User from 'App/Models/User'
-import RoleService from 'App/Services/RoleService'
 import Logger from '@ioc:Adonis/Core/Logger'
+import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
+import RoleService from 'App/Services/RoleService'
 import { Roles } from 'Contracts/enums'
 import { UserFactory } from 'Database/factories'
 
@@ -50,6 +50,6 @@ export default class UserSeeder extends BaseSeeder {
       }
     ])
 
-    await UserFactory.createMany(50)
+    await UserFactory.with('realEstates', 4).createMany(50)
   }
 }

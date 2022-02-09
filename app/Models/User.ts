@@ -1,4 +1,5 @@
 import Role from './Role'
+import RealEstate from './RealEstate'
 import Hash from '@ioc:Adonis/Core/Hash'
 import Drive from '@ioc:Adonis/Core/Drive'
 import RoleService from 'App/Services/RoleService'
@@ -7,7 +8,7 @@ import { DateTime } from 'luxon'
 import { v4 as uuid } from 'uuid'
 import { IMG_PLACEHOLDER } from 'Config/drive'
 import { OwnerTypes, Roles, Sex } from 'Contracts/enums'
-import { BaseModel, beforeSave, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeSave, BelongsTo, belongsTo, column, computed, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
 
 export default class User extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
@@ -159,6 +160,12 @@ export default class User extends BaseModel {
 
   @belongsTo(() => Role)
   public role: BelongsTo<typeof Role>
+
+  @manyToMany(() => RealEstate, {
+    pivotTable: 'realEstates_wishlists',
+    pivotRelatedForeignKey: 'realEstate_id',
+  })
+  public realEstates: ManyToMany<typeof RealEstate>
 
   public async avatarUrl(): Promise<string> {
     return this.avatar ? await Drive.getUrl(this.avatar) : IMG_PLACEHOLDER

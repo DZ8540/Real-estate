@@ -16,13 +16,13 @@ export default class IndexSeeder extends BaseSeeder {
 
   public async run () {
     await this.runSeeder(await import('../Role'))
-    await this.runSeeder(await import('../User'))
     await this.runSeeder(await import('../News'))
     await this.runSeeder(await import('../RealEstateType'))
     await this.runSeeder(await import('../Estate'))
     // await this.runSeeder(await import('../Label'))
     await this.runSeeder(await import('../ServicesType'))
+    await this.runSeeder(await import('../User'))
     await this.runSeeder(await import('../Service'))
-    await this.runSeeder(await import('../RealEstate'))
+    // await this.runSeeder(await import('../RealEstate'))
   }
 }

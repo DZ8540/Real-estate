@@ -29,6 +29,7 @@ export const UserFactory = Factory
       }
     })
   })
+  .relation('realEstates', () => RealEstateFactory)
   .build()
 
 export const NewsFactory = Factory
