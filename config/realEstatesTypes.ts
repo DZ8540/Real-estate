@@ -1,0 +1,12 @@
+export const TRANSACTION_TYPES = ['Аренда', 'Продажа'] as const
+export const PREPAYMENT_TYPES = ['1 месяц', '2 месяца', '3 месяца', '4 месяца', '5 месяцев', '6 месяцев', '7 месяцев', '8 месяцев', '9 месяцев', '10 месяцев', '1 год'] as const
+export const HOUSE_TYPES = ['Квартира', 'Апартаменты'] as const
+export const ROOM_TYPES = ['Студия', '1 комната', '2 комнаты', '3 комнаты', '4 комнаты', '5 комнат', '5+ комнат'] as const
+export const WC_TYPES = ['Раздельный', 'Совмещенный', 'Два или более'] as const
+export const BALCONY_TYPES = ['Нет', 'Балкон', 'Лоджия'] as const
+export const LAYOUT_TYPES = ['Изолированная', 'Смежная', 'Свободная'] as const
+export const REPAIR_TYPES = ['Косметический', 'Евро', 'Дизайнерский', 'Без ремонта'] as const
+export const HOUSE_BUILDING_TYPES = ['Кирпичный', 'Панельный', 'Монолитный', 'Блочный', 'Деревянный'] as const
+export const ELEVATOR_TYPES = ['Нет', 'Пассажирский', 'Грузовой', 'Пассажирский/грузовой'] as const
+export const STATUS_TYPES = ['Обычное', 'Срочная продажа', 'VIP'] as const
+export const RENTAL_TYPES = ['Длительно', 'Несколько месяцев', 'Посуточно'] as const

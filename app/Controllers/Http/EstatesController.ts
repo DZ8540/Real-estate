@@ -11,7 +11,7 @@ export default class EstatesController {
   public async index({ request, view, route }: HttpContextContract) {
     let page: number = request.input('page', 1)
     let baseURL: string = route!.pattern
-    let estates: Estate[] = await EstateService.getAll({ baseURL, page })
+    let estates: Estate[] = await EstateService.paginate({ baseURL, page, relations: ['realEstateType'] })
 
     return view.render('pages/estates/index', { estates })
   }

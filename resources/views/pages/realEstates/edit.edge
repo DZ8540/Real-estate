@@ -1,0 +1,626 @@
+@layout('layouts/index')
+
+@set('title', `Объявление - ${item.title}`)
+
+@section('styles')
+  <link href="/vendor/summernote/summernote.css" rel="stylesheet">
+  <link rel="stylesheet" href="/vendor/pickadate/themes/default.css">
+  <link rel="stylesheet" href="/vendor/pickadate/themes/default.date.css">
+@endsection
+
+@section('body')
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">{{ title }}</h4>
+
+        <div class="d-flex">
+          @if(item.isBanned)
+            <form action="{{ route('real_estates.unblock', { id: item.id }) }}" method="POST">
+              {{ csrfField() }}
+              <button type="submit" class="btn btn-primary btn-sm">Разблокировать</button>
+            </form>
+          @else
+            <form action="{{ route('real_estates.block', { id: item.id }) }}" method="POST">
+              {{ csrfField() }}
+              <button type="submit" class="btn btn-danger btn-sm">Заблокировать</button>
+            </form>
+          @endif
+
+          <a href="{{ route('real_estates.index') }}" class="ml-3 btn btn-primary btn-sm">Назад</a>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="basic-form">
+          <form action="{{ route('real_estates.update', { id: item.id }, { qs: { _method: 'PATCH' } }) }}" method="POST" enctype="multipart/form-data">
+
+            <div class="form-group">
+              <label class="mb-1">Опубликовал(а)</label>
+              <input type="string" class="form-control" value="{{ item.user.fullName }}" disabled>
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1">Владелец объявления</label>
+              <input type="string" class="form-control" value="{{ item.user.ownerTypeForUser }}" disabled>
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1">Уникальный идентификатор</label>
+              <input type="string" class="form-control" value="{{ item.uuid }}" disabled>
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Объект *</strong></label>
+              <select name="estateId" class="form-control">
+                @each(estateItem in estates)
+                  <option value="{{ estateItem.id }}" {{ estateItem.id == item.estateId ? 'selected' : '' }}>{{ estateItem.name }}</option>
+                @endeach
+              </select>
+
+              @if(flashMessages.has('errors.estateId'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.estateId')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Тип сделки *</strong></label>
+              <select name="transactionType" class="form-control">
+                @each((transactionItem, key) in TRANSACTION_TYPES)
+                  <option value="{{ key }}" {{ key == item.transactionType ? 'selected' : '' }}>{{ transactionItem }}</option>
+                @endeach
+              </select>
+
+              @if(flashMessages.has('errors.transactionType'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.transactionType')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Залог *</strong></label>
+              <input type="number" class="form-control" name="pledge" value="{{ flashMessages.get('pledge', item.pledge) }}">
+
+              @if(flashMessages.has('errors.pledge'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.pledge')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Предоплата *</strong></label>
+              <select name="prepaymentType" class="form-control">
+                @each((prepaymentItem, key) in PREPAYMENT_TYPES)
+                  <option value="{{ key }}" {{ key == item.prepaymentType ? 'selected' : '' }}>{{ prepaymentItem }}</option>
+                @endeach
+              </select>
+
+              @if(flashMessages.has('errors.prepaymentType'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.prepaymentType')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Комиссия (в процентах от 0 до 100) *</strong></label>
+              <input type="number" class="form-control" name="commission" value="{{ flashMessages.get('commission', item.commission) }}">
+
+              @if(flashMessages.has('errors.commission'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.commission')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Адрес *</strong></label>
+              <input type="string" class="form-control" name="address" value="{{ flashMessages.get('address', item.address) }}">
+
+              @if(flashMessages.has('errors.address'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.address')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Тип жилья *</strong></label>
+              <select name="houseType" class="form-control">
+                @each((houseItem, key) in HOUSE_TYPES)
+                  <option value="{{ key }}" {{ key == item.houseType ? 'selected' : '' }}>{{ houseItem }}</option>
+                @endeach
+              </select>
+
+              @if(flashMessages.has('errors.houseType'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.houseType')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Кол-во комнат *</strong></label>
+              <select name="roomType" class="form-control">
+                @each((roomItem, key) in ROOM_TYPES)
+                  <option value="{{ key }}" {{ key == item.roomType ? 'selected' : '' }}>{{ roomItem }}</option>
+                @endeach
+              </select>
+
+              @if(flashMessages.has('errors.roomType'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.roomType')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Общая площадь в квадратных метрах *</strong></label>
+              <input type="number" class="form-control" name="totalArea" value="{{ flashMessages.get('totalArea', item.totalArea) }}">
+
+              @if(flashMessages.has('errors.totalArea'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.totalArea')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Этаж *</strong></label>
+              <input type="number" class="form-control" name="floor" value="{{ flashMessages.get('floor', item.floor) }}">
+
+              @if(flashMessages.has('errors.floor'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.floor')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Тип санузла *</strong></label>
+              <select name="WCType" class="form-control">
+                @each((WCTypeItem, key) in WC_TYPES)
+                  <option value="{{ key }}" {{ key == item.WCType ? 'selected' : '' }}>{{ WCTypeItem }}</option>
+                @endeach
+              </select>
+
+              @if(flashMessages.has('errors.WCType'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.WCType')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Тип балкона *</strong></label>
+              <select name="balconyType" class="form-control">
+                @each((balconyTypeItem, key) in BALCONY_TYPES)
+                  <option value="{{ key }}" {{ key == item.balconyType ? 'selected' : '' }}>{{ balconyTypeItem }}</option>
+                @endeach
+              </select>
+
+              @if(flashMessages.has('errors.balconyType'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.balconyType')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Планировка *</strong></label>
+              <select name="layoutType" class="form-control">
+                @each((layoutTypeItem, key) in LAYOUT_TYPES)
+                  <option value="{{ key }}" {{ key == item.layoutType ? 'selected' : '' }}>{{ layoutTypeItem }}</option>
+                @endeach
+              </select>
+
+              @if(flashMessages.has('errors.layoutType'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.layoutType')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Тип ремонта *</strong></label>
+              <select name="repairType" class="form-control">
+                @each((repairTypeItem, key) in REPAIR_TYPES)
+                  <option value="{{ key }}" {{ key == item.repairType ? 'selected' : '' }}>{{ repairTypeItem }}</option>
+                @endeach
+              </select>
+
+              @if(flashMessages.has('errors.repairType'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.repairType')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="row">
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('isCountersSeparately', item.isCountersSeparately) ? 'checked' : '' }} name="isCountersSeparately" id="isCountersSeparately">
+                  <label class="custom-control-label" for="isCountersSeparately">Счетчики оплачиваются отдельно</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('hasKitchenFurniture', item.hasKitchenFurniture) ? 'checked' : '' }} name="hasKitchenFurniture" id="hasKitchenFurniture">
+                  <label class="custom-control-label" for="hasKitchenFurniture">Есть ли кухонная мебель</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('hasFurniture', item.hasFurniture) ? 'checked' : '' }} name="hasFurniture" id="hasFurniture">
+                  <label class="custom-control-label" for="hasFurniture">Есть ли мебель</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('hasRefrigerator', item.hasRefrigerator) ? 'checked' : '' }} name="hasRefrigerator" id="hasRefrigerator">
+                  <label class="custom-control-label" for="hasRefrigerator">Есть ли холодильник</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('hasWashingMachine', item.hasWashingMachine) ? 'checked' : '' }} name="hasWashingMachine" id="hasWashingMachine">
+                  <label class="custom-control-label" for="hasWashingMachine">Есть ли стиральная машина</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('hasDishWasher', item.hasDishWasher) ? 'checked' : '' }} name="hasDishWasher" id="hasDishWasher">
+                  <label class="custom-control-label" for="hasDishWasher">Есть ли посудомоечная машина</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('hasTV', item.hasTV) ? 'checked' : '' }} name="hasTV" id="hasTV">
+                  <label class="custom-control-label" for="hasTV">Есть ли телевизор</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('hasConditioner', item.hasConditioner) ? 'checked' : '' }} name="hasConditioner" id="hasConditioner">
+                  <label class="custom-control-label" for="hasConditioner">Есть ли кондиционер</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('hasInternet', item.hasInternet) ? 'checked' : '' }} name="hasInternet" id="hasInternet">
+                  <label class="custom-control-label" for="hasInternet">Есть ли интернет</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('hasBathroom', item.hasBathroom) ? 'checked' : '' }} name="hasBathroom" id="hasBathroom">
+                  <label class="custom-control-label" for="hasBathroom">Есть ли ванна</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('hasShowerCabin', item.hasShowerCabin) ? 'checked' : '' }} name="hasShowerCabin" id="hasShowerCabin">
+                  <label class="custom-control-label" for="hasShowerCabin">Есть ли душевая кабина</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('withKids', item.withKids) ? 'checked' : '' }} name="withKids" id="withKids">
+                  <label class="custom-control-label" for="withKids">Можно ли с детьми</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('withPets', item.withPets) ? 'checked' : '' }} name="withPets" id="withPets">
+                  <label class="custom-control-label" for="withPets">Можно ли с животными</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('hasRamp', item.hasRamp) ? 'checked' : '' }} name="hasRamp" id="hasRamp">
+                  <label class="custom-control-label" for="hasRamp">Есть ли пандус</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('hasGarbageСhute', item.hasGarbageСhute) ? 'checked' : '' }} name="hasGarbageСhute" id="hasGarbageСhute">
+                  <label class="custom-control-label" for="hasGarbageСhute">Есть ли мусоропровод</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('hasGroundParking', item.hasGroundParking) ? 'checked' : '' }} name="hasGroundParking" id="hasGroundParking">
+                  <label class="custom-control-label" for="hasGroundParking">Есть ли наземная парковка</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('hasUnderGroundParking', item.hasUnderGroundParking) ? 'checked' : '' }} name="hasUnderGroundParking" id="hasUnderGroundParking">
+                  <label class="custom-control-label" for="hasUnderGroundParking">Есть ли подземная парковка</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('hasMoreLayerParking', item.hasMoreLayerParking) ? 'checked' : '' }} name="hasMoreLayerParking" id="hasMoreLayerParking">
+                  <label class="custom-control-label" for="hasMoreLayerParking">Есть ли многоуровневая парковка</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('isMortgage', item.isMortgage) ? 'checked' : '' }} name="isMortgage" id="isMortgage">
+                  <label class="custom-control-label" for="isMortgage">Есть ли ипотека</label>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('isEncumbrances', item.isEncumbrances) ? 'checked' : '' }} name="isEncumbrances" id="isEncumbrances">
+                  <label class="custom-control-label" for="isEncumbrances">Есть ли обременения</label>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Описание *</strong></label>
+              <textarea id="summernote" class="summernote" name="description">{{ flashMessages.get('description', item.description) }}</textarea>
+
+              @if(flashMessages.has('errors.description'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.description')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Тип постройки дома *</strong></label>
+              <select name="houseBuildingType" class="form-control">
+                @each((houseBuildingTypeItem, key) in HOUSE_BUILDING_TYPES)
+                  <option value="{{ key }}" {{ key == item.houseBuildingType ? 'selected' : '' }}>{{ houseBuildingTypeItem }}</option>
+                @endeach
+              </select>
+
+              @if(flashMessages.has('errors.houseBuildingType'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.houseBuildingType')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Тип лифта *</strong></label>
+              <select name="elevatorType" class="form-control">
+                @each((elevatorTypeItem, key) in ELEVATOR_TYPES)
+                  <option value="{{ key }}" {{ key == item.elevatorType ? 'selected' : '' }}>{{ elevatorTypeItem }}</option>
+                @endeach
+              </select>
+
+              @if(flashMessages.has('errors.elevatorType'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.elevatorType')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Цена *</strong></label>
+              <input type="number" class="form-control" name="price" value="{{ flashMessages.get('price', item.price) }}">
+
+              @if(flashMessages.has('errors.price'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.price')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1">Кол-во просмотров</label>
+              <input type="string" class="form-control" value="{{ item.viewsCount }}" disabled>
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Статус *</strong></label>
+              <select name="statusType" class="form-control">
+                @each((statusTypeItem, key) in STATUS_TYPES)
+                  <option value="{{ key }}" {{ key == item.statusType ? 'selected' : '' }}>{{ statusTypeItem }}</option>
+                @endeach
+              </select>
+
+              @if(flashMessages.has('errors.statusType'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.statusType')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1">Тип аренды</label>
+              <select name="rentalType" class="form-control">
+                @each((rentalTypeItem, key) in RENTAL_TYPES)
+                  <option value="{{ key }}" {{ key == item.rentalType ? 'selected' : '' }}>{{ rentalTypeItem }}</option>
+                @endeach
+              </select>
+
+              @if(flashMessages.has('errors.rentalType'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.rentalType')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1">Коммунальные платежи</label>
+              <input type="number" class="form-control" name="communalPrice" value="{{ flashMessages.get('communalPrice', item.communalPrice) }}">
+
+              @if(flashMessages.has('errors.communalPrice'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.communalPrice')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1">ЖК комплекс</label>
+              <input type="string" class="form-control" name="residentalComplex" value="{{ flashMessages.get('residentalComplex', item.residentalComplex) ?? '' }}">
+
+              @if(flashMessages.has('errors.residentalComplex'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.residentalComplex')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1">Жилая площадь в метрах в квадрате</label>
+              <input type="number" class="form-control" name="livingArea" value="{{ flashMessages.get('livingArea', item.livingArea) }}">
+
+              @if(flashMessages.has('errors.livingArea'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.livingArea')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1">Площадь кухни в метрах в квадрате</label>
+              <input type="number" class="form-control" name="kitchenArea" value="{{ flashMessages.get('kitchenArea', item.kitchenArea) }}">
+
+              @if(flashMessages.has('errors.kitchenArea'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.kitchenArea')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1">Максимальное кол-во этажей</label>
+              <input type="number" class="form-control" name="maxFloor" value="{{ flashMessages.get('maxFloor', item.maxFloor) }}">
+
+              @if(flashMessages.has('errors.maxFloor'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.maxFloor')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1">Дата постройки</label>
+              <input name="yearOfConstruction" class="datepicker-default form-control" id="datepicker" value="{{ flashMessages.get('yearOfConstruction', item.yearOfConstructionForUser) ?? '' }}">
+
+              @if(flashMessages.has('errors.yearOfConstruction'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.yearOfConstruction')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1">Высота потолков</label>
+              <input type="number" class="form-control" name="ceilingHeight" value="{{ flashMessages.get('ceilingHeight', item.ceilingHeight) }}">
+
+              @if(flashMessages.has('errors.ceilingHeight'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.ceilingHeight')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1">Метро</label>
+              <input type="string" class="form-control" name="metro" value="{{ flashMessages.get('metro', item.metro) ?? '' }}">
+
+              @if(flashMessages.has('errors.metro'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.metro')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="mb-1">Текущее изображение</label>
+              <br>
+              <img src="{{ await item.imageUrl() }}" width="600" height="400" alt="">
+            </div>
+
+            <div class="input-group mb-3">
+              <div class="custom-file">
+                <input type="file" name="image" class="custom-file-input">
+                <label class="custom-file-label">Выберите изображение</label>
+              </div>
+
+              @if(flashMessages.has('errors.image'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.image')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="mb-1">Остальные изображения</label>
+              @each((imageItem, key) in item.images)
+                <div class="form-group mb-3">
+                  <label class="mb-1">Текущее изображение {{ key + 1 }}</label>
+                  <br>
+                  <img src="{{ await imageItem.imageUrl() }}" width="600" height="400" alt="">
+                </div>
+                <br>
+
+                <div class="input-group mb-3">
+                  <div class="custom-file">
+                    <input type="file" name="images[]" class="custom-file-input">
+                    <label class="custom-file-label">Выберите новое изображение {{ key + 1 }}</label>
+                  </div>
+
+                  @if(flashMessages.has(`errors.images[${key}]`))
+                    <div class="invalid-feedback d-block">
+                      {{ flashMessages.get(`errors.images[${key}]`)[0] }}
+                    </div>
+                  @endif
+                </div>
+              @endeach
+            </div>
+
+            {{ csrfField() }}
+
+            <div class="text-right">
+              <button type="submit" class="btn btn-primary btn-block">Обновить</button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+@endsection
+
+@section('scripts')
+  <script src="/vendor/summernote/js/summernote.min.js"></script>
+  <script src="/js/plugins-init/summernote-init.js"></script>
+  <script src="/vendor/pickadate/picker.js"></script>
+  <script src="/vendor/pickadate/picker.time.js"></script>
+  <script src="/vendor/pickadate/picker.date.js"></script>
+  <script src="/js/plugins-init/pickadate-init.js"></script>
+@endsection

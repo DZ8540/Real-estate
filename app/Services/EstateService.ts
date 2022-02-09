@@ -2,25 +2,41 @@ import BaseService from './BaseService'
 import Estate from 'App/Models/Estate'
 import Logger from '@ioc:Adonis/Core/Logger'
 import EstateValidator from 'App/Validators/EstateValidator'
+import { ExtractModelRelations } from '@ioc:Adonis/Lucid/Orm'
 import { Error, GetAllConfig, GetConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
 export default class EstateService extends BaseService {
-  public static async getAll({ baseURL, page, columns, limit, orderBy, orderByColumn }: GetAllConfig<typeof Estate['columns'][number]>): Promise<Estate[]> {
+  public static async getAll(columns: typeof Estate['columns'][number][], relations?: ExtractModelRelations<Estate>[]): Promise<Estate[]> {
+    let query = Estate.query().select(columns)
+
+    if (relations) {
+      for (let item of relations) {
+        query = query.preload(item)
+      }
+    }
+
+    return await query
+  }
+
+  public static async paginate({ baseURL, page, columns, limit, orderBy, orderByColumn, relations }: GetAllConfig<typeof Estate['columns'][number], Estate>): Promise<Estate[]> {
     if (!columns)
       columns = ['id', 'name', 'slug', 'realEstateTypeId']
 
-    return await Estate
-      .query()
-      .preload('realEstateType')
-      .select(columns)
-      .get({
-        baseURL,
-        page,
-        limit,
-        orderBy,
-        orderByColumn,
-      })
+    let query = Estate.query().select(columns)
+    if (relations) {
+      for (let item of relations) {
+        query = query.preload(item)
+      }
+    }
+
+    return await query.get({
+      baseURL,
+      page,
+      limit,
+      orderBy,
+      orderByColumn,
+    })
   }
 
   public static async get({ column, val, relations }: GetConfig<Estate>): Promise<Estate> {

@@ -3,11 +3,18 @@ import News from 'App/Models/News'
 import Label from 'App/Models/Label'
 import Estate from 'App/Models/Estate'
 import Service from 'App/Models/Service'
+import RealEstate from 'App/Models/RealEstate'
 import Factory from '@ioc:Adonis/Lucid/Factory'
 import RoleService from 'App/Services/RoleService'
 import ServicesType from 'App/Models/ServicesType'
 import RealEstateType from 'App/Models/RealEstateType'
-import { OwnerTypes, Roles } from 'Contracts/enums'
+import {
+  BalconyTypes, ElevatorTypes, HouseBuildingTypes,
+  HouseTypes, LayoutTypes, OwnerTypes,
+  PrepaymentTypes, RealEstatesStatusTypes,
+  RepairTypes, Roles, RoomsTypes,
+  TransactionTypes, WCTypes
+} from 'Contracts/enums'
 
 export const UserFactory = Factory
   .define(User, ({ faker }) => {
@@ -59,4 +66,29 @@ export const ServicesFactory = Factory
     }
   })
   .relation('labels', () => LabelFactory)
+  .build()
+
+export const RealEstateFactory = Factory
+  .define(RealEstate, async ({ faker }) => {
+    return {
+      transactionType: faker.datatype.number(TransactionTypes.SALE),
+      prepaymentType: faker.datatype.number(PrepaymentTypes.YEAR),
+      address: faker.address.cardinalDirection(),
+      houseType: faker.datatype.number(HouseTypes.COMMERCIAL_APARTMENT),
+      roomType: faker.datatype.number(RoomsTypes.MORE_FIVE_ROOMS),
+      totalArea: faker.datatype.number(200),
+      floor: faker.datatype.number(20),
+      WCType: faker.datatype.number(WCTypes.TWO_OR_MORE),
+      balconyType: faker.datatype.number(BalconyTypes.LOGGIE),
+      layoutType: faker.datatype.number(LayoutTypes.FREE),
+      repairType: faker.datatype.number(RepairTypes.NO_REPAIR),
+      description: faker.lorem.text(),
+      houseBuildingType: faker.datatype.number(HouseBuildingTypes.WOOD),
+      elevatorType: faker.datatype.number(ElevatorTypes.PASSENGER_CARGO),
+      price: faker.datatype.number(1_000_000),
+      statusType: faker.datatype.number(RealEstatesStatusTypes.VIP),
+      userId: (await User.query().random()).id,
+      estateId: (await Estate.query().random()).id,
+    }
+  })
   .build()

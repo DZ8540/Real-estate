@@ -11,6 +11,7 @@ import Application from '@ioc:Adonis/Core/Application'
 
 export const IMG_PLACEHOLDER: string = '/images/placeholder.jpg'
 export const NEWS_PATH: string = './News'
+export const REAL_ESTATE_PATH: string = './Real-estates'
 
 /*
 |--------------------------------------------------------------------------

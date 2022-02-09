@@ -55,6 +55,13 @@ export enum ResponseMessages {
   LABEL_DELETED = 'Предоставляемая услуга была успешно удалена!',
   LABEL_NOT_FOUND = 'Предоставляемая услуга не найдена!',
 
+  REAL_ESTATE_CREATED = 'Объявление было успешно создано и опубликовано!',
+  REAL_ESTATE_UPDATED = 'Объявление было успешно обновлено!',
+  REAL_ESTATE_DELETED = 'Объявление было успешно удалено!',
+  REAL_ESTATE_NOT_FOUND = 'Объявление не найдено!',
+  REAL_ESTATE_BLOCKED = 'Объявление было заблокировано!',
+  REAL_ESTATE_UNBLOCKED = 'Объявление было разблокировано!',
+
   NOT_REGISTERED = 'Пользователь не зарегистрирован',
   NOT_ADMIN = 'Вы не являетесь администратором!',
   ALREADY_ACTIVATED = 'Пользователь уже активировал свой аккаунт!',

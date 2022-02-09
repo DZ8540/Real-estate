@@ -54,6 +54,10 @@ Route.group(() => {
   Route.resource('/servicesTypes', 'ServicesTypesController').except(['show'])
 
   Route.resource('/services', 'ServicesController').except(['create', 'store'])
+
+  Route.resource('/realEstates', 'RealEstatesController').except(['create', 'store'])
+  Route.post('/realEstates/block/:id', 'RealEstatesController.block').as('real_estates.block')
+  Route.post('/realEstates/unblock/:id', 'RealEstatesController.unblock').as('real_estates.unblock')
 }).middleware('CheckUserForAdmin')
 
 // * Api

@@ -81,20 +81,18 @@ export default class UserService extends BaseService {
     }
   }
 
-  public static async block(config: GetConfig<User>): Promise<void> {
+  public static async block(config: GetConfig<User>): Promise<User> {
     try {
-      (await this.get(config))!.merge({ isBanned: true }).save()
+      return (await this.get(config)).merge({ isBanned: true }).save()
     } catch (err: Error | any) {
-      Logger.error(err)
       throw err
     }
   }
 
-  public static async unblock(config: GetConfig<User>): Promise<void> {
+  public static async unblock(config: GetConfig<User>): Promise<User> {
     try {
-      (await this.get(config))!.merge({ isBanned: false }).save()
+      return (await this.get(config)).merge({ isBanned: false }).save()
     } catch (err: Error | any) {
-      Logger.error(err)
       throw err
     }
   }
