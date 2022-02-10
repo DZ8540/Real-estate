@@ -114,13 +114,13 @@ export default class User extends BaseModel {
 
   @computed()
   public get createdAtForUser(): string {
-    return this.createdAt.toFormat('yyyy.MM.dd')
+    return this.createdAt.setLocale('ru-RU').toFormat('yyyy.MM.dd')
   }
 
   @computed()
   public get birthdayForUser(): string {
     if (this.birthday)
-      return this.birthday.toFormat('yyyy.MM.dd')
+      return this.birthday.setLocale('ru-RU').toFormat('yyyy.MM.dd')
 
     return 'Не установлен'
   }

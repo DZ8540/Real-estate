@@ -312,16 +312,23 @@ export default class RealEstate extends BaseModel {
   }
 
   @computed()
-  public get createdDate(): string {
-    return this.createdAt.toFormat('d MMMM, yyyy')
+  public get createdAtForUser(): string {
+    return this.createdAt.setLocale('ru-RU').toFormat('d MMMM, yyyy')
   }
 
   @computed()
   public get title(): string {
-    let room: number | string = this.roomType == 6 ? '5+' : this.roomType
+    let room: number | string
     let apartment: string = this.houseTypeForUser.toLowerCase()
 
-    return `${room}-к, ${apartment} ${this.totalArea}`
+    if (this.roomType == 0)
+      room = 'Студия'
+    else if (this.roomType == 6)
+      room = '5+ - к'
+    else
+      room = `${this.roomType}-к`
+
+    return `${room}, ${apartment} ${this.totalArea}`
   }
 
   @belongsTo(() => User)

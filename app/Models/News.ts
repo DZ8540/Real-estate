@@ -38,8 +38,8 @@ export default class News extends BaseModel {
   public updatedAt: DateTime
 
   @computed()
-  public get createdDate(): string {
-    return this.createdAt.toFormat('dd.MM.yy')
+  public get createdAtForUser(): string {
+    return this.createdAt.setLocale('ru-RU').toFormat('dd.MM.yy')
   }
 
   @beforeSave()

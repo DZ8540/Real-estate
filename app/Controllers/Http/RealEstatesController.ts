@@ -34,7 +34,7 @@ export default class RealEstatesController {
 
       return view.render('pages/realEstates/show', { item })
     } catch (err: Error | any) {
-      session.flash('error', err.msg)
+      session.flash('error', err.message)
       return response.redirect().back()
     }
   }
@@ -54,7 +54,7 @@ export default class RealEstatesController {
         STATUS_TYPES, RENTAL_TYPES,
       })
     } catch (err: Error | any) {
-      session.flash('error', err.msg)
+      session.flash('error', err.message)
       return response.redirect().back()
     }
   }
@@ -69,7 +69,7 @@ export default class RealEstatesController {
       session.flash('success', ResponseMessages.REAL_ESTATE_UPDATED)
       return response.redirect().toRoute('real_estates.index')
     } catch (err: Error | any) {
-      session.flash('error', err.msg)
+      session.flash('error', err.message)
       return response.redirect().back()
     }
   }
@@ -82,7 +82,7 @@ export default class RealEstatesController {
 
       session.flash('success', ResponseMessages.REAL_ESTATE_DELETED)
     } catch (err: Error | any) {
-      session.flash('error', err.msg)
+      session.flash('error', err.message)
     }
 
     return response.redirect().back()
@@ -96,7 +96,7 @@ export default class RealEstatesController {
 
       session.flash('success', ResponseMessages.REAL_ESTATE_BLOCKED)
     } catch (err: Error | any) {
-      session.flash('error', err.msg)
+      session.flash('error', err.message)
     }
 
     return response.redirect().back()
@@ -110,7 +110,7 @@ export default class RealEstatesController {
 
       session.flash('success', ResponseMessages.REAL_ESTATE_UNBLOCKED)
     } catch (err: Error | any) {
-      session.flash('error', err.msg)
+      session.flash('error', err.message)
     }
 
     return response.redirect().back()

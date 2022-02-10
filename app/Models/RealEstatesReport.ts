@@ -25,7 +25,7 @@ export default class RealEstatesReport extends BaseModel {
 
   @computed()
   public get createdAtForUser(): string {
-    return this.createdAt ? this.createdAt.toFormat('d MMMM, yyyy') : 'Не установлено'
+    return this.createdAt ? this.createdAt.setLocale('ru-RU').toFormat('d MMMM, yyyy') : 'Не установлено'
   }
 
   @belongsTo(() => User)
