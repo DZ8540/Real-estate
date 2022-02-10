@@ -174,9 +174,11 @@ export default class RealEstateService extends BaseService {
       if (item.image)
         await Drive.delete(item.image)
 
-      for (let imageItem of item.images) {
-        await Drive.delete(imageItem.image)
-        await imageItem.delete()
+      if (item.images) {
+        for (let imageItem of item.images) {
+          await Drive.delete(imageItem.image)
+          await imageItem.delete()
+        }
       }
 
       await trx.commit()

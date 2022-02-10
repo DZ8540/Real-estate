@@ -1,14 +1,14 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class RealEstatesWishlists extends BaseSchema {
-  protected tableName = 'realEstates_wishlists'
+  protected tableName = 'realEstatesWishlists'
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.integer('user_id').unsigned().notNullable().references('users.id')
-      table.integer('realEstate_id').unsigned().notNullable().references('realEstates.id')
+      table.integer('user_id').unsigned().notNullable().references('users.id').onDelete('CASCADE')
+      table.integer('realEstate_id').unsigned().notNullable().references('realEstates.id').onDelete('CASCADE')
       table.unique(['user_id', 'realEstate_id'])
 
       /**

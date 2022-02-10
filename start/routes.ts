@@ -58,6 +58,9 @@ Route.group(() => {
   Route.resource('/realEstates', 'RealEstatesController').except(['create', 'store'])
   Route.post('/realEstates/block/:id', 'RealEstatesController.block').as('real_estates.block')
   Route.post('/realEstates/unblock/:id', 'RealEstatesController.unblock').as('real_estates.unblock')
+
+  Route.get('/realEstatesReports', 'RealEstatesReportsController.index').as('real_estates_reports.index')
+  Route.delete('/realEstatesReports/:id', 'RealEstatesReportsController.destroy').as('real_estates_reports.destroy')
 }).middleware('CheckUserForAdmin')
 
 // * Api

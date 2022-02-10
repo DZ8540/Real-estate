@@ -8,7 +8,11 @@ import { DateTime } from 'luxon'
 import { v4 as uuid } from 'uuid'
 import { IMG_PLACEHOLDER } from 'Config/drive'
 import { OwnerTypes, Roles, Sex } from 'Contracts/enums'
-import { BaseModel, beforeSave, BelongsTo, belongsTo, column, computed, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel, beforeSave, BelongsTo,
+  belongsTo, column, computed,
+  ManyToMany, manyToMany
+} from '@ioc:Adonis/Lucid/Orm'
 
 export default class User extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
@@ -162,7 +166,7 @@ export default class User extends BaseModel {
   public role: BelongsTo<typeof Role>
 
   @manyToMany(() => RealEstate, {
-    pivotTable: 'realEstates_wishlists',
+    pivotTable: 'realEstatesWishlists',
     pivotRelatedForeignKey: 'realEstate_id',
   })
   public realEstates: ManyToMany<typeof RealEstate>

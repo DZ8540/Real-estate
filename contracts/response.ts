@@ -62,6 +62,9 @@ export enum ResponseMessages {
   REAL_ESTATE_BLOCKED = 'Объявление было заблокировано!',
   REAL_ESTATE_UNBLOCKED = 'Объявление было разблокировано!',
 
+  REAL_ESTATE_REPORT_DELETED = 'Жалоба на объявление была успешно удалена!',
+  REAL_ESTATE_REPORT_NOT_FOUND = 'Жалоба на объявление не была найдена!',
+
   NOT_REGISTERED = 'Пользователь не зарегистрирован',
   NOT_ADMIN = 'Вы не являетесь администратором!',
   ALREADY_ACTIVATED = 'Пользователь уже активировал свой аккаунт!',
