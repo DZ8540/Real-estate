@@ -5,6 +5,7 @@ import Estate from 'App/Models/Estate'
 import Service from 'App/Models/Service'
 import RealEstate from 'App/Models/RealEstate'
 import Factory from '@ioc:Adonis/Lucid/Factory'
+import UsersReview from 'App/Models/UsersReview'
 import RoleService from 'App/Services/RoleService'
 import ServicesType from 'App/Models/ServicesType'
 import RealEstateType from 'App/Models/RealEstateType'
@@ -90,6 +91,17 @@ export const RealEstateFactory = Factory
       statusType: faker.datatype.number(RealEstatesStatusTypes.VIP),
       userId: (await User.query().random()).id,
       estateId: (await Estate.query().random()).id,
+    }
+  })
+  .build()
+
+  export const UsersReviewsFactory = Factory
+  .define(UsersReview, async ({ faker }) => {
+    return {
+      rating: faker.datatype.number(5),
+      description: faker.lorem.paragraphs(3),
+      fromId: (await User.query().random()).id,
+      toId: (await User.query().random()).id,
     }
   })
   .build()
