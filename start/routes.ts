@@ -66,6 +66,9 @@ Route.group(() => {
   Route.delete('/usersReports/:id', 'UsersReportsController.destroy').as('users_reports.destroy')
 
   Route.resource('/usersReviews', 'UsersReviewsController').except(['create', 'store'])
+
+  Route.get('/usersReviewsReports', 'UsersReviewsReportsController.index').as('users_reviews_reports.index')
+  Route.delete('/usersReviewsReports/:id', 'UsersReviewsReportsController.destroy').as('users_reviews_reports.destroy')
 }).middleware('CheckUserForAdmin')
 
 // * Api

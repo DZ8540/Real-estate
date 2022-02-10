@@ -50,6 +50,7 @@ export default class UsersReviewsController {
     try {
       await UsersReviewService.update({ column: 'id', val: id }, payload)
 
+      session.flash('success', ResponseMessages.USERS_REVIEW_UPDATED)
       return response.redirect().toRoute('users_reviews.index')
     } catch (err: Error | any) {
       session.flash('error', err.message)
