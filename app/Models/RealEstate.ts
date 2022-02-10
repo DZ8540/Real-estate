@@ -1,6 +1,7 @@
 import User from './User'
 import Estate from './Estate'
 import Drive from '@ioc:Adonis/Core/Drive'
+import RealEstateImage from './RealEstateImage'
 import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
 import { v4 as uuid } from 'uuid'
@@ -12,7 +13,6 @@ import {
   RENTAL_TYPES, REPAIR_TYPES, ROOM_TYPES,
   STATUS_TYPES, TRANSACTION_TYPES, WC_TYPES
 } from 'Config/realEstatesTypes'
-import RealEstateImage from './RealEstateImage'
 
 export default class RealEstate extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
@@ -195,10 +195,10 @@ export default class RealEstate extends BaseModel {
   public metro: string | undefined
 
   @column({ columnName: 'user_id' })
-  public userId: number
+  public userId: User['id']
 
   @column({ columnName: 'estate_id' })
-  public estateId: number
+  public estateId: Estate['id']
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

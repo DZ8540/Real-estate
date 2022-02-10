@@ -1,5 +1,5 @@
 import RealEstatesReport from 'App/Models/RealEstatesReport'
-import RealEstatesReportService from 'App/Services/RealEstateReportService'
+import RealEstatesReportService from 'App/Services/RealEstatesReportService'
 import { Error } from 'Contracts/services'
 import { ResponseMessages } from 'Contracts/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
@@ -19,7 +19,7 @@ export default class RealEstatesReportsController {
     try {
       await RealEstatesReportService.delete({ column: 'id', val: id })
 
-      session.flash('success', ResponseMessages.REAL_ESTATE_REPORT_DELETED)
+      session.flash('success', ResponseMessages.REAL_ESTATES_REPORT_DELETED)
     } catch (err: Error | any) {
       session.flash('error', err.message)
     }

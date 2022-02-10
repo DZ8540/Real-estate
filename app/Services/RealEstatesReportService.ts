@@ -33,7 +33,7 @@ export default class RealEstatesReportService {
     if (!item) {
       await config.trx?.rollback()
 
-      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.REAL_ESTATE_REPORT_NOT_FOUND } as Error
+      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.REAL_ESTATES_REPORT_NOT_FOUND } as Error
     }
 
     try {

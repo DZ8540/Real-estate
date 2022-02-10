@@ -1,21 +1,20 @@
 import User from './User'
-import RealEstate from './RealEstate'
 import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm'
 
-export default class RealEstatesReport extends BaseModel {
+export default class UsersReport extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
-  public static readonly columns = ['id', 'userId', 'realEstateId', 'createdAt', 'updatedAt'] as const
+  public static readonly columns = ['id', 'fromId', 'toId', 'createdAt', 'updatedAt'] as const
 
   @column({ isPrimary: true })
   public id: number
 
-  @column({ columnName: 'user_id' })
-  public userId: User['id']
+  @column({ columnName: 'from_id' })
+  public fromId: User['id']
 
-  @column({ columnName: 'realEstate_id' })
-  public realEstateId: RealEstate['id']
+  @column({ columnName: 'to_id' })
+  public toId: User['id']
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -28,9 +27,13 @@ export default class RealEstatesReport extends BaseModel {
     return this.createdAt ? this.createdAt.setLocale('ru-RU').toFormat('d MMMM, yyyy') : 'Не установлено'
   }
 
-  @belongsTo(() => User)
-  public user: BelongsTo<typeof User>
+  @belongsTo(() => User, {
+    foreignKey: 'fromId',
+  })
+  public from: BelongsTo<typeof User>
 
-  @belongsTo(() => RealEstate)
-  public realEstate: BelongsTo<typeof RealEstate>
+  @belongsTo(() => User, {
+    foreignKey: 'toId',
+  })
+  public to: BelongsTo<typeof User>
 }

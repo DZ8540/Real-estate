@@ -27,10 +27,10 @@ export default class Service extends BaseModel {
   public isBanned: boolean
 
   @column({ columnName: 'user_id' })
-  public userId: number
+  public userId: User['id']
 
   @column({ columnName: 'servicesType_id' })
-  public servicesTypeId: number
+  public servicesTypeId: ServicesType['id']
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

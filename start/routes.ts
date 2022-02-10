@@ -61,6 +61,9 @@ Route.group(() => {
 
   Route.get('/realEstatesReports', 'RealEstatesReportsController.index').as('real_estates_reports.index')
   Route.delete('/realEstatesReports/:id', 'RealEstatesReportsController.destroy').as('real_estates_reports.destroy')
+
+  Route.get('/usersReports', 'UsersReportsController.index').as('users_reports.index')
+  Route.delete('/usersReports/:id', 'UsersReportsController.destroy').as('users_reports.destroy')
 }).middleware('CheckUserForAdmin')
 
 // * Api
