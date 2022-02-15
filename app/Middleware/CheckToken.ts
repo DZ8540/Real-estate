@@ -16,6 +16,7 @@ export default class CheckToken {
       TokenService.validateRefreshToken(refreshToken)
     } catch (err: Error | any) {
       await TokenService.deleteRefreshToken(refreshToken)
+
       response.cookie(COOKIE_REFRESH_TOKEN_KEY, null, { path: '/api/auth' })
       throw new ClientException(ResponseMessages.TOKEN_EXPIRED)
     }

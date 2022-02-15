@@ -30,11 +30,11 @@ export default class AuthController {
 
     try {
       await AuthService.register(payload)
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.REGISTER_SUCCESS))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }
-
-    return response.status(200).send(ResponseService.success(ResponseMessages.REGISTER_SUCCESS))
   }
 
   public async login({ request, response }: HttpContextContract) {

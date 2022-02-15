@@ -19,6 +19,8 @@ export enum ResponseCodes {
 }
 
 export enum ResponseMessages {
+  SUCCESS = 'Успешно!',
+
   USER_UNBLOCKED = 'Пользователь был успешно разблокирован!',
   USER_ACTIVATED = 'Вы успешно активировали свой аккаунт!',
   USER_BLOCKED = 'Пользователь был успешно заблокирован!',

@@ -1,6 +1,6 @@
 import ClientException from 'App/Exceptions/ClientException'
-import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResponseMessages } from 'Contracts/response'
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class CheckUserCredentials {
   public async handle({ request }: HttpContextContract, next: () => Promise<void>) {

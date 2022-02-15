@@ -20,6 +20,7 @@ export default class AuthService extends BaseService {
       user = await UserService.create(payload, trx)
     } catch (err: Error | any) {
       await trx.rollback()
+
       throw err
     }
 
@@ -27,6 +28,7 @@ export default class AuthService extends BaseService {
       await AuthService.sendActivationMail(user)
     } catch (err: Error | any) {
       await trx.rollback()
+
       throw err
     }
 

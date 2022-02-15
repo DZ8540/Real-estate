@@ -82,5 +82,7 @@ Route.group(() => {
     Route.post('/activate', 'Api/AuthController.activate')
 
   }).prefix('/auth')
+
+  Route.post('/messages/addImages', 'Api/MessagesController.addImages')
 }).prefix('/api')
 // * Api

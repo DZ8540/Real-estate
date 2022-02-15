@@ -74,7 +74,7 @@ export default class UserService extends BaseService {
 
     try {
       item.isActivated = true
-      item.save()
+      await item.save()
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
