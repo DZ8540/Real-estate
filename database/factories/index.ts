@@ -1,14 +1,14 @@
-import User from 'App/Models/User'
 import News from 'App/Models/News'
-import Label from 'App/Models/Label'
-import Estate from 'App/Models/Estate'
-import Service from 'App/Models/Service'
-import RealEstate from 'App/Models/RealEstate'
+import User from 'App/Models/Users/User'
+import Label from 'App/Models/Services/Label'
 import Factory from '@ioc:Adonis/Lucid/Factory'
-import UsersReview from 'App/Models/UsersReview'
-import RoleService from 'App/Services/RoleService'
-import ServicesType from 'App/Models/ServicesType'
-import RealEstateType from 'App/Models/RealEstateType'
+import Service from 'App/Models/Services/Service'
+import Estate from 'App/Models/RealEstates/Estate'
+import UsersReview from 'App/Models/Users/UsersReview'
+import RoleService from 'App/Services/Users/RoleService'
+import RealEstate from 'App/Models/RealEstates/RealEstate'
+import ServicesType from 'App/Models/Services/ServicesType'
+import RealEstateType from 'App/Models/RealEstates/RealEstateType'
 import {
   BalconyTypes, ElevatorTypes, HouseBuildingTypes,
   HouseTypes, LayoutTypes, OwnerTypes,

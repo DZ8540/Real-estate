@@ -37,38 +37,38 @@ Route.group(() => {
   }).as('index')
 
   Route.group(() => {
-    Route.get('/', 'UsersController.index').as('users.index')
-    Route.get('/:id', 'UsersController.show').as('users.show')
-    Route.post('/block/:id', 'UsersController.block').as('users.block')
-    Route.post('/unblock/:id', 'UsersController.unblock').as('users.unblock')
+    Route.get('/', 'Users/UsersController.index').as('users.index')
+    Route.get('/:id', 'Users/UsersController.show').as('users.show')
+    Route.post('/block/:id', 'Users/UsersController.block').as('users.block')
+    Route.post('/unblock/:id', 'Users/UsersController.unblock').as('users.unblock')
   }).prefix('/users')
 
   Route.resource('/news', 'NewsController')
 
-  Route.resource('/realEstateTypes', 'RealEstateTypesController')
+  Route.resource('/realEstateTypes', 'RealEstates/RealEstateTypesController')
 
-  Route.resource('/estates', 'EstatesController')
+  Route.resource('/estates', 'RealEstates/EstatesController')
 
-  Route.resource('/labels', 'LabelsController').except(['show'])
+  Route.resource('/labels', 'Services/LabelsController').except(['show'])
 
-  Route.resource('/servicesTypes', 'ServicesTypesController').except(['show'])
+  Route.resource('/servicesTypes', 'Services/ServicesTypesController').except(['show'])
 
-  Route.resource('/services', 'ServicesController').except(['create', 'store'])
+  Route.resource('/services', 'Services/ServicesController').except(['create', 'store'])
 
-  Route.resource('/realEstates', 'RealEstatesController').except(['create', 'store'])
-  Route.post('/realEstates/block/:id', 'RealEstatesController.block').as('real_estates.block')
-  Route.post('/realEstates/unblock/:id', 'RealEstatesController.unblock').as('real_estates.unblock')
+  Route.resource('/realEstates', 'RealEstates/RealEstatesController').except(['create', 'store'])
+  Route.post('/realEstates/block/:id', 'RealEstates/RealEstatesController.block').as('real_estates.block')
+  Route.post('/realEstates/unblock/:id', 'RealEstates/RealEstatesController.unblock').as('real_estates.unblock')
 
-  Route.get('/realEstatesReports', 'RealEstatesReportsController.index').as('real_estates_reports.index')
-  Route.delete('/realEstatesReports/:id', 'RealEstatesReportsController.destroy').as('real_estates_reports.destroy')
+  Route.get('/realEstatesReports', 'RealEstates/RealEstatesReportsController.index').as('real_estates_reports.index')
+  Route.delete('/realEstatesReports/:id', 'RealEstates/RealEstatesReportsController.destroy').as('real_estates_reports.destroy')
 
-  Route.get('/usersReports', 'UsersReportsController.index').as('users_reports.index')
-  Route.delete('/usersReports/:id', 'UsersReportsController.destroy').as('users_reports.destroy')
+  Route.get('/usersReports', 'Users/UsersReportsController.index').as('users_reports.index')
+  Route.delete('/usersReports/:id', 'Users/UsersReportsController.destroy').as('users_reports.destroy')
 
-  Route.resource('/usersReviews', 'UsersReviewsController').except(['create', 'store'])
+  Route.resource('/usersReviews', 'Users/UsersReviewsController').except(['create', 'store'])
 
-  Route.get('/usersReviewsReports', 'UsersReviewsReportsController.index').as('users_reviews_reports.index')
-  Route.delete('/usersReviewsReports/:id', 'UsersReviewsReportsController.destroy').as('users_reviews_reports.destroy')
+  Route.get('/usersReviewsReports', 'Users/UsersReviewsReportsController.index').as('users_reviews_reports.index')
+  Route.delete('/usersReviewsReports/:id', 'Users/UsersReviewsReportsController.destroy').as('users_reviews_reports.destroy')
 }).middleware('CheckUserForAdmin')
 
 // * Api

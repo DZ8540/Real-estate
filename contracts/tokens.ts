@@ -1,5 +1,5 @@
-import User from 'App/Models/User'
 import Token from 'App/Models/Token'
+import User from 'App/Models/Users/User'
 
 export type TokenPayload = {
   uuid: User['uuid'],
