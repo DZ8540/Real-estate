@@ -1,5 +1,5 @@
+import { PaginationConfig } from 'Contracts/database'
 import { ApplicationContract } from '@ioc:Adonis/Core/Application'
-import { APIPaginationConfig, PaginationConfig } from 'Contracts/database'
 
 export default class AppProvider {
   constructor (protected app: ApplicationContract) {}
@@ -17,14 +17,12 @@ export default class AppProvider {
 
     ModelQueryBuilder.macro('get', async function({ page, limit, orderByColumn, orderBy, baseURL }: PaginationConfig) {
       orderByColumn = orderByColumn ?? 'id'
+      let query = await this.orderBy(orderByColumn, orderBy).paginate(page, limit)
 
-      return (await this.orderBy(orderByColumn, orderBy).paginate(page, limit)).baseUrl(baseURL)
-    })
+      if (baseURL)
+        return query.baseUrl(baseURL)
 
-    ModelQueryBuilder.macro('getForAPI', async function({ page, limit, orderByColumn, orderBy }: APIPaginationConfig) {
-      orderByColumn = orderByColumn ?? 'id'
-
-      return (await this.orderBy(orderByColumn, orderBy).paginate(page, limit)).toJSON()
+      return query
     })
 
     ModelQueryBuilder.macro('random', async function() {

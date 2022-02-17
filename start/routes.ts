@@ -76,12 +76,18 @@ Route.group(() => {
   Route.group(() => {
 
     Route.post('/register', 'Api/AuthController.register')
-    Route.post('/login', 'Api/AuthController.login').middleware('CheckUserCredentials')
-    Route.post('/refresh', 'Api/AuthController.refresh').middleware(['CheckUserCredentials', 'CheckToken'])
-    Route.post('/logout', 'Api/AuthController.logout').middleware(['CheckUserCredentials', 'CheckToken'])
     Route.post('/activate', 'Api/AuthController.activate')
+    Route.post('/login', 'Api/AuthController.login').middleware('CheckUserCredentials')
+    Route.post('/refresh', 'Api/AuthController.refresh').middleware(['CheckUserCredentials', 'CheckRefreshToken'])
+    Route.post('/logout', 'Api/AuthController.logout').middleware(['CheckUserCredentials', 'CheckRefreshToken', 'CheckAccessToken'])
 
   }).prefix('/auth')
+
+  Route.group(() => {
+    Route.post('', 'Api/NewsController.all')
+    Route.post('/random', 'Api/NewsController.random')
+    Route.post('/:id', 'Api/NewsController.get')
+  }).prefix('/news').middleware('CheckAccessToken')
 
   Route.post('/messages/addImages', 'Api/MessagesController.addImages')
 }).prefix('/api')

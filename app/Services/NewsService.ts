@@ -113,4 +113,25 @@ export default class NewsService extends BaseService {
       throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.NEWS_NOT_FOUND } as Error
     }
   }
+
+  public static async random(limit: number): Promise<News[]> {
+    try {
+      let news: News[] = []
+
+      for (let i = 0; i < limit; ) {
+        let item: News = await News.query().random()
+
+        // * For remove double items
+        if (!(news.find((val) => val.id == item.id))) {
+          news.push(item)
+          i++
+        }
+      }
+
+      return news
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+  }
 }

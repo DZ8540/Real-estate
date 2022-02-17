@@ -57,7 +57,7 @@ export default class TokenService extends BaseService {
     }
 
     try {
-      let validateData: TokenPayload = this.validateAccessToken(config.payload)
+      let validateData: TokenPayload = this.validateRefreshToken(config.userToken)
       let payload: TokenPayload = {
         uuid: validateData.uuid,
         firstName: validateData.firstName,

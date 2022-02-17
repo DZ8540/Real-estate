@@ -44,5 +44,6 @@ Server.middleware.register([
 Server.middleware.registerNamed({
   CheckUserForAdmin: () => import('App/Middleware/CheckUserForAdmin'),
   CheckUserCredentials: () => import('App/Middleware/CheckUserCredentials'),
-  CheckToken: () => import('App/Middleware/CheckToken'),
+  CheckRefreshToken: () => import('App/Middleware/CheckRefreshToken'),
+  CheckAccessToken: () => import('App/Middleware/CheckAccessToken'),
 })

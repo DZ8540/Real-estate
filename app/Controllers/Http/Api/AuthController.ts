@@ -1,11 +1,11 @@
 import Env from '@ioc:Adonis/Core/Env'
 import User from 'App/Models/Users/User'
-import UserService from 'App/Services/Users/UserService'
 import AuthService from 'App/Services/AuthService'
 import TokenService from 'App/Services/TokenService'
-import LoginValidator from 'App/Validators/Auth/LoginValidator'
+import UserService from 'App/Services/Users/UserService'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
+import LoginValidator from 'App/Validators/Auth/LoginValidator'
 import RegisterValidator from 'App/Validators/Auth/RegisterValidator'
 import ActivateUserValidator from 'App/Validators/Users/ActivateUserValidator'
 import { Error } from 'Contracts/services'
@@ -108,24 +108,17 @@ export default class AuthController {
 
   public async refresh({ request, response }: HttpContextContract) {
     let tokens: { access: string, refresh: string }
-    let payload = request.input('token', null)
+    let payload = request.input('token')
     let userToken: string = request.cookie(COOKIE_REFRESH_TOKEN_KEY)!
 
     let fingerprint: string = request.header('User-Fingerprint')!
     let ua: string = request.header('User-Agent')!
     let ip: string = request.ip()
 
-    if (!payload) {
-      throw new ExceptionService({
-        code: ResponseCodes.CLIENT_ERROR,
-        message: ResponseMessages.TOKEN_EXPIRED,
-      })
-    }
-
     try {
       tokens = await TokenService.refreshToken({ userToken, fingerprint, ua, ip, payload })
     } catch (err: Error | any) {
-      response.cookie(COOKIE_REFRESH_TOKEN_KEY, null, { path: '/api/auth' })
+      response.clearCookie(COOKIE_REFRESH_TOKEN_KEY)
       throw new ExceptionService(err)
     }
 
@@ -137,22 +130,12 @@ export default class AuthController {
   }
 
   public async logout({ request, response }: HttpContextContract) {
-    let payload: string = request.input('token', null)
-
-    if (!payload) {
-      throw new ExceptionService({
-        code: ResponseCodes.CLIENT_ERROR,
-        message: ResponseMessages.TOKEN_EXPIRED,
-      })
-    }
-
     try {
       let userToken: string = request.cookie(COOKIE_REFRESH_TOKEN_KEY)
 
-      TokenService.validateAccessToken(payload)
       await TokenService.deleteRefreshToken(userToken)
 
-      response.cookie(COOKIE_REFRESH_TOKEN_KEY, null, { path: '/api/auth' })
+      response.clearCookie(COOKIE_REFRESH_TOKEN_KEY)
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }

@@ -5,7 +5,7 @@ import { ExtractModelRelations, LucidRow } from '@ioc:Adonis/Lucid/Orm'
 
 export type GetAllConfig<C extends string, M extends LucidRow = LucidRow> = {
   page: number,
-  baseURL: string,
+  baseURL?: string,
   limit?: number,
   columns?: C[],
   orderBy?: 'asc' | 'desc',
