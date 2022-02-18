@@ -56,20 +56,22 @@
             <input type="string" class="form-control" value="{{ item.transactionTypeForUser }}" disabled>
           </div>
 
-          <div class="form-group">
-            <label class="mb-1">Залог</label>
-            <input type="string" class="form-control" value="{{ item.pledge }}" disabled>
-          </div>
+          @if(item.transactionType == 0)
+            <div class="form-group">
+              <label class="mb-1">Залог</label>
+              <input type="string" class="form-control" value="{{ item.pledge }}" disabled>
+            </div>
 
-          <div class="form-group">
-            <label class="mb-1">Предоплата</label>
-            <input type="string" class="form-control" value="{{ item.prepaymentTypeForUser }}" disabled>
-          </div>
+            <div class="form-group">
+              <label class="mb-1">Предоплата</label>
+              <input type="string" class="form-control" value="{{ item.prepaymentTypeForUser }}" disabled>
+            </div>
 
-          <div class="form-group">
-            <label class="mb-1">Комиссия</label>
-            <input type="string" class="form-control" value="{{ item.commissionForUser }}" disabled>
-          </div>
+            <div class="form-group">
+              <label class="mb-1">Комиссия</label>
+              <input type="string" class="form-control" value="{{ item.commissionForUser }}" disabled>
+            </div>
+          @endif
 
           <div class="form-group">
             <label class="mb-1">Адрес</label>
@@ -117,12 +119,14 @@
           </div>
 
           <div class="row">
-            <div class="col-lg-4">
-              <div class="custom-control custom-checkbox mb-3 checkbox-success">
-                <input type="checkbox" class="custom-control-input" {{ item.isCountersSeparately ? 'checked' : '' }} id="isCountersSeparately" disabled>
-                <label class="custom-control-label" for="isCountersSeparately">Счетчики оплачиваются отдельно</label>
+            @if(item.transactionType == 0)
+              <div class="col-lg-4">
+                <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                  <input type="checkbox" class="custom-control-input" {{ item.isCountersSeparately ? 'checked' : '' }} id="isCountersSeparately" disabled>
+                  <label class="custom-control-label" for="isCountersSeparately">Счетчики оплачиваются отдельно</label>
+                </div>
               </div>
-            </div>
+            @endif
 
             <div class="col-lg-4">
               <div class="custom-control custom-checkbox mb-3 checkbox-success">
@@ -284,19 +288,26 @@
           </div>
 
           <div class="form-group">
-            <label class="mb-1">Статус</label>
-            <input type="string" class="form-control" value="{{ item.statusForUser }}" disabled>
+            <label class="mb-1">Наличие VIP статуса</label>
+            <input type="string" class="form-control" value="{{ item.isVip ? 'Есть' : 'Нет' }}" disabled>
           </div>
 
           <div class="form-group">
-            <label class="mb-1">Тип аренды</label>
-            <input type="string" class="form-control" value="{{ item.rentalTypeForUser }}" disabled>
+            <label class="mb-1">Наличие Hot статуса</label>
+            <input type="string" class="form-control" value="{{ item.isHot ? 'Есть' : 'Нет' }}" disabled>
           </div>
 
-          <div class="form-group">
-            <label class="mb-1">Коммунальные платежи</label>
-            <input type="string" class="form-control" value="{{ item.communalPriceForUser }}" disabled>
-          </div>
+          @if(item.transactionType == 0)
+            <div class="form-group">
+              <label class="mb-1">Тип аренды</label>
+              <input type="string" class="form-control" value="{{ item.rentalTypeForUser }}" disabled>
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1">Коммунальные платежи</label>
+              <input type="string" class="form-control" value="{{ item.communalPriceForUser }}" disabled>
+            </div>
+          @endif
 
           <div class="form-group">
             <label class="mb-1">ЖК комплекс</label>

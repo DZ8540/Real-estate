@@ -8,5 +8,4 @@ export const LAYOUT_TYPES = ['Изолированная', 'Смежная', 'С
 export const REPAIR_TYPES = ['Косметический', 'Евро', 'Дизайнерский', 'Без ремонта'] as const
 export const HOUSE_BUILDING_TYPES = ['Кирпичный', 'Панельный', 'Монолитный', 'Блочный', 'Деревянный'] as const
 export const ELEVATOR_TYPES = ['Нет', 'Пассажирский', 'Грузовой', 'Пассажирский/грузовой'] as const
-export const STATUS_TYPES = ['Обычное', 'Срочная продажа', 'VIP'] as const
 export const RENTAL_TYPES = ['Длительно', 'Несколько месяцев', 'Посуточно'] as const

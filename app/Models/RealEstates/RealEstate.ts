@@ -11,7 +11,7 @@ import {
   BALCONY_TYPES, ELEVATOR_TYPES, HOUSE_BUILDING_TYPES,
   HOUSE_TYPES, LAYOUT_TYPES, PREPAYMENT_TYPES,
   RENTAL_TYPES, REPAIR_TYPES, ROOM_TYPES,
-  STATUS_TYPES, TRANSACTION_TYPES, WC_TYPES
+  TRANSACTION_TYPES, WC_TYPES
 } from 'Config/realEstatesTypes'
 
 export default class RealEstate extends BaseModel {
@@ -30,7 +30,7 @@ export default class RealEstate extends BaseModel {
     'elevatorType', 'hasRamp', 'hasGarbageСhute',
     'hasGroundParking', 'hasUnderGroundParking', 'hasMoreLayerParking',
     'price', 'isMortgage', 'isEncumbrances',
-    'viewsCount', 'statusType', 'isBanned',
+    'viewsCount', 'isVip', 'isHot', 'isBanned',
     'rentalType', 'communalPrice', 'residentalComplex',
     'livingArea', 'kitchenArea', 'maxFloor',
     'yearOfConstruction', 'ceilingHeight', 'metro',
@@ -159,7 +159,10 @@ export default class RealEstate extends BaseModel {
   public viewsCount: number
 
   @column()
-  public statusType: number
+  public isVip: boolean
+
+  @column()
+  public isHot: boolean
 
   @column()
   public isBanned: boolean
@@ -262,11 +265,6 @@ export default class RealEstate extends BaseModel {
   }
 
   @computed()
-  public get statusForUser(): string {
-    return STATUS_TYPES[this.statusType]
-  }
-
-  @computed()
   public get rentalTypeForUser(): string {
     return this.rentalType ? RENTAL_TYPES[this.rentalType] : 'Не установлено'
   }
@@ -298,7 +296,7 @@ export default class RealEstate extends BaseModel {
 
   @computed()
   public get yearOfConstructionForUser(): string {
-    return this.yearOfConstruction?.toFormat('d MMMM, yyyy') ?? 'Не установлено'
+    return this.yearOfConstruction?.toFormat('d MMMM, yyyy') ?? ''
   }
 
   @computed()
@@ -347,6 +345,11 @@ export default class RealEstate extends BaseModel {
   public static setCommission(realEstate: RealEstate) {
     if (realEstate.commission > 100)
       realEstate.commission = 100
+  }
+
+  @beforeSave()
+  public static setAddressToLowerCase(realEstate: RealEstate) {
+    realEstate.address = realEstate.address.toLowerCase()
   }
 
   @hasMany(() => RealEstateImage)

@@ -10,7 +10,7 @@ import {
   BALCONY_TYPES, ELEVATOR_TYPES, HOUSE_BUILDING_TYPES,
   HOUSE_TYPES, LAYOUT_TYPES, REPAIR_TYPES,
   ROOM_TYPES, TRANSACTION_TYPES, WC_TYPES,
-  PREPAYMENT_TYPES, STATUS_TYPES, RENTAL_TYPES
+  PREPAYMENT_TYPES, RENTAL_TYPES,
 } from 'Config/realEstatesTypes'
 
 export default class RealEstatesController {
@@ -51,7 +51,7 @@ export default class RealEstatesController {
         HOUSE_TYPES, ROOM_TYPES, WC_TYPES,
         BALCONY_TYPES, LAYOUT_TYPES, REPAIR_TYPES,
         HOUSE_BUILDING_TYPES, ELEVATOR_TYPES, PREPAYMENT_TYPES,
-        STATUS_TYPES, RENTAL_TYPES,
+        RENTAL_TYPES,
       })
     } catch (err: Error | any) {
       session.flash('error', err.message)

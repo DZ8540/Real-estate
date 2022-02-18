@@ -138,7 +138,7 @@ export default class RealEstateValidator extends ApiValidator {
     ])),
     ceilingHeight: schema.number.optional([
       rules.unsigned(),
-    ])
+    ]),
   })
 
   /**

@@ -12,9 +12,8 @@ import RealEstateType from 'App/Models/RealEstates/RealEstateType'
 import {
   BalconyTypes, ElevatorTypes, HouseBuildingTypes,
   HouseTypes, LayoutTypes, OwnerTypes,
-  PrepaymentTypes, RealEstatesStatusTypes,
   RepairTypes, Roles, RoomsTypes,
-  TransactionTypes, WCTypes
+  TransactionTypes, WCTypes, PrepaymentTypes,
 } from 'Contracts/enums'
 
 export const UserFactory = Factory
@@ -88,7 +87,8 @@ export const RealEstateFactory = Factory
       houseBuildingType: faker.datatype.number(HouseBuildingTypes.WOOD),
       elevatorType: faker.datatype.number(ElevatorTypes.PASSENGER_CARGO),
       price: faker.datatype.number(1_000_000),
-      statusType: faker.datatype.number(RealEstatesStatusTypes.VIP),
+      isVip: faker.datatype.boolean(),
+      isHot: faker.datatype.boolean(),
       userId: (await User.query().random()).id,
       estateId: (await Estate.query().random()).id,
     }

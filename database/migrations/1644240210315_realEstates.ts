@@ -97,12 +97,8 @@ export default class RealEstates extends BaseSchema {
       table.boolean('isMortgage').defaultTo(0).notNullable().comment('Есть ли ипотека')
       table.boolean('isEncumbrances').defaultTo(0).notNullable().comment('Есть ли обременения')
       table.integer('viewsCount').defaultTo(0).notNullable()
-      table.integer('statusType').unsigned().notNullable().comment(`
-        Статус объявления.
-        0 - обычное
-        1 - срочная продажа
-        2 - vip
-      `)
+      table.boolean('isVip').defaultTo(0).notNullable()
+      table.boolean('isHot').defaultTo(0).notNullable().comment('Срочная продажа или нет (статус hot)')
       table.boolean('isBanned').defaultTo(0).notNullable()
       table.string('image').nullable()
       table.integer('rentalType').unsigned().nullable().comment(`

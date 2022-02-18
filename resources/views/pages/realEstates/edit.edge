@@ -34,6 +34,8 @@
         <div class="basic-form">
           <form action="{{ route('real_estates.update', { id: item.id }, { qs: { _method: 'PATCH' } }) }}" method="POST" enctype="multipart/form-data">
 
+            <input type="hidden" name="userId" value="{{ item.userId }}">
+
             <div class="form-group">
               <label class="mb-1">Опубликовал(а)</label>
               <input type="string" class="form-control" value="{{ item.user.fullName }}" disabled>
@@ -79,42 +81,44 @@
               @endif
             </div>
 
-            <div class="form-group">
-              <label class="mb-1"><strong>Залог *</strong></label>
-              <input type="number" class="form-control" name="pledge" value="{{ flashMessages.get('pledge', item.pledge) }}">
+            @if(item.transactionType == 0)
+              <div class="form-group">
+                <label class="mb-1"><strong>Залог *</strong></label>
+                <input type="number" class="form-control" name="pledge" value="{{ flashMessages.get('pledge', item.pledge) }}">
 
-              @if(flashMessages.has('errors.pledge'))
-                <div class="invalid-feedback d-block">
-                  {{ flashMessages.get('errors.pledge')[0] }}
-                </div>
-              @endif
-            </div>
+                @if(flashMessages.has('errors.pledge'))
+                  <div class="invalid-feedback d-block">
+                    {{ flashMessages.get('errors.pledge')[0] }}
+                  </div>
+                @endif
+              </div>
 
-            <div class="form-group">
-              <label class="mb-1"><strong>Предоплата *</strong></label>
-              <select name="prepaymentType" class="form-control">
-                @each((prepaymentItem, key) in PREPAYMENT_TYPES)
-                  <option value="{{ key }}" {{ key == item.prepaymentType ? 'selected' : '' }}>{{ prepaymentItem }}</option>
-                @endeach
-              </select>
+              <div class="form-group">
+                <label class="mb-1"><strong>Предоплата *</strong></label>
+                <select name="prepaymentType" class="form-control">
+                  @each((prepaymentItem, key) in PREPAYMENT_TYPES)
+                    <option value="{{ key }}" {{ key == item.prepaymentType ? 'selected' : '' }}>{{ prepaymentItem }}</option>
+                  @endeach
+                </select>
 
-              @if(flashMessages.has('errors.prepaymentType'))
-                <div class="invalid-feedback d-block">
-                  {{ flashMessages.get('errors.prepaymentType')[0] }}
-                </div>
-              @endif
-            </div>
+                @if(flashMessages.has('errors.prepaymentType'))
+                  <div class="invalid-feedback d-block">
+                    {{ flashMessages.get('errors.prepaymentType')[0] }}
+                  </div>
+                @endif
+              </div>
 
-            <div class="form-group">
-              <label class="mb-1"><strong>Комиссия (в процентах от 0 до 100) *</strong></label>
-              <input type="number" class="form-control" name="commission" value="{{ flashMessages.get('commission', item.commission) }}">
+              <div class="form-group">
+                <label class="mb-1"><strong>Комиссия (в процентах от 0 до 100) *</strong></label>
+                <input type="number" class="form-control" name="commission" value="{{ flashMessages.get('commission', item.commission) }}">
 
-              @if(flashMessages.has('errors.commission'))
-                <div class="invalid-feedback d-block">
-                  {{ flashMessages.get('errors.commission')[0] }}
-                </div>
-              @endif
-            </div>
+                @if(flashMessages.has('errors.commission'))
+                  <div class="invalid-feedback d-block">
+                    {{ flashMessages.get('errors.commission')[0] }}
+                  </div>
+                @endif
+              </div>
+            @endif
 
             <div class="form-group">
               <label class="mb-1"><strong>Адрес *</strong></label>
@@ -241,12 +245,14 @@
 
             <div class="row">
 
-              <div class="col-lg-4">
-                <div class="custom-control custom-checkbox mb-3 checkbox-success">
-                  <input type="checkbox" class="custom-control-input" {{ flashMessages.get('isCountersSeparately', item.isCountersSeparately) ? 'checked' : '' }} name="isCountersSeparately" id="isCountersSeparately">
-                  <label class="custom-control-label" for="isCountersSeparately">Счетчики оплачиваются отдельно</label>
+              @if(item.transactionType == 0)
+                <div class="col-lg-4">
+                  <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                    <input type="checkbox" class="custom-control-input" {{ flashMessages.get('isCountersSeparately', item.isCountersSeparately) ? 'checked' : '' }} name="isCountersSeparately" id="isCountersSeparately">
+                    <label class="custom-control-label" for="isCountersSeparately">Счетчики оплачиваются отдельно</label>
+                  </div>
                 </div>
-              </div>
+              @endif
 
               <div class="col-lg-4">
                 <div class="custom-control custom-checkbox mb-3 checkbox-success">
@@ -441,16 +447,29 @@
             </div>
 
             <div class="form-group">
-              <label class="mb-1"><strong>Статус *</strong></label>
-              <select name="statusType" class="form-control">
-                @each((statusTypeItem, key) in STATUS_TYPES)
-                  <option value="{{ key }}" {{ key == item.statusType ? 'selected' : '' }}>{{ statusTypeItem }}</option>
-                @endeach
+              <label class="mb-1"><strong>Наличие VIP статуса *</strong></label>
+              <select name="isVip" class="form-control">
+                <option value="0" {{ item.isVip ? '' : 'selected' }}>Нет</option>
+                <option value="1" {{ item.isVip ? 'selected' : '' }}>Есть</option>
               </select>
 
-              @if(flashMessages.has('errors.statusType'))
+              @if(flashMessages.has('errors.isVip'))
                 <div class="invalid-feedback d-block">
-                  {{ flashMessages.get('errors.statusType')[0] }}
+                  {{ flashMessages.get('errors.isVip')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Наличие Hot статуса *</strong></label>
+              <select name="isHot" class="form-control">
+                <option value="0" {{ item.isHot ? '' : 'selected' }}>Нет</option>
+                <option value="1" {{ item.isHot ? 'selected' : '' }}>Есть</option>
+              </select>
+
+              @if(flashMessages.has('errors.isHot'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.isHot')[0] }}
                 </div>
               @endif
             </div>
@@ -470,16 +489,18 @@
               @endif
             </div>
 
-            <div class="form-group">
-              <label class="mb-1">Коммунальные платежи</label>
-              <input type="number" class="form-control" name="communalPrice" value="{{ flashMessages.get('communalPrice', item.communalPrice) }}">
+            @if(item.transactionType == 0)
+              <div class="form-group">
+                <label class="mb-1">Коммунальные платежи</label>
+                <input type="number" class="form-control" name="communalPrice" value="{{ flashMessages.get('communalPrice', item.communalPrice) }}">
 
-              @if(flashMessages.has('errors.communalPrice'))
-                <div class="invalid-feedback d-block">
-                  {{ flashMessages.get('errors.communalPrice')[0] }}
-                </div>
-              @endif
-            </div>
+                @if(flashMessages.has('errors.communalPrice'))
+                  <div class="invalid-feedback d-block">
+                    {{ flashMessages.get('errors.communalPrice')[0] }}
+                  </div>
+                @endif
+              </div>
+            @endif
 
             <div class="form-group">
               <label class="mb-1">ЖК комплекс</label>

@@ -96,12 +96,6 @@ export enum ElevatorTypes {
   PASSENGER_CARGO = 3,
 }
 
-export enum RealEstatesStatusTypes {
-  COMMON = 0,
-  FAST = 1,
-  VIP = 2,
-}
-
 export enum RentalTypes {
   LONG_TIME = 0,
   SEVERAL_MONTHS = 1,
