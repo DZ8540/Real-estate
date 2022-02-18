@@ -84,10 +84,18 @@ Route.group(() => {
   }).prefix('/auth')
 
   Route.group(() => {
-    Route.post('', 'Api/NewsController.all')
-    Route.post('/random', 'Api/NewsController.random')
-    Route.post('/:id', 'Api/NewsController.get')
-  }).prefix('/news').middleware('CheckAccessToken')
+    Route.group(() => {
+      Route.post('', 'Api/NewsController.all')
+      Route.post('/random', 'Api/NewsController.random')
+      Route.post('/:id', 'Api/NewsController.get')
+    }).prefix('/news')
+
+    Route.group(() => {
+      Route.post('/', 'Api/RealEstates/RealEstatesController.all')
+      Route.post('/create', 'Api/RealEstates/RealEstatesController.create')
+      Route.post('/:uuid', 'Api/RealEstates/RealEstatesController.get')
+    }).prefix('/realEstates')
+  }).middleware('CheckAccessToken')
 
   Route.post('/messages/addImages', 'Api/MessagesController.addImages')
 }).prefix('/api')

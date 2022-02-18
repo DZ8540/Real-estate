@@ -3,6 +3,7 @@ import Drive from '@ioc:Adonis/Core/Drive'
 import Logger from '@ioc:Adonis/Core/Logger'
 import Database from '@ioc:Adonis/Lucid/Database'
 import RealEstate from 'App/Models/RealEstates/RealEstate'
+import RealEstateApiValidator from 'App/Validators/Api/RealEstateValidator'
 import RealEstateValidator from 'App/Validators/RealEstates/RealEstateValidator'
 import { REAL_ESTATE_PATH } from 'Config/drive'
 import { Error, GetAllConfig, GetConfig } from 'Contracts/services'
@@ -203,6 +204,99 @@ export default class RealEstateService extends BaseService {
       return (await this.get({ column, val })).merge({ isBanned: false }).save()
     } catch (err: Error | any) {
       throw err
+    }
+  }
+
+  public static async search(payload: RealEstateApiValidator['schema']['props']): Promise<RealEstate[]> {
+    if (!payload.limit)
+      payload.limit = 15
+
+    try {
+      let query = RealEstate.query().preload('images')
+
+      for (let key in payload) {
+        if (payload[key]) {
+          switch (key) {
+            // Skip this api's keys
+            case 'page':
+            case 'limit':
+            case 'orderBy':
+              break
+
+            case 'districts':
+              for (let item of payload[key]!) {
+                query = query.orWhere('address', 'like', `%${item}%`)
+              }
+              break
+
+            case 'addressOrResidentalComplex':
+              query = query
+                .where('residentalComplex', 'like', `%${payload[key]}%`)
+                .orWhere('address', 'like', `%${payload[key]}%`)
+              break
+
+            case 'ceilingHeight':
+            case 'yearOfConstruction': // @ts-ignore
+              query = query.where(key, '>=', payload[key]!)
+              break
+
+            case 'WCTypes':
+            case 'roomTypes':
+            case 'repairTypes':
+            case 'rentalTypes':
+            case 'layoutTypes':
+            case 'balconyTypes':
+            case 'elevatorTypes':
+            case 'houseBuildingTypes': {
+              let keyWithoutS: string = ''
+              let arrayKey: string[] = [...key]
+              arrayKey.pop()
+              keyWithoutS = arrayKey.join('')
+
+              for (let item of payload[key]!) {
+                query = query.orWhere(keyWithoutS, item!)
+              }
+              break
+            }
+            case 'startPrice':
+            case 'startFloor':
+            case 'startMaxFloor':
+            case 'startTotalArea':
+            case 'startLivingArea':
+            case 'startKitchenArea': {
+              let keyWithoutStart: string[] = [...key.replace('start', '')]
+              let firstLetterLowerCase: string = keyWithoutStart.shift()!.toLowerCase()
+              let keyWithoutFirstLetter: string = keyWithoutStart.join('')
+              let fullKey: string = firstLetterLowerCase + keyWithoutFirstLetter
+
+              query = query.where(fullKey, '>=', payload[key]!)
+              break
+            }
+            case 'endPrice':
+            case 'endFloor':
+            case 'endMaxFloor':
+            case 'endTotalArea':
+            case 'endLivingArea':
+            case 'endKitchenArea': {
+              let keyWithoutEnd: string[] = [...key.replace('end', '')]
+              let firstLetterLowerCase: string = keyWithoutEnd.shift()!.toLowerCase()
+              let keyWithoutFirstLetter: string = keyWithoutEnd.join('')
+              let fullKey: string = firstLetterLowerCase + keyWithoutFirstLetter
+
+              query = query.where(fullKey, '<=', payload[key]!)
+              break
+            }
+            default:
+              query = query.where(key, payload[key])
+              break
+          }
+        }
+      }
+
+      return await query.get({ page: payload.page, limit: payload.limit, orderBy: payload.orderBy })
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
   }
 }

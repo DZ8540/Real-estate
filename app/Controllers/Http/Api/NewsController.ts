@@ -1,6 +1,6 @@
 import News from 'App/Models/News'
 import NewsService from 'App/Services/NewsService'
-import ApiValidator from 'App/Validators/ApiValidator'
+import ApiValidator from 'App/Validators/Api/ApiValidator'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
 import { Error } from 'Contracts/services'

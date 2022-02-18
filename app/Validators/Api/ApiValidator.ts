@@ -1,8 +1,19 @@
-import BaseValidator from './BaseValidator'
+import BaseValidator from '../BaseValidator'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class ApiValidator extends BaseValidator {
+  protected preParsedSchema = {
+    orderBy: schema.enum.optional(['asc', 'desc'] as const),
+    limit: schema.number.optional([
+      rules.unsigned(),
+      rules.range(1, 100),
+    ]),
+    page: schema.number([
+      rules.unsigned(),
+    ]),
+  }
+
   constructor(protected ctx: HttpContextContract) {
     super()
   }
@@ -26,16 +37,7 @@ export default class ApiValidator extends BaseValidator {
    *     ])
    *    ```
    */
-  public schema = schema.create({
-    orderBy: schema.enum.optional(['asc', 'desc'] as const),
-    limit: schema.number.optional([
-      rules.unsigned(),
-      rules.range(1, 100),
-    ]),
-    page: schema.number([
-      rules.unsigned(),
-    ]),
-  })
+  public schema = schema.create(this.preParsedSchema)
 
   /**
    * Custom messages for validation failures. You can make use of dot notation `(.)`

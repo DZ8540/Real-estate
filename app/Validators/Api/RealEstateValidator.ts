@@ -1,16 +1,15 @@
-import BaseValidator from '../BaseValidator'
+import ApiValidator from './ApiValidator'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import {
   BalconyTypes, ElevatorTypes, HouseBuildingTypes,
-  HouseTypes, LayoutTypes, PrepaymentTypes,
-  RealEstatesStatusTypes, RentalTypes, RepairTypes,
+  LayoutTypes, RentalTypes, RepairTypes,
   RoomsTypes, TransactionTypes, WCTypes
 } from 'Contracts/enums'
 
-export default class RealEstateValidator extends BaseValidator {
+export default class RealEstateValidator extends ApiValidator {
   constructor(protected ctx: HttpContextContract) {
-    super()
+    super(ctx)
   }
 
   /*
@@ -33,64 +32,39 @@ export default class RealEstateValidator extends BaseValidator {
    *    ```
    */
   public schema = schema.create({
-    estateId: schema.number([
+    ...this.preParsedSchema,
+    estateId: schema.number.optional([
       rules.unsigned(),
       rules.exists({ table: 'estates', column: 'id' }),
     ]),
-    userId: schema.number([
-      rules.unsigned(),
-      rules.exists({ table: 'users', column: 'id' }),
-    ]),
-    transactionType: schema.number([
+    transactionType: schema.number.optional([
       rules.unsigned(),
       rules.range(0, TransactionTypes.SALE),
     ]),
-    pledge: schema.number([
-      rules.unsigned(),
-    ]),
-    prepaymentType: schema.number([
-      rules.unsigned(),
-      rules.range(0, PrepaymentTypes.YEAR),
-    ]),
-    commission: schema.number([
-      rules.unsigned(),
-      rules.range(0, 100),
-    ]),
-    address: schema.string({}, [
-      rules.required(),
+    districts: schema.array.optional().members(schema.string({}, [
+      rules.maxLength(255),
+    ])),
+    addressOrResidentalComplex: schema.string.optional({}, [
       rules.maxLength(255),
     ]),
-    houseType: schema.number([
-      rules.unsigned(),
-      rules.range(0, HouseTypes.COMMERCIAL_APARTMENT),
-    ]),
-    roomType: schema.number([
+    roomTypes: schema.array.optional().members(schema.number([
       rules.unsigned(),
       rules.range(0, RoomsTypes.MORE_FIVE_ROOMS),
-    ]),
-    totalArea: schema.number([
+    ])),
+    startPrice: schema.number.optional([
       rules.unsigned(),
     ]),
-    floor: schema.number([
+    endPrice: schema.number.optional([
       rules.unsigned(),
     ]),
-    WCType: schema.number([
+    rentalTypes: schema.array.optional().members(schema.number([
       rules.unsigned(),
-      rules.range(0, WCTypes.TWO_OR_MORE),
-    ]),
-    balconyType: schema.number([
-      rules.unsigned(),
-      rules.range(0, BalconyTypes.LOGGIE),
-    ]),
-    layoutType: schema.number([
-      rules.unsigned(),
-      rules.range(0, LayoutTypes.FREE),
-    ]),
-    repairType: schema.number([
+      rules.range(0, RentalTypes.DAILY),
+    ])),
+    repairTypes: schema.array.optional().members(schema.number([
       rules.unsigned(),
       rules.range(0, RepairTypes.NO_REPAIR),
-    ]),
-    isCountersSeparately: schema.boolean.optional(),
+    ])),
     hasKitchenFurniture: schema.boolean.optional(),
     hasFurniture: schema.boolean.optional(),
     hasRefrigerator: schema.boolean.optional(),
@@ -108,57 +82,63 @@ export default class RealEstateValidator extends BaseValidator {
     hasGroundParking: schema.boolean.optional(),
     hasUnderGroundParking: schema.boolean.optional(),
     hasMoreLayerParking: schema.boolean.optional(),
+    isCountersSeparately: schema.boolean.optional(),
     isMortgage: schema.boolean.optional(),
     isEncumbrances: schema.boolean.optional(),
-    description: schema.string({}, [
-      rules.required(),
-      rules.maxLength(4096),
+    startTotalArea: schema.number.optional([
+      rules.unsigned(),
     ]),
-    houseBuildingType: schema.number([
+    endTotalArea: schema.number.optional([
+      rules.unsigned(),
+    ]),
+    startLivingArea: schema.number.optional([
+      rules.unsigned(),
+    ]),
+    endLivingArea: schema.number.optional([
+      rules.unsigned(),
+    ]),
+    startKitchenArea: schema.number.optional([
+      rules.unsigned(),
+    ]),
+    endKitchenArea: schema.number.optional([
+      rules.unsigned(),
+    ]),
+    layoutTypes: schema.array.optional().members(schema.number([
+      rules.unsigned(),
+      rules.range(0, LayoutTypes.FREE),
+    ])),
+    WCTypes: schema.array.optional().members(schema.number([
+      rules.unsigned(),
+      rules.range(0, WCTypes.TWO_OR_MORE),
+    ])),
+    startFloor: schema.number.optional([
+      rules.unsigned(),
+    ]),
+    endFloor: schema.number.optional([
+      rules.unsigned(),
+    ]),
+    startMaxFloor: schema.number.optional([
+      rules.unsigned(),
+    ]),
+    endMaxFloor: schema.number.optional([
+      rules.unsigned(),
+    ]),
+    balconyTypes: schema.array.optional().members(schema.number([
+      rules.unsigned(),
+      rules.range(0, BalconyTypes.LOGGIE),
+    ])),
+    houseBuildingTypes: schema.array.optional().members(schema.number([
       rules.unsigned(),
       rules.range(0, HouseBuildingTypes.WOOD),
-    ]),
-    elevatorType: schema.number([
+    ])),
+    yearOfConstruction: schema.date.optional({ format: 'yyyy' }),
+    elevatorTypes: schema.array.optional().members(schema.number([
       rules.unsigned(),
       rules.range(0, ElevatorTypes.PASSENGER_CARGO),
-    ]),
-    price: schema.number([
-      rules.unsigned(),
-    ]),
-    statusType: schema.number([
-      rules.unsigned(),
-      rules.range(0, RealEstatesStatusTypes.VIP),
-    ]),
-    rentalType: schema.number.optional([
-      rules.unsigned(),
-      rules.range(0, RentalTypes.DAILY),
-    ]),
-    communalPrice: schema.number.optional([
-      rules.unsigned(),
-    ]),
-    residentalComplex: schema.string.optional({}, [
-      rules.maxLength(255),
-    ]),
-    livingArea: schema.number.optional([
-      rules.unsigned(),
-    ]),
-    kitchenArea: schema.number.optional([
-      rules.unsigned(),
-    ]),
-    maxFloor: schema.number.optional([
-      rules.unsigned(),
-    ]),
-    yearOfConstruction: schema.date.optional({ format: 'd MMMM, yyyy' }, [
-      rules.before('today'),
-    ]),
+    ])),
     ceilingHeight: schema.number.optional([
       rules.unsigned(),
-    ]),
-    metro: schema.string.optional({}, [
-      rules.maxLength(255)
-    ]),
-    image: schema.file.optional({ extnames: ['jpg', 'jpeg', 'png', 'webp'] }),
-    images: schema.array.optional().members(schema.file.optional({ extnames: ['jpg', 'jpeg', 'png', 'webp'] })),
+    ])
   })
 
   /**
