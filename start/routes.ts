@@ -95,6 +95,8 @@ Route.group(() => {
       Route.post('/create', 'Api/RealEstates/RealEstatesController.create')
       Route.post('/:uuid', 'Api/RealEstates/RealEstatesController.get')
     }).prefix('/realEstates')
+
+    Route.post('/realEstateTypes', 'Api/RealEstates/RealEstateTypesController.all')
   }).middleware('CheckAccessToken')
 
   Route.post('/messages/addImages', 'Api/MessagesController.addImages')

@@ -1,7 +1,8 @@
+import Estate from './Estate'
 import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
 import { camelCase } from '../../../helpers'
-import { BaseModel, beforeSave, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeSave, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 
 export default class RealEstateType extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
@@ -30,4 +31,7 @@ export default class RealEstateType extends BaseModel {
     if (!realEstateType.slug)
       realEstateType.slug = camelCase(realEstateType.name)
   }
+
+  @hasMany(() => Estate)
+  public estates: HasMany<typeof Estate>
 }

@@ -3,11 +3,18 @@ import Logger from '@ioc:Adonis/Core/Logger'
 import RealEstateType from 'App/Models/RealEstates/RealEstateType'
 import RealEstateTypeValidator from 'App/Validators/RealEstates/RealEstateTypeValidator'
 import { Error, GetConfig } from 'Contracts/services'
+import { ExtractModelRelations } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
 export default class RealEstateTypeService extends BaseService {
-  public static async getAll(columns: typeof RealEstateType['columns'][number][] = ['id', 'slug', 'name']): Promise<RealEstateType[]> {
-    return await RealEstateType.query().select(columns)
+  public static async getAll(columns: typeof RealEstateType['columns'][number][] = ['id', 'slug', 'name'], relation?: ExtractModelRelations<RealEstateType>): Promise<RealEstateType[]> {
+    let query = RealEstateType.query().select(columns)
+
+    if (relation) {
+      query = query.preload(relation)
+    }
+
+    return await query
   }
 
   public static async get({ column, val, trx }: GetConfig<RealEstateType>): Promise<RealEstateType> {
