@@ -20,6 +20,11 @@ export type GetConfig<M extends LucidRow> = {
   relations?: ExtractModelRelations<M>[],
 }
 
+export type ServiceConfig<M extends LucidRow> = {
+  trx?: TransactionClientContract,
+  relations?: ExtractModelRelations<M>[],
+}
+
 export type Error = {
   code: ResponseCodes,
   message: ResponseMessages,

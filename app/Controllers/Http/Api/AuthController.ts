@@ -38,9 +38,7 @@ export default class AuthController {
   }
 
   public async login({ request, response }: HttpContextContract) {
-    let user: User
     let payload: LoginValidator['schema']['props']
-    let tokens: { access: string, refresh: string }
 
     try {
       payload = await request.validate(LoginValidator)
@@ -53,9 +51,9 @@ export default class AuthController {
     }
 
     try {
-      user = await AuthService.login(payload)
+      let user: User = await AuthService.login(payload)
 
-      tokens = TokenService.generateTokens({
+      let tokens: { access: string, refresh: string } = TokenService.generateTokens({
         uuid: user.uuid,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -72,16 +70,25 @@ export default class AuthController {
 
       await TokenService.createRefreshToken(tokenCredentials)
       response.cookie(COOKIE_REFRESH_TOKEN_KEY, tokens.refresh, { maxAge: Env.get('REFRESH_TOKEN_TIME'), path: '/api/auth' })
+
+      return response
+        .status(200)
+        .send(ResponseService.success(ResponseMessages.USER_LOGIN, {
+          user: user.serialize({
+            relations: {
+              realEstatesWishList: {
+                fields: ['id'],
+              },
+              realEstatesReports: {
+                fields: ['id'],
+              },
+            },
+          }),
+          tokens: { access: tokens.access },
+        }))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }
-
-    return response
-      .status(200)
-      .send(ResponseService.success(ResponseMessages.USER_LOGIN, {
-        user,
-        tokens: { access: tokens.access },
-      }))
   }
 
   public async activate({ request, response }: HttpContextContract) {
@@ -107,7 +114,6 @@ export default class AuthController {
   }
 
   public async refresh({ request, response }: HttpContextContract) {
-    let tokens: { access: string, refresh: string }
     let payload = request.input('token')
     let userToken: string = request.cookie(COOKIE_REFRESH_TOKEN_KEY)!
 
@@ -116,17 +122,19 @@ export default class AuthController {
     let ip: string = request.ip()
 
     try {
-      tokens = await TokenService.refreshToken({ userToken, fingerprint, ua, ip, payload })
+      let tokens: { access: string, refresh: string } = await TokenService.refreshToken({ userToken, fingerprint, ua, ip, payload })
+      response.cookie(COOKIE_REFRESH_TOKEN_KEY, tokens.refresh, { path: '/api/auth' })
+
+      return response
+        .status(200)
+        .send(ResponseService.success(ResponseMessages.TOKEN_SUCCESS, {
+          tokens: { access: tokens.access }
+        }))
     } catch (err: Error | any) {
       response.clearCookie(COOKIE_REFRESH_TOKEN_KEY)
+
       throw new ExceptionService(err)
     }
-
-    return response
-      .status(200)
-      .send(ResponseService.success(ResponseMessages.TOKEN_SUCCESS, {
-        tokens: { access: tokens.access }
-      }))
   }
 
   public async logout({ request, response }: HttpContextContract) {

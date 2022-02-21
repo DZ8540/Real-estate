@@ -169,7 +169,13 @@ export default class User extends BaseModel {
     pivotTable: 'realEstatesWishlists',
     pivotRelatedForeignKey: 'realEstate_id',
   })
-  public realEstates: ManyToMany<typeof RealEstate>
+  public realEstatesWishList: ManyToMany<typeof RealEstate>
+
+  @manyToMany(() => RealEstate, {
+    pivotTable: 'realEstatesReports',
+    pivotRelatedForeignKey: 'realEstate_id',
+  })
+  public realEstatesReports: ManyToMany<typeof RealEstate>
 
   public async avatarUrl(): Promise<string> {
     return this.avatar ? await Drive.getUrl(this.avatar) : IMG_PLACEHOLDER

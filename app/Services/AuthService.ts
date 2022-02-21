@@ -38,6 +38,8 @@ export default class AuthService extends BaseService {
   public static async login({ email, password }: LoginValidator['schema']['props']): Promise<User> {
     try {
       let candidate: User = (await User.findBy('email', email))!
+      await candidate.load('realEstatesWishList')
+      await candidate.load('realEstatesReports')
 
       if (!candidate.isActivated)
         throw new Error()

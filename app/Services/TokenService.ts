@@ -43,6 +43,7 @@ export default class TokenService extends BaseService {
 
   public static async refreshToken(config: RefreshRefreshTokenConfig): Promise<{ access: string, refresh: string }> {
     let currentToken: Token
+    let tokens: { access: string, refresh: string }
 
     try {
       currentToken = await this.getRefreshToken('token', config.userToken)
@@ -66,11 +67,21 @@ export default class TokenService extends BaseService {
         roleId: validateData.roleId,
       }
 
-      let tokens: { access: string, refresh: string } = this.generateTokens(payload)
-      return tokens
+      tokens = this.generateTokens(payload)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.TOKEN_EXPIRED, message: ResponseMessages.TOKEN_EXPIRED } as Error
+    }
+
+    try {
+      await currentToken.merge({ token: tokens.refresh }).save()
+
+      return tokens
+    } catch (err: any) {
+      await currentToken.delete()
+
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
   }
 

@@ -1,5 +1,6 @@
 import RealEstatesReport from 'App/Models/RealEstates/RealEstatesReport'
 import RealEstatesReportService from 'App/Services/RealEstates/RealEstatesReportService'
+import RealEstatesReportValidator from 'App/Validators/Api/RealEstates/RealEstatesReportValidator'
 import { Error } from 'Contracts/services'
 import { ResponseMessages } from 'Contracts/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
@@ -13,11 +14,11 @@ export default class RealEstatesReportsController {
     return view.render('pages/realEstatesReports', { reports })
   }
 
-  public async destroy({ params, response, session }: HttpContextContract) {
-    let id: RealEstatesReport['id'] = params.id
+  public async destroy({ request, response, session }: HttpContextContract) {
+    let payload = await request.validate(RealEstatesReportValidator)
 
     try {
-      await RealEstatesReportService.delete({ column: 'id', val: id })
+      await RealEstatesReportService.delete(payload)
 
       session.flash('success', ResponseMessages.REAL_ESTATES_REPORT_DELETED)
     } catch (err: Error | any) {
