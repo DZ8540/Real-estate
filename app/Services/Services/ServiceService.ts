@@ -5,6 +5,8 @@ import Label from 'App/Models/Services/Label'
 import Service from 'App/Models/Services/Service'
 import Database from '@ioc:Adonis/Lucid/Database'
 import ServiceValidator from 'App/Validators/Services/ServiceValidator'
+import ServiceApiValidator from 'App/Validators/Api/Services/ServiceValidator'
+import { removeLastLetter } from '../../../helpers'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
@@ -165,6 +167,51 @@ export default class ServiceService extends BaseService {
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.SERVICE_NOT_FOUND } as Error
+    }
+  }
+
+  public static async search(payload: ServiceApiValidator['schema']['props']): Promise<Service[]> {
+    if (!payload.limit)
+      payload.limit = 4
+
+    try {
+      let query = Service.query().preload('user').preload('labels')
+
+      for (let key in payload) {
+        if (payload[key]) {
+          switch (key) {
+            // Skip this api's keys
+            case 'page':
+            case 'limit':
+            case 'orderBy':
+              break
+            // Skip this api's keys
+
+            case 'experienceTypes':
+              for (let item of payload[key]!) {
+                query = query.orWhere(removeLastLetter(key), item!)
+              }
+              break
+
+            case 'labels':
+              for (let item of payload[key]!) {
+                query = query.orWhereHas('labels', (labelQuery) => {
+                  labelQuery.where('label_id', item)
+                })
+              }
+              break
+
+            default:
+              query = query.where(key, payload[key])
+              break
+          }
+        }
+      }
+
+      return await query.get({ page: payload.page, limit: payload.limit, orderBy: payload.orderBy })
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
   }
 }

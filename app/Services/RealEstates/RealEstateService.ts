@@ -6,8 +6,9 @@ import RealEstate from 'App/Models/RealEstates/RealEstate'
 import RealEstateValidator from 'App/Validators/RealEstates/RealEstateValidator'
 import RealEstateApiValidator from 'App/Validators/Api/RealEstates/RealEstateValidator'
 import { REAL_ESTATE_PATH } from 'Config/drive'
-import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
+import { removeFirstWord, removeLastLetter } from '../../../helpers'
+import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
 export default class RealEstateService extends BaseService {
   public static async getAll(config: PaginateConfig<typeof RealEstate['columns'][number], RealEstate>, columns: typeof RealEstate['columns'][number][] = ['id', 'uuid', 'image', 'userId', 'roomType', 'price', 'totalArea', 'houseType', 'createdAt']): Promise<RealEstate[]> {
@@ -225,6 +226,7 @@ export default class RealEstateService extends BaseService {
             case 'limit':
             case 'orderBy':
               break
+            // Skip this api's keys
 
             case 'districts':
               for (let item of payload[key]!) {
@@ -250,45 +252,30 @@ export default class RealEstateService extends BaseService {
             case 'layoutTypes':
             case 'balconyTypes':
             case 'elevatorTypes':
-            case 'houseBuildingTypes': {
-              let keyWithoutS: string = ''
-              let arrayKey: string[] = [...key]
-              arrayKey.pop()
-              keyWithoutS = arrayKey.join('')
-
+            case 'houseBuildingTypes':
               for (let item of payload[key]!) {
-                query = query.orWhere(keyWithoutS, item!)
+                query = query.orWhere(removeLastLetter(key), item!)
               }
               break
-            }
+
             case 'startPrice':
             case 'startFloor':
             case 'startMaxFloor':
             case 'startTotalArea':
             case 'startLivingArea':
-            case 'startKitchenArea': {
-              let keyWithoutStart: string[] = [...key.replace('start', '')]
-              let firstLetterLowerCase: string = keyWithoutStart.shift()!.toLowerCase()
-              let keyWithoutFirstLetter: string = keyWithoutStart.join('')
-              let fullKey: string = firstLetterLowerCase + keyWithoutFirstLetter
-
-              query = query.where(fullKey, '>=', payload[key]!)
+            case 'startKitchenArea':
+              query = query.where(removeFirstWord(key, 'start'), '>=', payload[key]!)
               break
-            }
+
             case 'endPrice':
             case 'endFloor':
             case 'endMaxFloor':
             case 'endTotalArea':
             case 'endLivingArea':
-            case 'endKitchenArea': {
-              let keyWithoutEnd: string[] = [...key.replace('end', '')]
-              let firstLetterLowerCase: string = keyWithoutEnd.shift()!.toLowerCase()
-              let keyWithoutFirstLetter: string = keyWithoutEnd.join('')
-              let fullKey: string = firstLetterLowerCase + keyWithoutFirstLetter
-
-              query = query.where(fullKey, '<=', payload[key]!)
+            case 'endKitchenArea':
+              query = query.where(removeFirstWord(key, 'end'), '<=', payload[key]!)
               break
-            }
+
             default:
               query = query.where(key, payload[key])
               break

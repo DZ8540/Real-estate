@@ -78,7 +78,11 @@ export default class User extends BaseModel {
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serializeAs: null,
+  })
   public updatedAt: DateTime
 
   @computed()
@@ -150,7 +154,7 @@ export default class User extends BaseModel {
 
   @beforeSave()
   public static async setRole(user: User) {
-    if (!user.$dirty.roleId) {
+    if (!user.$dirty.roleId && !user.roleId) {
       let userRole: Role = await RoleService.get(Roles.USER)
       user.roleId = userRole.id
     }

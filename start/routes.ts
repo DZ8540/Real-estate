@@ -115,6 +115,10 @@ Route.group(() => {
     }).prefix('/realEstatesWishLists')
 
     Route.post('/realEstateTypes', 'Api/RealEstates/RealEstateTypesController.all')
+
+    Route.post('/servicesTypes', 'Api/Services/ServicesTypesController.all')
+
+    Route.post('/services', 'Api/Services/ServicesController.all')
   }).middleware('CheckAccessToken')
 
   Route.post('/messages/addImages', 'Api/MessagesController.addImages')
