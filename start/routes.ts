@@ -38,9 +38,9 @@ Route.group(() => {
 
   Route.group(() => {
     Route.get('/', 'Users/UsersController.index').as('users.index')
-    Route.get('/:id', 'Users/UsersController.show').as('users.show')
-    Route.post('/block/:id', 'Users/UsersController.block').as('users.block')
-    Route.post('/unblock/:id', 'Users/UsersController.unblock').as('users.unblock')
+    Route.get('/:uuid', 'Users/UsersController.show').as('users.show')
+    Route.post('/block/:uuid', 'Users/UsersController.block').as('users.block')
+    Route.post('/unblock/:uuid', 'Users/UsersController.unblock').as('users.unblock')
   }).prefix('/users')
 
   Route.resource('/news', 'NewsController')
@@ -88,7 +88,7 @@ Route.group(() => {
 
       Route.post('', 'Api/NewsController.all')
       Route.post('/random', 'Api/NewsController.random')
-      Route.post('/:id', 'Api/NewsController.get')
+      Route.post('/:slug', 'Api/NewsController.get')
 
     }).prefix('/news')
 
@@ -106,6 +106,13 @@ Route.group(() => {
       Route.delete('/', 'Api/RealEstates/RealEstatesReportsController.delete')
 
     }).prefix('/realEstatesReports')
+
+    Route.group(() => {
+
+      Route.post('/', 'Api/RealEstates/RealEstatesWishListsController.add')
+      Route.delete('/', 'Api/RealEstates/RealEstatesWishListsController.delete')
+
+    }).prefix('/realEstatesWishLists')
 
     Route.post('/realEstateTypes', 'Api/RealEstates/RealEstateTypesController.all')
   }).middleware('CheckAccessToken')

@@ -4,22 +4,19 @@ import Drive from '@ioc:Adonis/Core/Drive'
 import Logger from '@ioc:Adonis/Core/Logger'
 import NewsValidator from 'App/Validators/NewsValidator'
 import { NEWS_PATH } from 'Config/drive'
-import { Error, GetAllConfig, GetConfig } from 'Contracts/services'
+import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
 export default class NewsService extends BaseService {
-  public static async getAll({ baseURL, page, columns, limit, orderBy, orderByColumn }: GetAllConfig<typeof News['columns'][number]>): Promise<News[]> {
-    if (!columns)
-      columns = ['id', 'image', 'title', 'slug', 'createdAt']
-
-    return await News.query().select(columns).get({ baseURL, page, limit, orderBy, orderByColumn })
+  public static async getAll(config: PaginateConfig<typeof News['columns'][number]>, columns: typeof News['columns'][number][] = ['id', 'image', 'title', 'slug', 'createdAt']): Promise<News[]> {
+    return await News.query().select(columns).get(config)
   }
 
-  public static async get({ column, val, trx }: GetConfig<News>): Promise<News> {
+  public static async get(slug: News['slug'], { trx }: ServiceConfig<News> = {}): Promise<News> {
     let item: News | null
 
     try {
-      item = await News.findBy(column, val, { client: trx })
+      item = await News.findBy('slug', slug, { client: trx })
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
@@ -36,7 +33,7 @@ export default class NewsService extends BaseService {
     }
   }
 
-  public static async create(payload: NewsValidator['schema']['props']): Promise<News> {
+  public static async create(payload: NewsValidator['schema']['props'], { trx }: ServiceConfig<News> = {}): Promise<News> {
     let image: News['image'] = undefined
 
     if (payload.image) {
@@ -53,26 +50,23 @@ export default class NewsService extends BaseService {
       return (await News.create({
         ...payload,
         image
-      }))!
+      }, { client: trx }))!
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
   }
 
-  public static async update({ column, val }: GetConfig<News>, payload: NewsValidator['schema']['props']): Promise<News> {
-    let item: News | null
+  public static async update(slug: News['slug'], payload: NewsValidator['schema']['props'], { trx }: ServiceConfig<News> = {}): Promise<News> {
+    let item: News
     let image: News['image'] = undefined
 
     try {
-      item = await News.findBy(column, val)
+      item = await this.get(slug, { trx })
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
-
-    if (!item)
-      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.NEWS_NOT_FOUND } as Error
 
     try {
       if (payload.image) {
@@ -90,20 +84,17 @@ export default class NewsService extends BaseService {
     }
   }
 
-  public static async delete(column: typeof News['columns'][number], val: any): Promise<void> {
-    let item: News | null
+  public static async delete(slug: News['slug'], { trx }: ServiceConfig<News> = {}): Promise<void> {
+    let item: News
 
     try {
-      item = await News.findBy(column, val)
+      item = await this.get(slug, { trx })
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
 
     try {
-      if (!item)
-        throw new Error()
-
       if (item.image)
         await Drive.delete(item.image)
 

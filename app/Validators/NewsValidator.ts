@@ -1,10 +1,11 @@
+import News from 'App/Models/News'
 import BaseValidator from './BaseValidator'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class NewsValidator extends BaseValidator {
   private readonly table: string = 'news'
-  private readonly currentNewsId: number = this.ctx.params.id ?? null
+  private readonly currentNewsSlug: News['slug'] | null = this.ctx.params.id ?? null
 
   constructor(protected ctx: HttpContextContract) {
     super()
@@ -31,7 +32,7 @@ export default class NewsValidator extends BaseValidator {
    */
   public schema = schema.create({
     slug: schema.string.optional({}, [
-      rules.unique({ table: this.table, column: 'slug', whereNot: { id: this.currentNewsId } }),
+      rules.unique({ table: this.table, column: 'slug', whereNot: { slug: this.currentNewsSlug } }),
     ]),
     title: schema.string({}, [
       rules.required(),

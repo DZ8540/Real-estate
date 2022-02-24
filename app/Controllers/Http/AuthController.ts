@@ -31,7 +31,7 @@ export default class AuthController {
 
     try {
       let candidate: User = await AuthService.login(payload)
-      session.put(SESSION_USER_KEY, { id: candidate.id, fullName: candidate.fullName } as SessionUser)
+      session.put(SESSION_USER_KEY, { uuid: candidate.uuid, fullName: candidate.fullName } as SessionUser)
 
       return response.redirect().toRoute('index')
     } catch (err: Error | any) {

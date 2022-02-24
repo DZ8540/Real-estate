@@ -37,10 +37,10 @@ export default class EstatesController {
   }
 
   public async show({ view, params, session, response }: HttpContextContract) {
-    let id: Estate['id'] = params.id
+    let slug: Estate['slug'] = params.id
 
     try {
-      let item: Estate = await EstateService.get({ column: 'id', val: id, relations: ['realEstateType'] })
+      let item: Estate = await EstateService.get(slug, { relations: ['realEstateType'] })
 
       return view.render('pages/estates/show', { item })
     } catch (err: Error | any) {
@@ -50,11 +50,11 @@ export default class EstatesController {
   }
 
   public async edit({ view, params, session, response }: HttpContextContract) {
-    let id: Estate['id'] = params.id
+    let slug: Estate['slug'] = params.id
 
     try {
       let realEstateTypes: RealEstateType[] = await RealEstateTypeService.getAll()
-      let item: Estate = await EstateService.get({ column: 'id', val: id })
+      let item: Estate = await EstateService.get(slug)
 
       return view.render('pages/estates/edit', { item, realEstateTypes })
     } catch (err: Error | any) {
@@ -64,11 +64,11 @@ export default class EstatesController {
   }
 
   public async update({ request, response, session, params }: HttpContextContract) {
-    let id: Estate['id'] = params.id
+    let slug: Estate['slug'] = params.id
     let payload = await request.validate(EstateValidator)
 
     try {
-      await EstateService.update('id', id, payload)
+      await EstateService.update(slug, payload)
 
       session.flash('success', ResponseMessages.ESTATE_UPDATED)
       return response.redirect().toRoute('estates.index')
@@ -79,10 +79,10 @@ export default class EstatesController {
   }
 
   public async destroy({ params, response, session }: HttpContextContract) {
-    let id: Estate['id'] = params.id
+    let slug: Estate['slug'] = params.id
 
     try {
-      await EstateService.delete('id', id)
+      await EstateService.delete(slug)
 
       session.flash('success', ResponseMessages.ESTATE_DELETED)
     } catch (err: Error | any) {

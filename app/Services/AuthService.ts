@@ -17,7 +17,7 @@ export default class AuthService extends BaseService {
     let trx = await Database.transaction()
 
     try {
-      user = await UserService.create(payload, trx)
+      user = await UserService.create(payload, { trx })
     } catch (err: Error | any) {
       await trx.rollback()
 
@@ -54,12 +54,12 @@ export default class AuthService extends BaseService {
     }
   }
 
-  public static async checkAdmin(id: User['id']): Promise<void> {
+  public static async checkAdmin(uuid: User['uuid']): Promise<void> {
     let accessRoles: Roles[] = [Roles.ADMIN, Roles.MANAGER]
     let currentUser: User
 
     try {
-      currentUser = await UserService.get({ column: 'id', val: id, relations: ['role'] })
+      currentUser = await UserService.get(uuid, { relations: ['role'] })
     } catch (err: Error | any) {
       throw err
     }

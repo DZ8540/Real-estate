@@ -38,7 +38,7 @@ export default class LabelsController {
     let id: Label['id'] = params.id
 
     try {
-      let item: Label = await LabelService.get({ column: 'id', val: id })
+      let item: Label = await LabelService.get(id)
 
       return view.render('pages/labels/edit', { item })
     } catch (err: Error | any) {
@@ -52,7 +52,7 @@ export default class LabelsController {
     let payload = await request.validate(LabelValidator)
 
     try {
-      await LabelService.update('id', id, payload)
+      await LabelService.update(id, payload)
 
       session.flash('success', ResponseMessages.LABEL_UPDATED)
       return response.redirect().toRoute('labels.index')
@@ -66,7 +66,7 @@ export default class LabelsController {
     let id: Label['id'] = params.id
 
     try {
-      await LabelService.delete('id', id)
+      await LabelService.delete(id)
 
       session.flash('success', ResponseMessages.LABEL_DELETED)
       return response.redirect().toRoute('labels.index')

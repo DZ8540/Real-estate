@@ -1,5 +1,5 @@
 import BaseValidator from '../BaseValidator'
-import { OwnerTypes } from 'Contracts/enums'
+import { OwnerTypes } from 'Contracts/users'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 

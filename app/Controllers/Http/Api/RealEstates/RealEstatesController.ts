@@ -35,7 +35,7 @@ export default class RealEstatesController {
     let uuid: RealEstate['uuid'] = params.uuid
 
     try {
-      let item: RealEstate = await RealEstateService.get({ column: 'uuid', val: uuid, relations: ['images', 'user'] })
+      let item: RealEstate = await RealEstateService.get(uuid, { relations: ['images', 'user'] })
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, item))
     } catch (err: Error | any) {

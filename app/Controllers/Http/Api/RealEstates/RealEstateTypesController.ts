@@ -9,7 +9,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 export default class RealEstateTypesController {
   public async all({ response }: HttpContextContract) {
     try {
-      let realEstateTypes: RealEstateType[] = await RealEstateTypeService.getAll(['id', 'slug', 'name'], 'estates')
+      let realEstateTypes: RealEstateType[] = await RealEstateTypeService.getAll({ relations: ['estates'] })
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, realEstateTypes))
     } catch (err: Error | any) {

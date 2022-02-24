@@ -1,11 +1,8 @@
-import BaseValidator from '../BaseValidator'
-import Label from 'App/Models/Services/Label'
+import BaseValidator from 'App/Validators/BaseValidator'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class LabelValidator extends BaseValidator {
-  private readonly currentLabelId: Label['id'] | null = this.ctx.params.id ?? null
-
+export default class RealEstatesWishListValidator extends BaseValidator {
   constructor(protected ctx: HttpContextContract) {
     super()
   }
@@ -30,11 +27,13 @@ export default class LabelValidator extends BaseValidator {
    *    ```
    */
   public schema = schema.create({
-    name: schema.string({}, [
-      rules.required(),
-      rules.unique({ table: 'labels', column: 'name', whereNot: { id: this.currentLabelId } }),
-      rules.minLength(2),
-      rules.maxLength(30),
+    userId: schema.number([
+      rules.unsigned(),
+      rules.exists({ table: 'users', column: 'id' }),
+    ]),
+    realEstateId: schema.number([
+      rules.unsigned(),
+      rules.exists({ table: 'realEstates', column: 'id' }),
     ]),
   })
 

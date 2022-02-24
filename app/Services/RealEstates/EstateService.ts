@@ -2,12 +2,11 @@ import BaseService from '../BaseService'
 import Logger from '@ioc:Adonis/Core/Logger'
 import Estate from 'App/Models/RealEstates/Estate'
 import EstateValidator from 'App/Validators/RealEstates/EstateValidator'
-import { ExtractModelRelations } from '@ioc:Adonis/Lucid/Orm'
-import { Error, GetAllConfig, GetConfig } from 'Contracts/services'
+import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
 export default class EstateService extends BaseService {
-  public static async getAll(columns: typeof Estate['columns'][number][], relations?: ExtractModelRelations<Estate>[]): Promise<Estate[]> {
+  public static async getAll(columns: typeof Estate['columns'][number][] = [], { relations }: ServiceConfig<Estate>): Promise<Estate[]> {
     let query = Estate.query().select(columns)
 
     if (relations) {
@@ -19,31 +18,22 @@ export default class EstateService extends BaseService {
     return await query
   }
 
-  public static async paginate({ baseURL, page, columns, limit, orderBy, orderByColumn, relations }: GetAllConfig<typeof Estate['columns'][number], Estate>): Promise<Estate[]> {
-    if (!columns)
-      columns = ['id', 'name', 'slug', 'realEstateTypeId']
-
+  public static async paginate(config: PaginateConfig<typeof Estate['columns'][number], Estate>, columns: typeof Estate['columns'][number][] = ['id', 'name', 'slug', 'realEstateTypeId']): Promise<Estate[]> {
     let query = Estate.query().select(columns)
-    if (relations) {
-      for (let item of relations) {
+    if (config.relations) {
+      for (let item of config.relations) {
         query = query.preload(item)
       }
     }
 
-    return await query.get({
-      baseURL,
-      page,
-      limit,
-      orderBy,
-      orderByColumn,
-    })
+    return await query.get(config)
   }
 
-  public static async get({ column, val, relations }: GetConfig<Estate>): Promise<Estate> {
+  public static async get(slug: Estate['slug'], config: ServiceConfig<Estate> = {}): Promise<Estate> {
     let item: Estate | null
 
     try {
-      item = await Estate.findBy(column, val)
+      item = await Estate.findBy('slug', slug, { client: config.trx })
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
@@ -53,8 +43,8 @@ export default class EstateService extends BaseService {
       if (!item)
         throw new Error()
 
-      if (relations) {
-        for (let relationItem of relations) {
+      if (config.relations) {
+        for (let relationItem of config.relations) {
           await item.load(relationItem)
         }
       }
@@ -66,29 +56,25 @@ export default class EstateService extends BaseService {
     }
   }
 
-  public static async create(payload: EstateValidator['schema']['props']): Promise<Estate> {
+  public static async create(payload: EstateValidator['schema']['props'], { trx }: ServiceConfig<Estate> = {}): Promise<Estate> {
     try {
-      return await Estate.create(payload)
+      return await Estate.create(payload, { client: trx })
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
   }
 
-  public static async update(column: typeof Estate['columns'][number], val: any, payload: EstateValidator['schema']['props']): Promise<Estate> {
-    let item: Estate | null
+  public static async update(slug: Estate['slug'], payload: EstateValidator['schema']['props'], config: ServiceConfig<Estate> = {}): Promise<Estate> {
+    let item: Estate
 
     try {
-      item = await Estate.findBy(column, val)
-    } catch (err: any) {
-      Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+      item = await this.get(slug, config)
+    } catch (err: Error | any) {
+      throw err
     }
 
     try {
-      if (!item)
-        throw new Error()
-
       return await item.merge(payload).save()
     } catch (err: any) {
       Logger.error(err)
@@ -96,20 +82,16 @@ export default class EstateService extends BaseService {
     }
   }
 
-  public static async delete(column: typeof Estate['columns'][number], val: any): Promise<void> {
-    let item: Estate | null
+  public static async delete(slug: Estate['slug'], config: ServiceConfig<Estate> = {}): Promise<void> {
+    let item: Estate
 
     try {
-      item = await Estate.findBy(column, val)
-    } catch (err: any) {
-      Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+      item = await this.get(slug, config)
+    } catch (err: Error | any) {
+      throw err
     }
 
     try {
-      if (!item)
-        throw new Error()
-
       await item.delete()
     } catch (err: any) {
       Logger.error(err)

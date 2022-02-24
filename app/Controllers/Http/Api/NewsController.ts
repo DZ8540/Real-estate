@@ -31,10 +31,10 @@ export default class NewsController {
   }
 
   public async get({ params, response }: HttpContextContract) {
-    let id: News['id'] = params.id
+    let slug: News['slug'] = params.slug
 
     try {
-      let item: News = await NewsService.get({ column: 'id', val: id })
+      let item: News = await NewsService.get(slug)
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, item))
     } catch (err: Error | any) {

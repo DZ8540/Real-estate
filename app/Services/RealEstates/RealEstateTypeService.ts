@@ -2,26 +2,27 @@ import BaseService from '../BaseService'
 import Logger from '@ioc:Adonis/Core/Logger'
 import RealEstateType from 'App/Models/RealEstates/RealEstateType'
 import RealEstateTypeValidator from 'App/Validators/RealEstates/RealEstateTypeValidator'
-import { Error, GetConfig } from 'Contracts/services'
-import { ExtractModelRelations } from '@ioc:Adonis/Lucid/Orm'
+import { Error, ServiceConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
 export default class RealEstateTypeService extends BaseService {
-  public static async getAll(columns: typeof RealEstateType['columns'][number][] = ['id', 'slug', 'name'], relation?: ExtractModelRelations<RealEstateType>): Promise<RealEstateType[]> {
+  public static async getAll({ relations }: ServiceConfig<RealEstateType> = {}, columns: typeof RealEstateType['columns'][number][] = ['id', 'slug', 'name']): Promise<RealEstateType[]> {
     let query = RealEstateType.query().select(columns)
 
-    if (relation) {
-      query = query.preload(relation)
+    if (relations) {
+      for (let item of relations) {
+        query = query.preload(item)
+      }
     }
 
     return await query
   }
 
-  public static async get({ column, val, trx }: GetConfig<RealEstateType>): Promise<RealEstateType> {
+  public static async get(slug: RealEstateType['slug'], { trx }: ServiceConfig<RealEstateType> = {}): Promise<RealEstateType> {
     let item: RealEstateType | null
 
     try {
-      item = await RealEstateType.findBy(column, val, { client: trx })
+      item = await RealEstateType.findBy('slug', slug, { client: trx })
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
@@ -38,23 +39,22 @@ export default class RealEstateTypeService extends BaseService {
     }
   }
 
-  public static async create(payload: RealEstateTypeValidator['schema']['props']): Promise<RealEstateType> {
+  public static async create(payload: RealEstateTypeValidator['schema']['props'], { trx }: ServiceConfig<RealEstateType> = {}): Promise<RealEstateType> {
     try {
-      return (await RealEstateType.create(payload))!
+      return (await RealEstateType.create(payload, { client: trx }))!
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
   }
 
-  public static async update({ column, val }: GetConfig<RealEstateType>, payload: RealEstateTypeValidator['schema']['props']): Promise<RealEstateType> {
-    let item: RealEstateType | null
+  public static async update(slug: RealEstateType['slug'], payload: RealEstateTypeValidator['schema']['props'], config: ServiceConfig<RealEstateType> = {}): Promise<RealEstateType> {
+    let item: RealEstateType
 
     try {
-      item = await RealEstateType.findBy(column, val)
-    } catch (err: any) {
-      Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+      item = await this.get(slug, config)
+    } catch (err: Error | any) {
+      throw err
     }
 
     try {
@@ -68,14 +68,13 @@ export default class RealEstateTypeService extends BaseService {
     }
   }
 
-  public static async delete(column: typeof RealEstateType['columns'][number], val: any): Promise<void> {
-    let item: RealEstateType | null
+  public static async delete(slug: RealEstateType['slug'], config: ServiceConfig<RealEstateType> = {}): Promise<void> {
+    let item: RealEstateType
 
     try {
-      item = await RealEstateType.findBy(column, val)
-    } catch (err: any) {
-      Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+      item = await this.get(slug, config)
+    } catch (err: Error | any) {
+      throw err
     }
 
     try {

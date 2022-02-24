@@ -27,10 +27,10 @@ export default class RealEstatesController {
   // public async store({}: HttpContextContract) {}
 
   public async show({ params, view, session, response }: HttpContextContract) {
-    let id: RealEstate['id'] = params.id
+    let uuid: RealEstate['uuid'] = params.id
 
     try {
-      let item: RealEstate = await RealEstateService.get({ column: 'id', val: id, relations: ['user', 'estate', 'images'] })
+      let item: RealEstate = await RealEstateService.get(uuid, { relations: ['user', 'estate', 'images'] })
 
       return view.render('pages/realEstates/show', { item })
     } catch (err: Error | any) {
@@ -40,11 +40,11 @@ export default class RealEstatesController {
   }
 
   public async edit({ params, view, session, response }: HttpContextContract) {
-    let id: RealEstate['id'] = params.id
+    let uuid: RealEstate['uuid'] = params.id
 
     try {
-      let estates: Estate[] = await EstateService.getAll(['id', 'name', 'realEstateTypeId'], ['realEstateType'])
-      let item: RealEstate = await RealEstateService.get({ column: 'id', val: id, relations: ['user', 'images'] })
+      let estates: Estate[] = await EstateService.getAll(['id', 'name', 'realEstateTypeId'], { relations: ['realEstateType'] })
+      let item: RealEstate = await RealEstateService.get(uuid, { relations: ['user', 'images'] })
 
       return view.render('pages/realEstates/edit', {
         item, estates, TRANSACTION_TYPES,
@@ -60,11 +60,11 @@ export default class RealEstatesController {
   }
 
   public async update({ request, response, session, params }: HttpContextContract) {
-    let id: RealEstate['id'] = params.id
+    let uuid: RealEstate['uuid'] = params.id
     let payload = await request.validate(RealEstateValidator)
 
     try {
-      await RealEstateService.update({ column: 'id', val: id }, payload)
+      await RealEstateService.update(uuid, payload)
 
       session.flash('success', ResponseMessages.REAL_ESTATE_UPDATED)
       return response.redirect().toRoute('real_estates.index')
@@ -75,10 +75,10 @@ export default class RealEstatesController {
   }
 
   public async destroy({ session, response, params }: HttpContextContract) {
-    let id: RealEstate['id'] = params.id
+    let uuid: RealEstate['uuid'] = params.id
 
     try {
-      await RealEstateService.delete('id', id)
+      await RealEstateService.delete(uuid)
 
       session.flash('success', ResponseMessages.REAL_ESTATE_DELETED)
     } catch (err: Error | any) {
@@ -89,10 +89,10 @@ export default class RealEstatesController {
   }
 
   public async block({ params, response, session }: HttpContextContract) {
-    let id: RealEstate['id'] = params.id
+    let uuid: RealEstate['uuid'] = params.id
 
     try {
-      await RealEstateService.block('id', id)
+      await RealEstateService.block(uuid)
 
       session.flash('success', ResponseMessages.REAL_ESTATE_BLOCKED)
     } catch (err: Error | any) {
@@ -103,10 +103,10 @@ export default class RealEstatesController {
   }
 
   public async unblock({ params, response, session }: HttpContextContract) {
-    let id: RealEstate['id'] = params.id
+    let uuid: RealEstate['uuid'] = params.id
 
     try {
-      await RealEstateService.unblock('id', id)
+      await RealEstateService.unblock(uuid)
 
       session.flash('success', ResponseMessages.REAL_ESTATE_UNBLOCKED)
     } catch (err: Error | any) {

@@ -16,11 +16,6 @@ export enum ExperienceTypes {
   BEFORE_TEN_YEAR = 3,
 }
 
-export enum OwnerTypes {
-  OWNER = 0,
-  AGENT = 1,
-}
-
 export enum TransactionTypes {
   RENT = 0,
   SALE = 1,

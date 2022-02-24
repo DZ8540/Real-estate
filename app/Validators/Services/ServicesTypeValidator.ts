@@ -1,9 +1,10 @@
 import BaseValidator from '../BaseValidator'
+import ServicesType from 'App/Models/Services/ServicesType'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class ServicesTypeValidator extends BaseValidator {
-  private readonly currentId: number | null = this.ctx.params.id ?? null
+  private readonly currentSlug: ServicesType['slug'] | null = this.ctx.params.id ?? null
 
   constructor(protected ctx: HttpContextContract) {
     super()
@@ -30,7 +31,7 @@ export default class ServicesTypeValidator extends BaseValidator {
    */
   public schema = schema.create({
     slug: schema.string.optional({}, [
-      rules.unique({ table: 'servicesTypes', column: 'slug', whereNot: { id: this.currentId } }),
+      rules.unique({ table: 'servicesTypes', column: 'slug', whereNot: { slug: this.currentSlug } }),
       rules.maxLength(30),
       rules.minLength(2),
     ]),

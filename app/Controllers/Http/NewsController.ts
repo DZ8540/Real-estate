@@ -33,10 +33,10 @@ export default class NewsController {
   }
 
   public async show({ view, response, params, session }: HttpContextContract) {
-    let id: News['id'] = params.id
+    let slug: News['slug'] = params.id
 
     try {
-      let item: News = await NewsService.get({ column: 'id', val: id })
+      let item: News = await NewsService.get(slug)
 
       return view.render('pages/news/show', { item })
     } catch (err: Error | any) {
@@ -46,10 +46,10 @@ export default class NewsController {
   }
 
   public async edit({ view, response, params, session }: HttpContextContract) {
-    let id: News['id'] = params.id
+    let slug: News['slug'] = params.id
 
     try {
-      let item: News = await NewsService.get({ column: 'id', val: id })
+      let item: News = await NewsService.get(slug)
 
       return view.render('pages/news/edit', { item })
     } catch (err: Error | any) {
@@ -59,11 +59,11 @@ export default class NewsController {
   }
 
   public async update({ request, response, session, params }: HttpContextContract) {
-    let id: News['id'] = params.id
+    let slug: News['slug'] = params.id
     let payload = await request.validate(NewsValidator)
 
     try {
-      await NewsService.update({ column: 'id', val: id }, payload)
+      await NewsService.update(slug, payload)
 
       session.flash('success', ResponseMessages.NEWS_UPDATED)
       return response.redirect().toRoute('news.index')
@@ -74,10 +74,10 @@ export default class NewsController {
   }
 
   public async destroy({ response, params, session }: HttpContextContract) {
-    let id: News['id'] = params.id
+    let slug: News['slug'] = params.id
 
     try {
-      await NewsService.delete('id', id)
+      await NewsService.delete(slug)
 
       session.flash('success', ResponseMessages.NEWS_DELETED)
     } catch (err: Error | any) {

@@ -50,6 +50,6 @@ export default class UserSeeder extends BaseSeeder {
       }
     ])
 
-    await UserFactory.with('realEstates', 4).createMany(50)
+    await UserFactory.with('realEstatesWishList', 4).createMany(50)
   }
 }

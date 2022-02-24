@@ -31,10 +31,10 @@ export default class RealEstateTypesController {
   }
 
   public async show({ view, response, params, session }: HttpContextContract) {
-    let id: RealEstateType['id'] = params.id
+    let slug: RealEstateType['slug'] = params.id
 
     try {
-      let item: RealEstateType = await RealEstateTypeService.get({ column: 'id', val: id })
+      let item: RealEstateType = await RealEstateTypeService.get(slug)
 
       return view.render('pages/realEstateTypes/show', { item })
     } catch (err: Error | any) {
@@ -44,10 +44,10 @@ export default class RealEstateTypesController {
   }
 
   public async edit({ view, response, params, session }: HttpContextContract) {
-    let id: RealEstateType['id'] = params.id
+    let slug: RealEstateType['slug'] = params.id
 
     try {
-      let item: RealEstateType = await RealEstateTypeService.get({ column: 'id', val: id })
+      let item: RealEstateType = await RealEstateTypeService.get(slug)
 
       return view.render('pages/realEstateTypes/edit', { item })
     } catch (err: Error | any) {
@@ -57,11 +57,11 @@ export default class RealEstateTypesController {
   }
 
   public async update({ request, response, session, params }: HttpContextContract) {
-    let id: RealEstateType['id'] = params.id
+    let slug: RealEstateType['slug'] = params.id
     let payload = await request.validate(RealEstateTypeValidator)
 
     try {
-      await RealEstateTypeService.update({ column: 'id', val: id }, payload)
+      await RealEstateTypeService.update(slug, payload)
 
       session.flash('success', ResponseMessages.REAL_ESTATE_TYPES_UPDATED)
       return response.redirect().toRoute('real_estate_types.index')
@@ -72,10 +72,10 @@ export default class RealEstateTypesController {
   }
 
   public async destroy({ response, params, session }: HttpContextContract) {
-    let id: RealEstateType['id'] = params.id
+    let slug: RealEstateType['slug'] = params.id
 
     try {
-      await RealEstateTypeService.delete('id', id)
+      await RealEstateTypeService.delete(slug)
 
       session.flash('success', ResponseMessages.REAL_ESTATE_TYPES_DELETED)
     } catch (err: Error | any) {

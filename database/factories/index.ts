@@ -9,11 +9,12 @@ import RoleService from 'App/Services/Users/RoleService'
 import RealEstate from 'App/Models/RealEstates/RealEstate'
 import ServicesType from 'App/Models/Services/ServicesType'
 import RealEstateType from 'App/Models/RealEstates/RealEstateType'
+import { OwnerTypes } from 'Contracts/users'
 import {
   BalconyTypes, ElevatorTypes, HouseBuildingTypes,
-  HouseTypes, LayoutTypes, OwnerTypes,
+  HouseTypes, LayoutTypes, PrepaymentTypes,
   RepairTypes, Roles, RoomsTypes,
-  TransactionTypes, WCTypes, PrepaymentTypes,
+  TransactionTypes, WCTypes,
 } from 'Contracts/enums'
 
 export const UserFactory = Factory
@@ -29,7 +30,7 @@ export const UserFactory = Factory
       }
     })
   })
-  .relation('realEstates', () => RealEstateFactory)
+  .relation('realEstatesWishList', () => RealEstateFactory)
   .build()
 
 export const NewsFactory = Factory

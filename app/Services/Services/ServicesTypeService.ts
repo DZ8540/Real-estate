@@ -2,7 +2,7 @@ import BaseService from '../BaseService'
 import Logger from '@ioc:Adonis/Core/Logger'
 import ServicesType from 'App/Models/Services/ServicesType'
 import ServicesTypeValidator from 'App/Validators/Services/ServicesTypeValidator'
-import { Error, GetConfig } from 'Contracts/services'
+import { Error, ServiceConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
 export default class ServicesTypeService extends BaseService {
@@ -10,11 +10,11 @@ export default class ServicesTypeService extends BaseService {
     return await ServicesType.query().select(columns)
   }
 
-  public static async get({ column, val, trx }: GetConfig<ServicesType>): Promise<ServicesType> {
+  public static async get(slug: ServicesType['slug'], { trx }: ServiceConfig<ServicesType> = {}): Promise<ServicesType> {
     let item: ServicesType | null
 
     try {
-      item = await ServicesType.findBy(column, val, { client: trx })
+      item = await ServicesType.findBy('slug', slug, { client: trx })
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
@@ -31,29 +31,26 @@ export default class ServicesTypeService extends BaseService {
     }
   }
 
-  public static async create(payload: ServicesTypeValidator['schema']['props']): Promise<ServicesType> {
+  public static async create(payload: ServicesTypeValidator['schema']['props'], { trx }: ServiceConfig<ServicesType> = {}): Promise<ServicesType> {
     try {
-      return (await ServicesType.create(payload))!
+      return (await ServicesType.create(payload, { client: trx }))!
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
   }
 
-  public static async update({ column, val }: GetConfig<ServicesType>, payload: ServicesTypeValidator['schema']['props']): Promise<ServicesType> {
-    let item: ServicesType | null
+  public static async update(slug: ServicesType['slug'], payload: ServicesTypeValidator['schema']['props'], config: ServiceConfig<ServicesType> = {}): Promise<ServicesType> {
+    let item: ServicesType
 
     try {
-      item = await ServicesType.findBy(column, val)
+      item = await this.get(slug, config)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
 
     try {
-      if (!item)
-        throw new Error()
-
       return await item.merge(payload).save()
     } catch (err: any) {
       Logger.error(err)
@@ -61,20 +58,17 @@ export default class ServicesTypeService extends BaseService {
     }
   }
 
-  public static async delete(column: typeof ServicesType['columns'][number], val: any): Promise<void> {
-    let item: ServicesType | null
+  public static async delete(slug: ServicesType['slug'], config: ServiceConfig<ServicesType> = {}): Promise<void> {
+    let item: ServicesType
 
     try {
-      item = await ServicesType.findBy(column, val)
+      item = await this.get(slug, config)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
 
     try {
-      if (!item)
-        throw new Error()
-
       await item.delete()
     } catch (err: any) {
       Logger.error(err)

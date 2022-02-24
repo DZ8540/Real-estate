@@ -47,8 +47,8 @@
                         </svg>
                       </button>
                       <div class="dropdown-menu" style="">
-                        <a class="dropdown-item" href="{{ route('users.show', { id: item.user.id }) }}">Показать пользователя</a>
-                        <a class="dropdown-item" href="{{ route('real_estates.show', { id: item.realEstate.id }) }}">Показать объявление</a>
+                        <a class="dropdown-item" href="{{ route('users.show', { uuid: item.user.uuid }) }}">Показать пользователя</a>
+                        <a class="dropdown-item" href="{{ route('real_estates.show', { id: item.realEstate.uuid }) }}">Показать объявление</a>
 
                         <form action="{{ route('real_estates_reports.destroy', {}, { qs: { _method: 'DELETE' } }) }}" method="POST">
                           <button type="submit" class="dropdown-item">Удалить</button>

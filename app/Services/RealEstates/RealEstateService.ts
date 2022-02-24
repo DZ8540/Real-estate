@@ -6,29 +6,26 @@ import RealEstate from 'App/Models/RealEstates/RealEstate'
 import RealEstateValidator from 'App/Validators/RealEstates/RealEstateValidator'
 import RealEstateApiValidator from 'App/Validators/Api/RealEstates/RealEstateValidator'
 import { REAL_ESTATE_PATH } from 'Config/drive'
-import { Error, GetAllConfig, GetConfig } from 'Contracts/services'
+import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
 export default class RealEstateService extends BaseService {
-  public static async getAll({ baseURL, page, columns, limit, orderBy, orderByColumn, relations }: GetAllConfig<typeof RealEstate['columns'][number], RealEstate>): Promise<RealEstate[]> {
-    if (!columns)
-      columns = ['id', 'image', 'userId', 'roomType', 'price', 'totalArea', 'houseType', 'createdAt']
-
+  public static async getAll(config: PaginateConfig<typeof RealEstate['columns'][number], RealEstate>, columns: typeof RealEstate['columns'][number][] = ['id', 'uuid', 'image', 'userId', 'roomType', 'price', 'totalArea', 'houseType', 'createdAt']): Promise<RealEstate[]> {
     let query = RealEstate.query().select(columns)
-    if (relations) {
-      for (let item of relations) {
+    if (config.relations) {
+      for (let item of config.relations) {
         query = query.preload(item)
       }
     }
 
-    return await query.get({ baseURL, page, limit, orderBy, orderByColumn })
+    return await query.get(config)
   }
 
-  public static async get({ column, val, relations }: GetConfig<RealEstate>): Promise<RealEstate> {
+  public static async get(uuid: RealEstate['uuid'], config: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
     let item: RealEstate | null
 
     try {
-      item = await RealEstate.findBy(column, val)
+      item = await RealEstate.findBy('uuid', uuid, { client: config.trx })
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
@@ -38,8 +35,8 @@ export default class RealEstateService extends BaseService {
       throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.REAL_ESTATE_NOT_FOUND } as Error
 
     try {
-      if (relations) {
-        for (let relationItem of relations) {
+      if (config.relations) {
+        for (let relationItem of config.relations) {
           await item.load(relationItem)
         }
       }
@@ -51,11 +48,13 @@ export default class RealEstateService extends BaseService {
     }
   }
 
-  public static async create(payload: RealEstateValidator['schema']['props']): Promise<RealEstate> {
+  public static async create(payload: RealEstateValidator['schema']['props'], { trx }: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
     let item: RealEstate
     let image: string | undefined
     let imageBasePath: string
-    let trx = await Database.transaction()
+
+    if (!trx)
+      trx = await Database.transaction()
 
     try {
       item = await RealEstate.create({ ...payload, image }, { client: trx })
@@ -93,14 +92,16 @@ export default class RealEstateService extends BaseService {
     return item
   }
 
-  public static async update({ column, val }: GetConfig<RealEstate>, payload: RealEstateValidator['schema']['props']): Promise<RealEstate> {
+  public static async update(uuid: RealEstate['uuid'], payload: RealEstateValidator['schema']['props'], { trx }: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
     let item: RealEstate
     let image: string | undefined
-    let trx = await Database.transaction()
     let imageBasePath: string
 
+    if (!trx)
+      trx = await Database.transaction()
+
     try {
-      item = await this.get({ column, val, trx })
+      item = await this.get(uuid, { trx })
 
       imageBasePath = `${REAL_ESTATE_PATH}/${item.uuid}`
     } catch (err: Error | any) {
@@ -150,12 +151,14 @@ export default class RealEstateService extends BaseService {
     }
   }
 
-  public static async delete(column: typeof RealEstate['columns'][number], val: any): Promise<void> {
+  public static async delete(uuid: RealEstate['uuid'], { trx }: ServiceConfig<RealEstate> = {}): Promise<void> {
     let item: RealEstate
-    let trx = await Database.transaction()
+
+    if (!trx)
+      trx = await Database.transaction()
 
     try {
-      item = await this.get({ column, val, trx })
+      item = await this.get(uuid, { trx })
     } catch (err: Error | any) {
       await trx.rollback()
 
@@ -191,17 +194,17 @@ export default class RealEstateService extends BaseService {
     }
   }
 
-  public static async block(column: typeof RealEstate['columns'][number], val: any): Promise<RealEstate> {
+  public static async block(uuid: RealEstate['uuid'], { trx }: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
     try {
-      return (await this.get({ column, val })).merge({ isBanned: true }).save()
+      return (await this.get(uuid, { trx })).merge({ isBanned: true }).save()
     } catch (err: Error | any) {
       throw err
     }
   }
 
-  public static async unblock(column: typeof RealEstate['columns'][number], val: any): Promise<RealEstate> {
+  public static async unblock(uuid: RealEstate['uuid'], { trx }: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
     try {
-      return (await this.get({ column, val })).merge({ isBanned: false }).save()
+      return (await this.get(uuid, { trx })).merge({ isBanned: false }).save()
     } catch (err: Error | any) {
       throw err
     }

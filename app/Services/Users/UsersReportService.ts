@@ -1,24 +1,22 @@
 import Logger from '@ioc:Adonis/Core/Logger'
 import UsersReport from 'App/Models/Users/UsersReport'
-import { Error, GetAllConfig, GetConfig } from 'Contracts/services'
+import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
 export default class UsersReportService {
-  public static async paginate(config: GetAllConfig<typeof UsersReport['columns'][number], UsersReport>): Promise<UsersReport[]> {
-    if (!config.columns)
-      config.columns = ['id', 'fromId', 'toId', 'createdAt']
+  public static async paginate(config: PaginateConfig<typeof UsersReport['columns'][number], UsersReport>, columns: typeof UsersReport['columns'][number][] = ['id', 'fromId', 'toId', 'createdAt']): Promise<UsersReport[]> {
+    let query = UsersReport.query().select(columns)
 
-    let query = UsersReport.query()
     if (config.relations) {
       for (let item of config.relations) {
         query = query.preload(item)
       }
     }
 
-    return await query.select(config.columns).get(config)
+    return await query.get(config)
   }
 
-  public static async get(config: GetConfig<UsersReport>): Promise<UsersReport> {
+  public static async get(config: ServiceConfig<UsersReport>): Promise<UsersReport> {
     let item: UsersReport | null
 
     try {
@@ -53,7 +51,7 @@ export default class UsersReportService {
     }
   }
 
-  public static async delete(config: GetConfig<UsersReport>): Promise<void> {
+  public static async delete(config: ServiceConfig<UsersReport>): Promise<void> {
     let item: UsersReport
 
     try {

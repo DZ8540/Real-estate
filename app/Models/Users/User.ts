@@ -6,12 +6,13 @@ import RoleService from 'App/Services/Users/RoleService'
 import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
 import { v4 as uuid } from 'uuid'
+import { OWNER_TYPES } from 'Config/users'
+import { Roles, Sex } from 'Contracts/enums'
 import { IMG_PLACEHOLDER } from 'Config/drive'
-import { OwnerTypes, Roles, Sex } from 'Contracts/enums'
 import {
   BaseModel, beforeSave, BelongsTo,
   belongsTo, column, computed,
-  ManyToMany, manyToMany
+  ManyToMany, manyToMany, ModelObject
 } from '@ioc:Adonis/Lucid/Orm'
 
 export default class User extends BaseModel {
@@ -82,14 +83,7 @@ export default class User extends BaseModel {
 
   @computed()
   public get ownerTypeForUser(): string {
-    switch (this.ownerType) {
-      case OwnerTypes.OWNER:
-        return 'Собственник'
-      case OwnerTypes.AGENT:
-        return 'Агент'
-      default:
-        return ''
-    }
+    return OWNER_TYPES[this.ownerType]
   }
 
   @computed()
@@ -114,7 +108,7 @@ export default class User extends BaseModel {
 
   @computed()
   public get createdAtForUser(): string {
-    return this.createdAt.setLocale('ru-RU').toFormat('yyyy.MM.dd')
+    return this.createdAt?.setLocale('ru-RU').toFormat('yyyy.MM.dd')
   }
 
   @computed()
@@ -179,5 +173,25 @@ export default class User extends BaseModel {
 
   public async avatarUrl(): Promise<string> {
     return this.avatar ? await Drive.getUrl(this.avatar) : IMG_PLACEHOLDER
+  }
+
+  public serializeForToken(): ModelObject {
+    return this.serialize({
+      fields: {
+        omit: [
+          'isBanned', 'createdAt', 'isActivated',
+          'roleId', 'updatedAt', 'isActivatedForUser',
+          'isBannedForUser'
+        ] as typeof User['columns'][number][],
+      },
+      relations: {
+        realEstatesWishList: {
+          fields: ['id'],
+        },
+        realEstatesReports: {
+          fields: ['id'],
+        }
+      }
+    })
   }
 }

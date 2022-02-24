@@ -1,8 +1,8 @@
 import ServicesType from 'App/Models/Services/ServicesType'
 import ServicesTypeService from 'App/Services/Services/ServicesTypeService'
 import ServicesTypeValidator from 'App/Validators/Services/ServicesTypeValidator'
-import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResponseMessages } from 'Contracts/response'
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class ServicesTypesController {
   public async index({ view }: HttpContextContract) {
@@ -32,10 +32,10 @@ export default class ServicesTypesController {
   // public async show({}: HttpContextContract) {}
 
   public async edit({ params, view, session, response }: HttpContextContract) {
-    let id: ServicesType['id'] = params.id
+    let slug: ServicesType['slug'] = params.id
 
     try {
-      let item: ServicesType = await ServicesTypeService.get({ column: 'id', val: id })
+      let item: ServicesType = await ServicesTypeService.get(slug)
 
       return view.render('pages/servicesTypes/edit', { item })
     } catch (err: Error | any) {
@@ -45,11 +45,11 @@ export default class ServicesTypesController {
   }
 
   public async update({ request, params, session, response }: HttpContextContract) {
-    let id: ServicesType['id'] = params.id
+    let slug: ServicesType['slug'] = params.id
     let payload = await request.validate(ServicesTypeValidator)
 
     try {
-      await ServicesTypeService.update({ column: 'id', val: id }, payload)
+      await ServicesTypeService.update(slug, payload)
 
       session.flash('success', ResponseMessages.SERVICES_TYPES_UPDATED)
       return response.redirect().toRoute('services_types.index')
@@ -60,10 +60,10 @@ export default class ServicesTypesController {
   }
 
   public async destroy({ params, session, response }: HttpContextContract) {
-    let id: ServicesType['id'] = params.id
+    let slug: ServicesType['slug'] = params.id
 
     try {
-      await ServicesTypeService.delete('id', id)
+      await ServicesTypeService.delete(slug)
 
       session.flash('success', ResponseMessages.SERVICES_TYPES_DELETED)
     } catch (err: Error | any) {

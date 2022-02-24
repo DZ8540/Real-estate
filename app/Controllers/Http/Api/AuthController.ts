@@ -74,16 +74,7 @@ export default class AuthController {
       return response
         .status(200)
         .send(ResponseService.success(ResponseMessages.USER_LOGIN, {
-          user: user.serialize({
-            relations: {
-              realEstatesWishList: {
-                fields: ['id'],
-              },
-              realEstatesReports: {
-                fields: ['id'],
-              },
-            },
-          }),
+          user: user.serializeForToken(),
           tokens: { access: tokens.access },
         }))
     } catch (err: Error | any) {

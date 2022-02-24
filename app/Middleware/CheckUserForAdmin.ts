@@ -13,7 +13,7 @@ export default class CheckUserForAdmin {
       if (!currentUser)
         throw new Error(errorMsg)
 
-      await AuthService.checkAdmin(currentUser.id)
+      await AuthService.checkAdmin(currentUser.uuid)
     } catch (err: Error | any) {
       Logger.error(err)
 

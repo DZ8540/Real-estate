@@ -47,10 +47,10 @@
                         </svg>
                       </button>
                       <div class="dropdown-menu" style="">
-                        <a class="dropdown-item" href="{{ route('real_estate_types.show', { id: item.id }) }}">Показать</a>
-                        <a class="dropdown-item" href="{{ route('real_estate_types.edit', { id: item.id }) }}">Редактировать</a>
+                        <a class="dropdown-item" href="{{ route('real_estate_types.show', { id: item.slug }) }}">Показать</a>
+                        <a class="dropdown-item" href="{{ route('real_estate_types.edit', { id: item.slug }) }}">Редактировать</a>
 
-                        <form action="{{ route('real_estate_types.destroy', { id: item.id }, { qs: { _method: 'DELETE' } }) }}" method="POST">
+                        <form action="{{ route('real_estate_types.destroy', { id: item.slug }, { qs: { _method: 'DELETE' } }) }}" method="POST">
                           <button type="submit" class="dropdown-item">Удалить</button>
 
                           {{ csrfField() }}

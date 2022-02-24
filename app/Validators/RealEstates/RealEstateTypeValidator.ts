@@ -1,9 +1,10 @@
 import BaseValidator from '../BaseValidator'
+import RealEstateType from 'App/Models/RealEstates/RealEstateType'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class RealEstateTypeValidator extends BaseValidator {
-  private readonly currentId: number = this.ctx.params.id ?? null
+  private readonly currentSlug: RealEstateType['slug'] | null = this.ctx.params.id ?? null
 
   constructor(protected ctx: HttpContextContract) {
     super()
@@ -30,7 +31,7 @@ export default class RealEstateTypeValidator extends BaseValidator {
    */
   public schema = schema.create({
     slug: schema.string.optional({}, [
-      rules.unique({ table: 'realEstateTypes', column: 'slug', whereNot: { id: this.currentId } }),
+      rules.unique({ table: 'realEstateTypes', column: 'slug', whereNot: { slug: this.currentSlug } }),
     ]),
     name: schema.string({}, [
       rules.required(),

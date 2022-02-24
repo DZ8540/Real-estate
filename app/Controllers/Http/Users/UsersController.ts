@@ -14,10 +14,10 @@ export default class UsersController extends BaseController {
   }
 
   public async show({ view, params, session, response }: HttpContextContract) {
-    let id: number = params.id
+    let uuid: User['uuid'] = params.uuid
 
     try {
-      let item: User = await UserService.get({ column: 'id', val: id })
+      let item: User = await UserService.get(uuid)
 
       return view.render('pages/users/show', { item })
     } catch (err: Error | any) {
@@ -27,10 +27,10 @@ export default class UsersController extends BaseController {
   }
 
   public async block({ response, params, session }: HttpContextContract) {
-    let id: number = params.id
+    let uuid: User['uuid'] = params.uuid
 
     try {
-      await UserService.block({ column: 'id', val: id })
+      await UserService.block(uuid)
 
       session.flash('success', ResponseMessages.USER_BLOCKED)
     } catch (err: Error | any) {
@@ -41,10 +41,10 @@ export default class UsersController extends BaseController {
   }
 
   public async unblock({ response, params, session }: HttpContextContract) {
-    let id: number = params.id
+    let uuid: User['uuid'] = params.uuid
 
     try {
-      await UserService.unblock({ column: 'id', val: id })
+      await UserService.unblock(uuid)
 
       session.flash('success', ResponseMessages.USER_UNBLOCKED)
     } catch (err: Error | any) {

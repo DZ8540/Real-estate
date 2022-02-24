@@ -11,7 +11,7 @@ export default class ServicesController {
   public async index({ view, route, request }: HttpContextContract) {
     let baseURL: string = route!.pattern
     let page: number = request.input('page', 1)
-    let services: Service[] = await ServiceService.getAll({ baseURL, page })
+    let services: Service[] = await ServiceService.getAll({ baseURL, page, relations: ['servicesType', 'user'] })
 
     return view.render('pages/services/index', { services })
   }
@@ -24,7 +24,7 @@ export default class ServicesController {
     let id: Service['id'] = params.id
 
     try {
-      let item: Service = await ServiceService.get({ column: 'id', val: id, relations: ['user', 'servicesType', 'labels'] })
+      let item: Service = await ServiceService.get(id, { relations: ['user', 'servicesType', 'labels'] })
 
       let labels: string[] | string = []
       for (let labelItem of item.labels) {
@@ -45,7 +45,7 @@ export default class ServicesController {
     try {
       let experienceTypes: string[] = ['До 1 года', 'До 3 лет', 'До 6 лет', 'До 10 лет']
       let servicesTypes: ServicesType[] = await ServicesTypeService.getAll(['id', 'name'])
-      let item: Service = await ServiceService.get({ column: 'id', val: id, relations: ['user', 'servicesType', 'labels'] })
+      let item: Service = await ServiceService.get(id ,{ relations: ['user', 'servicesType', 'labels'] })
 
       let labels: string[] | string = []
       for (let labelItem of item.labels) {
@@ -65,7 +65,7 @@ export default class ServicesController {
     let payload = await request.validate(ServiceValidator)
 
     try {
-      await ServiceService.update({ column: 'id', val: id }, payload)
+      await ServiceService.update(id, payload)
 
       session.flash('success', ResponseMessages.SERVICE_UPDATED)
       return response.redirect().toRoute('services.index')
@@ -79,7 +79,7 @@ export default class ServicesController {
     let id: Service['id'] = params.id
 
     try {
-      await ServiceService.delete('id', id)
+      await ServiceService.delete(id)
 
       session.flash('success', ResponseMessages.SERVICE_DELETED)
     } catch (err: Error | any) {
