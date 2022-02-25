@@ -4,11 +4,14 @@ import Drive from '@ioc:Adonis/Core/Drive'
 import Logger from '@ioc:Adonis/Core/Logger'
 import NewsValidator from 'App/Validators/NewsValidator'
 import { NEWS_PATH } from 'Config/drive'
-import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
+import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
+
+type Columns = typeof News['columns'][number]
+type ValidatorPayload = NewsValidator['schema']['props']
 
 export default class NewsService extends BaseService {
-  public static async getAll(config: PaginateConfig<typeof News['columns'][number]>, columns: typeof News['columns'][number][] = ['id', 'image', 'title', 'slug', 'createdAt']): Promise<News[]> {
+  public static async getAll(config: PaginateConfig<Columns>, columns: Columns[] = ['id', 'image', 'title', 'slug', 'createdAt']): Promise<News[]> {
     return await News.query().select(columns).get(config)
   }
 
@@ -33,7 +36,7 @@ export default class NewsService extends BaseService {
     }
   }
 
-  public static async create(payload: NewsValidator['schema']['props'], { trx }: ServiceConfig<News> = {}): Promise<News> {
+  public static async create(payload: ValidatorPayload, { trx }: ServiceConfig<News> = {}): Promise<News> {
     let image: News['image'] = undefined
 
     if (payload.image) {
@@ -57,7 +60,7 @@ export default class NewsService extends BaseService {
     }
   }
 
-  public static async update(slug: News['slug'], payload: NewsValidator['schema']['props'], { trx }: ServiceConfig<News> = {}): Promise<News> {
+  public static async update(slug: News['slug'], payload: ValidatorPayload, { trx }: ServiceConfig<News> = {}): Promise<News> {
     let item: News
     let image: News['image'] = undefined
 

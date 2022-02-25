@@ -3,8 +3,12 @@ import User from '../Users/User'
 import ServicesType from './ServicesType'
 import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { ExperienceTypes } from 'Contracts/enums'
-import { BaseModel, BelongsTo, belongsTo, column, computed, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
+import { EXPERIENCE_TYPES } from 'Config/services'
+import {
+  BaseModel, BelongsTo, belongsTo,
+  column, computed, ManyToMany,
+  manyToMany
+} from '@ioc:Adonis/Lucid/Orm'
 
 export default class Service extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
@@ -23,7 +27,7 @@ export default class Service extends BaseModel {
   @column()
   public description: string
 
-  @column()
+  @column({ serializeAs: null })
   public isBanned: boolean
 
   @column({ columnName: 'user_id' })
@@ -35,26 +39,19 @@ export default class Service extends BaseModel {
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serializeAs: null,
+  })
   public updatedAt: DateTime
 
   @computed()
-  public get experienceTypeForUser(): string {
-    switch (this.experienceType) {
-      case ExperienceTypes.BEFORE_ONE_YEAR:
-        return 'До 1 года'
-      case ExperienceTypes.BEFORE_THREE_YEAR:
-        return 'До 3 лет'
-      case ExperienceTypes.BEFORE_SIX_YEAR:
-        return 'До 6 лет'
-      case ExperienceTypes.BEFORE_TEN_YEAR:
-        return 'До 10 лет'
-      default:
-        return ''
-    }
+  public get experienceTypeForUser(): typeof EXPERIENCE_TYPES[number] {
+    return EXPERIENCE_TYPES[this.experienceType]
   }
 
-  @computed()
+  @computed({ serializeAs: null })
   public get isBannedForUser(): string {
     return this.isBanned ? 'Да' : 'Нет'
   }

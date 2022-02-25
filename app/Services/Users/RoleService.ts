@@ -1,7 +1,7 @@
 import Role from 'App/Models/Users/Role'
 import BaseService from '../BaseService'
 import Logger from '@ioc:Adonis/Core/Logger'
-import { Roles } from 'Contracts/enums'
+import { Roles } from 'Contracts/users'
 import { Error } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 

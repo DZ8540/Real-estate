@@ -1,5 +1,6 @@
 import Role from './Role'
 import Hash from '@ioc:Adonis/Core/Hash'
+import Service from '../Services/Service'
 import Drive from '@ioc:Adonis/Core/Drive'
 import RealEstate from '../RealEstates/RealEstate'
 import RoleService from 'App/Services/Users/RoleService'
@@ -7,11 +8,13 @@ import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
 import { v4 as uuid } from 'uuid'
 import { OWNER_TYPES } from 'Config/users'
-import { Roles, Sex } from 'Contracts/enums'
+import { Roles, Sex } from 'Contracts/users'
 import { IMG_PLACEHOLDER } from 'Config/drive'
 import {
   BaseModel, beforeSave, BelongsTo,
   belongsTo, column, computed,
+  HasMany,
+  hasMany,
   ManyToMany, manyToMany, ModelObject
 } from '@ioc:Adonis/Lucid/Orm'
 
@@ -162,6 +165,12 @@ export default class User extends BaseModel {
 
   @belongsTo(() => Role)
   public role: BelongsTo<typeof Role>
+
+  @hasMany(() => Service)
+  public services: HasMany<typeof Service>
+
+  @hasMany(() => RealEstate)
+  public realEstates: HasMany<typeof RealEstate>
 
   @manyToMany(() => RealEstate, {
     pivotTable: 'realEstatesWishlists',

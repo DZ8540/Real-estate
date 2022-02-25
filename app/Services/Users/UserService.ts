@@ -5,8 +5,10 @@ import RegisterValidator from 'App/Validators/Auth/RegisterValidator'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
+type Columns = typeof User['columns'][number]
+
 export default class UserService extends BaseService {
-  public static async getAll(config: PaginateConfig<typeof User['columns'][number]>, columns: typeof User['columns'][number][] = ['id', 'uuid', 'firstName', 'lastName', 'email', 'isBanned', 'createdAt']): Promise<User[]> {
+  public static async getAll(config: PaginateConfig<Columns>, columns: Columns[] = ['id', 'uuid', 'firstName', 'lastName', 'email', 'isBanned', 'createdAt']): Promise<User[]> {
     try {
       return await User.query().select(columns).get(config)
     } catch (err: any) {

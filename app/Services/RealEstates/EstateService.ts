@@ -2,11 +2,14 @@ import BaseService from '../BaseService'
 import Logger from '@ioc:Adonis/Core/Logger'
 import Estate from 'App/Models/RealEstates/Estate'
 import EstateValidator from 'App/Validators/RealEstates/EstateValidator'
-import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
+import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
+
+type Columns = typeof Estate['columns'][number]
+type ValidatorPayload = EstateValidator['schema']['props']
 
 export default class EstateService extends BaseService {
-  public static async getAll(columns: typeof Estate['columns'][number][] = [], { relations }: ServiceConfig<Estate>): Promise<Estate[]> {
+  public static async getAll(columns: Columns[] = [], { relations }: ServiceConfig<Estate>): Promise<Estate[]> {
     let query = Estate.query().select(columns)
 
     if (relations) {
@@ -18,7 +21,7 @@ export default class EstateService extends BaseService {
     return await query
   }
 
-  public static async paginate(config: PaginateConfig<typeof Estate['columns'][number], Estate>, columns: typeof Estate['columns'][number][] = ['id', 'name', 'slug', 'realEstateTypeId']): Promise<Estate[]> {
+  public static async paginate(config: PaginateConfig<Columns, Estate>, columns: Columns[] = ['id', 'name', 'slug', 'realEstateTypeId']): Promise<Estate[]> {
     let query = Estate.query().select(columns)
     if (config.relations) {
       for (let item of config.relations) {
@@ -56,7 +59,7 @@ export default class EstateService extends BaseService {
     }
   }
 
-  public static async create(payload: EstateValidator['schema']['props'], { trx }: ServiceConfig<Estate> = {}): Promise<Estate> {
+  public static async create(payload: ValidatorPayload, { trx }: ServiceConfig<Estate> = {}): Promise<Estate> {
     try {
       return await Estate.create(payload, { client: trx })
     } catch (err: any) {
@@ -65,7 +68,7 @@ export default class EstateService extends BaseService {
     }
   }
 
-  public static async update(slug: Estate['slug'], payload: EstateValidator['schema']['props'], config: ServiceConfig<Estate> = {}): Promise<Estate> {
+  public static async update(slug: Estate['slug'], payload: ValidatorPayload, config: ServiceConfig<Estate> = {}): Promise<Estate> {
     let item: Estate
 
     try {

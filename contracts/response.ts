@@ -46,6 +46,7 @@ export enum ResponseMessages {
   SERVICE_UPDATED = 'Услуга была успешно обновлена!',
   SERVICE_DELETED = 'Услуга была успешно удалена!',
   SERVICE_NOT_FOUND = 'Услуга не найдена!',
+  SERVICE_TYPE_DIFFERENT = 'Тип услуги должен быть одинаковый у всех услуг!',
 
   ESTATE_CREATED = 'Объект был успешно создан и опубликован!',
   ESTATE_UPDATED = 'Объект был успешно обновлен!',

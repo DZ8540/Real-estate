@@ -4,8 +4,11 @@ import RealEstatesReportValidator from 'App/Validators/Api/RealEstates/RealEstat
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
+type Columns = typeof RealEstatesReport['columns'][number]
+type ValidatorPayload = RealEstatesReportValidator['schema']['props']
+
 export default class RealEstatesReportService {
-  public static async paginate(config: PaginateConfig<typeof RealEstatesReport['columns'][number], RealEstatesReport>, columns: typeof RealEstatesReport['columns'][number][] = ['id', 'realEstateId', 'userId', 'createdAt']): Promise<RealEstatesReport[]> {
+  public static async paginate(config: PaginateConfig<Columns, RealEstatesReport>, columns: Columns[] = ['id', 'realEstateId', 'userId', 'createdAt']): Promise<RealEstatesReport[]> {
     let query = RealEstatesReport.query()
 
     if (config.relations) {
@@ -17,7 +20,7 @@ export default class RealEstatesReportService {
     return await query.select(columns).get(config)
   }
 
-  public static async get(payload: RealEstatesReportValidator['schema']['props'], config: ServiceConfig<RealEstatesReport> = {}): Promise<RealEstatesReport> {
+  public static async get(payload: ValidatorPayload, config: ServiceConfig<RealEstatesReport> = {}): Promise<RealEstatesReport> {
     let item: RealEstatesReport | null
 
     try {
@@ -45,7 +48,7 @@ export default class RealEstatesReportService {
     }
   }
 
-  public static async create(payload: RealEstatesReportValidator['schema']['props'], { trx }: ServiceConfig<RealEstatesReport> = {}): Promise<RealEstatesReport> {
+  public static async create(payload: ValidatorPayload, { trx }: ServiceConfig<RealEstatesReport> = {}): Promise<RealEstatesReport> {
     try {
       return await RealEstatesReport.create(payload, { client: trx })
     } catch (err: any) {
@@ -54,7 +57,7 @@ export default class RealEstatesReportService {
     }
   }
 
-  public static async delete(payload: RealEstatesReportValidator['schema']['props'], config: ServiceConfig<RealEstatesReport> = {}): Promise<void> {
+  public static async delete(payload: ValidatorPayload, config: ServiceConfig<RealEstatesReport> = {}): Promise<void> {
     let item: RealEstatesReport
 
     try {

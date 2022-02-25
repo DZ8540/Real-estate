@@ -119,6 +119,8 @@ Route.group(() => {
     Route.post('/servicesTypes', 'Api/Services/ServicesTypesController.all')
 
     Route.post('/services', 'Api/Services/ServicesController.all')
+
+    Route.post('/users/:id', 'Api/UsersController.get')
   }).middleware('CheckAccessToken')
 
   Route.post('/messages/addImages', 'Api/MessagesController.addImages')

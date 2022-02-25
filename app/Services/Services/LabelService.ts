@@ -5,8 +5,11 @@ import LabelValidator from 'App/Validators/Services/LabelValidator'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
+type Columns = typeof Label['columns'][number]
+type ValidatorPayload = LabelValidator['schema']['props']
+
 export default class LabelService extends BaseService {
-  public static async getAll(config: PaginateConfig<typeof Label['columns'][number]>, columns: typeof Label['columns'][number][] = ['id', 'name', 'createdAt']): Promise<Label[]> {
+  public static async getAll(config: PaginateConfig<Columns>, columns: Columns[] = ['id', 'name', 'createdAt']): Promise<Label[]> {
     let query = Label.query().select(columns)
 
     if (config.relations) {
@@ -50,7 +53,7 @@ export default class LabelService extends BaseService {
     return item
   }
 
-  public static async create(payload: LabelValidator['schema']['props'], { trx }: ServiceConfig<Label> = {}): Promise<Label> {
+  public static async create(payload: ValidatorPayload, { trx }: ServiceConfig<Label> = {}): Promise<Label> {
     try {
       return await Label.create(payload, { client: trx })
     } catch (err: any) {
@@ -59,7 +62,7 @@ export default class LabelService extends BaseService {
     }
   }
 
-  public static async update(id: Label['id'], payload: LabelValidator['schema']['props']): Promise<Label> {
+  public static async update(id: Label['id'], payload: ValidatorPayload): Promise<Label> {
     let item: Label
 
     try {

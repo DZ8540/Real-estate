@@ -6,8 +6,10 @@ import { LucidRow } from '@ioc:Adonis/Lucid/Orm'
 import { Error, ServiceConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
+type ValidatorPayload = RealEstatesWishListValidator['schema']['props']
+
 export default class RealEstatesWishListService {
-  public static async create(payload: RealEstatesWishListValidator['schema']['props'], { trx }: ServiceConfig<LucidRow> = {}): Promise<void> {
+  public static async create(payload: ValidatorPayload, { trx }: ServiceConfig<LucidRow> = {}): Promise<void> {
     let user: User
 
     try {
@@ -24,7 +26,7 @@ export default class RealEstatesWishListService {
     }
   }
 
-  public static async delete(payload: RealEstatesWishListValidator['schema']['props'], { trx }: ServiceConfig<LucidRow> = {}): Promise<void> {
+  public static async delete(payload: ValidatorPayload, { trx }: ServiceConfig<LucidRow> = {}): Promise<void> {
     let user: User
 
     try {

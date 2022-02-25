@@ -30,3 +30,10 @@ export type RefreshRefreshTokenConfig = {
   ua: TokenCredentials['ua'],
   ip: TokenCredentials['ip'],
 }
+
+export enum ExperienceTypes {
+  BEFORE_ONE_YEAR = 0,
+  BEFORE_THREE_YEAR = 1,
+  BEFORE_SIX_YEAR = 2,
+  BEFORE_TEN_YEAR = 3,
+}

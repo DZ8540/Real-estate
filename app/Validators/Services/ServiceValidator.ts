@@ -1,5 +1,5 @@
 import BaseValidator from '../BaseValidator'
-import { ExperienceTypes } from 'Contracts/enums'
+import { ExperienceTypes } from 'Contracts/services'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 

@@ -5,6 +5,8 @@ import ServicesTypeValidator from 'App/Validators/Services/ServicesTypeValidator
 import { Error, ServiceConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
+type ValidatorPayload = ServicesTypeValidator['schema']['props']
+
 export default class ServicesTypeService extends BaseService {
   public static async getAll(columns: typeof ServicesType['columns'][number][] = ['id', 'slug', 'name']): Promise<ServicesType[]> {
     return await ServicesType.query().select(columns)
@@ -31,7 +33,7 @@ export default class ServicesTypeService extends BaseService {
     }
   }
 
-  public static async create(payload: ServicesTypeValidator['schema']['props'], { trx }: ServiceConfig<ServicesType> = {}): Promise<ServicesType> {
+  public static async create(payload: ValidatorPayload, { trx }: ServiceConfig<ServicesType> = {}): Promise<ServicesType> {
     try {
       return (await ServicesType.create(payload, { client: trx }))!
     } catch (err: any) {
@@ -40,7 +42,7 @@ export default class ServicesTypeService extends BaseService {
     }
   }
 
-  public static async update(slug: ServicesType['slug'], payload: ServicesTypeValidator['schema']['props'], config: ServiceConfig<ServicesType> = {}): Promise<ServicesType> {
+  public static async update(slug: ServicesType['slug'], payload: ValidatorPayload, config: ServiceConfig<ServicesType> = {}): Promise<ServicesType> {
     let item: ServicesType
 
     try {

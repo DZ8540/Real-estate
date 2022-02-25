@@ -1,7 +1,9 @@
 import BaseService from '../BaseService'
+import User from 'App/Models/Users/User'
 import LabelService from './LabelService'
 import Logger from '@ioc:Adonis/Core/Logger'
 import Label from 'App/Models/Services/Label'
+import UserService from '../Users/UserService'
 import Service from 'App/Models/Services/Service'
 import Database from '@ioc:Adonis/Lucid/Database'
 import ServiceValidator from 'App/Validators/Services/ServiceValidator'
@@ -10,8 +12,11 @@ import { removeLastLetter } from '../../../helpers'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
+type Columns = typeof Service['columns'][number]
+type ValidatorPayload = ServiceValidator['schema']['props']
+
 export default class ServiceService extends BaseService {
-  public static async getAll(config: PaginateConfig<typeof Service['columns'][number], Service>, columns: typeof Service['columns'][number][] = ['id', 'experienceType', 'isBanned', 'userId', 'servicesTypeId', 'createdAt']): Promise<Service[]> {
+  public static async getAll(config: PaginateConfig<Columns, Service>, columns: Columns[] = ['id', 'experienceType', 'isBanned', 'userId', 'servicesTypeId', 'createdAt']): Promise<Service[]> {
     let query = Service.query().select(columns)
 
     if (config.relations) {
@@ -50,8 +55,14 @@ export default class ServiceService extends BaseService {
     }
   }
 
-  public static async create(payload: ServiceValidator['schema']['props'], { trx }: ServiceConfig<Service> = {}): Promise<Service> {
+  public static async create(payload: ValidatorPayload, { trx }: ServiceConfig<Service> = {}): Promise<Service> {
     let item: Service
+
+    try {
+      await this.checkUserServiceType(payload.userId, payload.servicesTypeId)
+    } catch (err: Error | any) {
+      throw err
+    }
 
     if (!trx)
       trx = await Database.transaction()
@@ -92,8 +103,14 @@ export default class ServiceService extends BaseService {
     return item
   }
 
-  public static async update(id: Service['id'], payload: ServiceValidator['schema']['props'], config: ServiceConfig<Service> = {}): Promise<Service> {
+  public static async update(id: Service['id'], payload: ValidatorPayload, config: ServiceConfig<Service> = {}): Promise<Service> {
     let item: Service
+
+    try {
+      await this.checkUserServiceType(payload.userId, payload.servicesTypeId)
+    } catch (err: Error | any) {
+      throw err
+    }
 
     if (!config.trx)
       config.trx = await Database.transaction()
@@ -212,6 +229,18 @@ export default class ServiceService extends BaseService {
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  private static async checkUserServiceType(userId: User['id'], currentServiceTypeId: Service['servicesTypeId']): Promise<void> {
+    let user: User = await UserService.getById(userId, { relations: ['services'] })
+    let serviceTypeId: Service['servicesTypeId'] = user.services[0].servicesTypeId
+
+    if (currentServiceTypeId != serviceTypeId) {
+      let message: ResponseMessages = ResponseMessages.SERVICE_TYPE_DIFFERENT
+
+      Logger.error(message)
+      throw { code: ResponseCodes.CLIENT_ERROR, message: message } as Error
     }
   }
 }

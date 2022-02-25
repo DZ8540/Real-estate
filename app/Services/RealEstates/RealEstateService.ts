@@ -10,8 +10,11 @@ import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { removeFirstWord, removeLastLetter } from '../../../helpers'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
+type Columns = typeof RealEstate['columns'][number]
+type ValidatorPayload = RealEstateValidator['schema']['props']
+
 export default class RealEstateService extends BaseService {
-  public static async getAll(config: PaginateConfig<typeof RealEstate['columns'][number], RealEstate>, columns: typeof RealEstate['columns'][number][] = ['id', 'uuid', 'image', 'userId', 'roomType', 'price', 'totalArea', 'houseType', 'createdAt']): Promise<RealEstate[]> {
+  public static async getAll(config: PaginateConfig<Columns, RealEstate>, columns: Columns[] = ['id', 'uuid', 'image', 'userId', 'roomType', 'price', 'totalArea', 'houseType', 'createdAt']): Promise<RealEstate[]> {
     let query = RealEstate.query().select(columns)
     if (config.relations) {
       for (let item of config.relations) {
@@ -49,7 +52,7 @@ export default class RealEstateService extends BaseService {
     }
   }
 
-  public static async create(payload: RealEstateValidator['schema']['props'], { trx }: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
+  public static async create(payload: ValidatorPayload, { trx }: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
     let item: RealEstate
     let image: string | undefined
     let imageBasePath: string
@@ -93,7 +96,7 @@ export default class RealEstateService extends BaseService {
     return item
   }
 
-  public static async update(uuid: RealEstate['uuid'], payload: RealEstateValidator['schema']['props'], { trx }: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
+  public static async update(uuid: RealEstate['uuid'], payload: ValidatorPayload, { trx }: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
     let item: RealEstate
     let image: string | undefined
     let imageBasePath: string

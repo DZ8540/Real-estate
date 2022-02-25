@@ -5,6 +5,8 @@ import RealEstateTypeValidator from 'App/Validators/RealEstates/RealEstateTypeVa
 import { Error, ServiceConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
+type ValidatorPayload = RealEstateTypeValidator['schema']['props']
+
 export default class RealEstateTypeService extends BaseService {
   public static async getAll({ relations }: ServiceConfig<RealEstateType> = {}, columns: typeof RealEstateType['columns'][number][] = ['id', 'slug', 'name']): Promise<RealEstateType[]> {
     let query = RealEstateType.query().select(columns)
@@ -39,7 +41,7 @@ export default class RealEstateTypeService extends BaseService {
     }
   }
 
-  public static async create(payload: RealEstateTypeValidator['schema']['props'], { trx }: ServiceConfig<RealEstateType> = {}): Promise<RealEstateType> {
+  public static async create(payload: ValidatorPayload, { trx }: ServiceConfig<RealEstateType> = {}): Promise<RealEstateType> {
     try {
       return (await RealEstateType.create(payload, { client: trx }))!
     } catch (err: any) {
@@ -48,7 +50,7 @@ export default class RealEstateTypeService extends BaseService {
     }
   }
 
-  public static async update(slug: RealEstateType['slug'], payload: RealEstateTypeValidator['schema']['props'], config: ServiceConfig<RealEstateType> = {}): Promise<RealEstateType> {
+  public static async update(slug: RealEstateType['slug'], payload: ValidatorPayload, config: ServiceConfig<RealEstateType> = {}): Promise<RealEstateType> {
     let item: RealEstateType
 
     try {
