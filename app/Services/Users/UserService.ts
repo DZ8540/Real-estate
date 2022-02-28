@@ -2,13 +2,14 @@ import User from 'App/Models/Users/User'
 import BaseService from '../BaseService'
 import Logger from '@ioc:Adonis/Core/Logger'
 import RegisterValidator from 'App/Validators/Auth/RegisterValidator'
+import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
 type Columns = typeof User['columns'][number]
 
 export default class UserService extends BaseService {
-  public static async getAll(config: PaginateConfig<Columns>, columns: Columns[] = ['id', 'uuid', 'firstName', 'lastName', 'email', 'isBanned', 'createdAt']): Promise<User[]> {
+  public static async paginate(config: PaginateConfig<Columns>, columns: Columns[] = []): Promise<ModelPaginatorContract<User>> {
     try {
       return await User.query().select(columns).get(config)
     } catch (err: any) {

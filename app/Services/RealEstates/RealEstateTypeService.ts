@@ -8,7 +8,7 @@ import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 type ValidatorPayload = RealEstateTypeValidator['schema']['props']
 
 export default class RealEstateTypeService extends BaseService {
-  public static async getAll({ relations }: ServiceConfig<RealEstateType> = {}, columns: typeof RealEstateType['columns'][number][] = ['id', 'slug', 'name']): Promise<RealEstateType[]> {
+  public static async getAll({ relations }: ServiceConfig<RealEstateType> = {}, columns: typeof RealEstateType['columns'][number][] = []): Promise<RealEstateType[]> {
     let query = RealEstateType.query().select(columns)
 
     if (relations) {

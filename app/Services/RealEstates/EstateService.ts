@@ -2,6 +2,7 @@ import BaseService from '../BaseService'
 import Logger from '@ioc:Adonis/Core/Logger'
 import Estate from 'App/Models/RealEstates/Estate'
 import EstateValidator from 'App/Validators/RealEstates/EstateValidator'
+import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
@@ -21,7 +22,7 @@ export default class EstateService extends BaseService {
     return await query
   }
 
-  public static async paginate(config: PaginateConfig<Columns, Estate>, columns: Columns[] = ['id', 'name', 'slug', 'realEstateTypeId']): Promise<Estate[]> {
+  public static async paginate(config: PaginateConfig<Columns, Estate>, columns: Columns[] = []): Promise<ModelPaginatorContract<Estate>> {
     let query = Estate.query().select(columns)
     if (config.relations) {
       for (let item of config.relations) {

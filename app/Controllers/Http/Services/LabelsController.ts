@@ -9,7 +9,9 @@ export default class LabelsController {
   public async index({ view, request, route }: HttpContextContract) {
     let page: number = request.input('page', 1)
     let baseURL: string = route!.pattern
-    let labels: Label[] = await LabelService.getAll({ baseURL, page })
+
+    let columns: typeof Label['columns'][number][] = ['id', 'name', 'createdAt']
+    let labels: Label[] = await LabelService.paginate({ baseURL, page }, columns)
 
     return view.render('pages/labels/index', { labels })
   }

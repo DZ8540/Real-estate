@@ -9,6 +9,7 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import ServiceValidator from 'App/Validators/Services/ServiceValidator'
 import ServiceApiValidator from 'App/Validators/Api/Services/ServiceValidator'
 import { removeLastLetter } from '../../../helpers'
+import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
@@ -16,7 +17,7 @@ type Columns = typeof Service['columns'][number]
 type ValidatorPayload = ServiceValidator['schema']['props']
 
 export default class ServiceService extends BaseService {
-  public static async getAll(config: PaginateConfig<Columns, Service>, columns: Columns[] = ['id', 'experienceType', 'isBanned', 'userId', 'servicesTypeId', 'createdAt']): Promise<Service[]> {
+  public static async paginate(config: PaginateConfig<Columns, Service>, columns: Columns[] = []): Promise<ModelPaginatorContract<Service>> {
     let query = Service.query().select(columns)
 
     if (config.relations) {

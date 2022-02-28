@@ -19,7 +19,7 @@ type Columns = typeof RealEstate['columns'][number]
 type ValidatorPayload = RealEstateValidator['schema']['props']
 
 export default class RealEstateService extends BaseService {
-  public static async getAll(config: PaginateConfig<Columns, RealEstate>, columns: Columns[] = ['id', 'uuid', 'image', 'userId', 'roomType', 'price', 'totalArea', 'houseType', 'createdAt']): Promise<ModelPaginatorContract<RealEstate>> {
+  public static async paginate(config: PaginateConfig<Columns, RealEstate>, columns: Columns[] = []): Promise<ModelPaginatorContract<RealEstate>> {
     let query = RealEstate.query().select(columns)
     if (config.relations) {
       for (let item of config.relations) {

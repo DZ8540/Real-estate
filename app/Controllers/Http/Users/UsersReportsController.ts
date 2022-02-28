@@ -7,7 +7,9 @@ export default class UsersReportsController {
   public async index({ view, route, request }: HttpContextContract) {
     let baseURL: string = route!.pattern
     let page: number = request.input('page', 1)
-    let reports: UsersReport[] = await UsersReportService.paginate({ baseURL, page, relations: ['from', 'to'] })
+
+    let columns: typeof UsersReport['columns'][number][] = ['id', 'fromId', 'toId', 'createdAt']
+    let reports: UsersReport[] = await UsersReportService.paginate({ baseURL, page, relations: ['from', 'to'] }, columns)
 
     return view.render('pages/usersReports', { reports })
   }

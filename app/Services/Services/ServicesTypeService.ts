@@ -8,7 +8,7 @@ import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 type ValidatorPayload = ServicesTypeValidator['schema']['props']
 
 export default class ServicesTypeService extends BaseService {
-  public static async getAll(columns: typeof ServicesType['columns'][number][] = ['id', 'slug', 'name']): Promise<ServicesType[]> {
+  public static async getAll(columns: typeof ServicesType['columns'][number][] = []): Promise<ServicesType[]> {
     return await ServicesType.query().select(columns)
   }
 

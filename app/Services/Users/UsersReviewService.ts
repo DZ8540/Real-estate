@@ -10,7 +10,7 @@ type Columns = typeof UsersReview['columns'][number]
 type UsersReviewPayload = UsersReviewValidator['schema']['props']
 
 export default class UsersReviewService {
-  public static async paginate(config: PaginateConfig<Columns, UsersReview>, columns: Columns[] = ['id', 'rating', 'fromId', 'toId', 'createdAt']): Promise<ModelPaginatorContract<UsersReview>> {
+  public static async paginate(config: PaginateConfig<Columns, UsersReview>, columns: Columns[] = []): Promise<ModelPaginatorContract<UsersReview>> {
     let query = UsersReview.query()
     if (config.relations) {
       for (let item of config.relations) {

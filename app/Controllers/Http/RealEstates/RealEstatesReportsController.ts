@@ -9,7 +9,9 @@ export default class RealEstatesReportsController {
   public async index({ view, route, request }: HttpContextContract) {
     let baseURL: string = route!.pattern
     let page: number = request.input('page', 1)
-    let reports: RealEstatesReport[] = await RealEstatesReportService.paginate({ baseURL, page, relations: ['realEstate', 'user'] })
+
+    let columns: typeof RealEstatesReport['columns'][number][] = ['id', 'realEstateId', 'userId', 'createdAt']
+    let reports: RealEstatesReport[] = await RealEstatesReportService.paginate({ baseURL, page, relations: ['realEstate', 'user'] }, columns)
 
     return view.render('pages/realEstatesReports', { reports })
   }

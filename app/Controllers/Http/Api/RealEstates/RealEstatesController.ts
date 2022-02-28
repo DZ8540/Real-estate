@@ -82,7 +82,7 @@ export default class RealEstatesController {
     }
 
     try {
-      let popularRealEstates: ModelPaginatorContract<RealEstate> = await RealEstateService.getAll({ page: 1, limit: payload.limit, orderByColumn: 'viewsCount', orderBy: 'desc' }, [])
+      let popularRealEstates: ModelPaginatorContract<RealEstate> = await RealEstateService.paginate({ page: 1, limit: payload.limit, orderByColumn: 'viewsCount', orderBy: 'desc' }, [])
       let data = popularRealEstates.toJSON().data
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, data))

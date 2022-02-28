@@ -9,7 +9,9 @@ export default class NewsController {
   public async index({ view, route, request }: HttpContextContract) {
     let baseURL: string = route!.pattern
     let page: number = request.input('page', 1)
-    let news: News[] = await NewsService.getAll({ baseURL, page })
+
+    let columns: typeof News['columns'][number][] = ['id', 'image', 'title', 'slug', 'createdAt']
+    let news: News[] = await NewsService.paginate({ baseURL, page }, columns)
 
     return view.render('pages/news/index', { news })
   }

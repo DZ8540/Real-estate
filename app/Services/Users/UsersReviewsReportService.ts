@@ -1,10 +1,11 @@
 import Logger from '@ioc:Adonis/Core/Logger'
 import UsersReviewsReport from 'App/Models/Users/UsersReviewsReport'
+import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { Error, GetAllConfig, GetConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
 export default class UsersReviewsReportService {
-  public static async paginate(config: GetAllConfig<typeof UsersReviewsReport['columns'][number], UsersReviewsReport>): Promise<UsersReviewsReport[]> {
+  public static async paginate(config: GetAllConfig<typeof UsersReviewsReport['columns'][number], UsersReviewsReport>): Promise<ModelPaginatorContract<UsersReviewsReport>> {
     if (!config.columns)
       config.columns = ['id', 'usersReviewId', 'userId', 'createdAt']
 

@@ -1,12 +1,13 @@
 import Logger from '@ioc:Adonis/Core/Logger'
 import UsersReport from 'App/Models/Users/UsersReport'
+import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
 type Columns = typeof UsersReport['columns'][number]
 
 export default class UsersReportService {
-  public static async paginate(config: PaginateConfig<Columns, UsersReport>, columns: Columns[] = ['id', 'fromId', 'toId', 'createdAt']): Promise<UsersReport[]> {
+  public static async paginate(config: PaginateConfig<Columns, UsersReport>, columns: Columns[] = []): Promise<ModelPaginatorContract<UsersReport>> {
     let query = UsersReport.query().select(columns)
 
     if (config.relations) {

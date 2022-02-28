@@ -4,6 +4,7 @@ import Drive from '@ioc:Adonis/Core/Drive'
 import Logger from '@ioc:Adonis/Core/Logger'
 import NewsValidator from 'App/Validators/NewsValidator'
 import { NEWS_PATH } from 'Config/drive'
+import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
@@ -11,7 +12,7 @@ type Columns = typeof News['columns'][number]
 type ValidatorPayload = NewsValidator['schema']['props']
 
 export default class NewsService extends BaseService {
-  public static async getAll(config: PaginateConfig<Columns>, columns: Columns[] = ['id', 'image', 'title', 'slug', 'createdAt']): Promise<News[]> {
+  public static async paginate(config: PaginateConfig<Columns>, columns: Columns[] = []): Promise<ModelPaginatorContract<News>> {
     return await News.query().select(columns).get(config)
   }
 

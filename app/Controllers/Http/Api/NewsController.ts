@@ -4,8 +4,8 @@ import ApiValidator from 'App/Validators/Api/ApiValidator'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
 import { Error } from 'Contracts/services'
-import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
 export default class NewsController {
   public async all({ request, response }: HttpContextContract) {
@@ -22,7 +22,7 @@ export default class NewsController {
     }
 
     try {
-      let news: News[] = await NewsService.getAll(payload)
+      let news: News[] = await NewsService.paginate(payload)
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, news))
     } catch (err: Error | any) {

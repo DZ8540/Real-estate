@@ -2,6 +2,7 @@ import BaseService from '../BaseService'
 import Logger from '@ioc:Adonis/Core/Logger'
 import Label from 'App/Models/Services/Label'
 import LabelValidator from 'App/Validators/Services/LabelValidator'
+import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
@@ -9,7 +10,7 @@ type Columns = typeof Label['columns'][number]
 type ValidatorPayload = LabelValidator['schema']['props']
 
 export default class LabelService extends BaseService {
-  public static async getAll(config: PaginateConfig<Columns>, columns: Columns[] = ['id', 'name', 'createdAt']): Promise<Label[]> {
+  public static async paginate(config: PaginateConfig<Columns>, columns: Columns[] = []): Promise<ModelPaginatorContract<Label>> {
     let query = Label.query().select(columns)
 
     if (config.relations) {

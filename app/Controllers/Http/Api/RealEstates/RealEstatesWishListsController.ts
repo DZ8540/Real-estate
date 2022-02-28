@@ -22,7 +22,7 @@ export default class RealEstatesWishListsController {
     try {
       await RealEstatesWishListService.create(payload)
 
-      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS))
+      return response.status(200).send(ResponseService.success(ResponseMessages.REAL_ESTATES_WISHLIST_CREATED))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }
@@ -44,7 +44,7 @@ export default class RealEstatesWishListsController {
     try {
       await RealEstatesWishListService.delete(payload)
 
-      return response.status(200).send(ResponseService.success(ResponseMessages.REAL_ESTATES_REPORT_DELETED))
+      return response.status(200).send(ResponseService.success(ResponseMessages.REAL_ESTATES_WISHLIST_DELETED))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }

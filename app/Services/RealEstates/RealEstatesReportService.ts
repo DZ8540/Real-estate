@@ -1,6 +1,7 @@
 import Logger from '@ioc:Adonis/Core/Logger'
 import RealEstatesReport from 'App/Models/RealEstates/RealEstatesReport'
 import RealEstatesReportValidator from 'App/Validators/Api/RealEstates/RealEstatesReportValidator'
+import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
@@ -8,7 +9,7 @@ type Columns = typeof RealEstatesReport['columns'][number]
 type ValidatorPayload = RealEstatesReportValidator['schema']['props']
 
 export default class RealEstatesReportService {
-  public static async paginate(config: PaginateConfig<Columns, RealEstatesReport>, columns: Columns[] = ['id', 'realEstateId', 'userId', 'createdAt']): Promise<RealEstatesReport[]> {
+  public static async paginate(config: PaginateConfig<Columns, RealEstatesReport>, columns: Columns[] = []): Promise<ModelPaginatorContract<RealEstatesReport>> {
     let query = RealEstatesReport.query()
 
     if (config.relations) {

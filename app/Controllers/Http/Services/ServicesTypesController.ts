@@ -6,7 +6,8 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class ServicesTypesController {
   public async index({ view }: HttpContextContract) {
-    let servicesTypes: ServicesType[] = await ServicesTypeService.getAll()
+    let columns: typeof ServicesType['columns'][number][] = ['id', 'slug', 'name']
+    let servicesTypes: ServicesType[] = await ServicesTypeService.getAll(columns)
 
     return view.render('pages/servicesTypes/index', { servicesTypes })
   }

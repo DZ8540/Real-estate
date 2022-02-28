@@ -8,7 +8,9 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 export default class UsersController extends BaseController {
   public async index({ view, request, route }: HttpContextContract) {
     let page: number = request.input('page', 1)
-    let users: User[] = await UserService.getAll({ page, baseURL: route!.pattern })
+
+    let columns: typeof User['columns'][number][] = ['id', 'uuid', 'firstName', 'lastName', 'email', 'isBanned', 'createdAt']
+    let users: User[] = await UserService.paginate({ page, baseURL: route!.pattern }, columns)
 
     return view.render('pages/users/index', { users })
   }

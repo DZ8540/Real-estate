@@ -8,7 +8,9 @@ export default class UsersReviewsController {
   public async index({ view, route, request }: HttpContextContract) {
     let baseURL: string = route!.pattern
     let page: number = request.input('page', 1)
-    let reviews: UsersReview[] = await UsersReviewService.paginate({ baseURL, page, relations: ['from', 'to'] })
+
+    let columns: typeof UsersReview['columns'][number][] = ['id', 'rating', 'fromId', 'toId', 'createdAt']
+    let reviews: UsersReview[] = await UsersReviewService.paginate({ baseURL, page, relations: ['from', 'to'] }, columns)
 
     return view.render('pages/usersReviews/index', { reviews })
   }

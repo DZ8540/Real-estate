@@ -4,6 +4,7 @@ import ServiceService from 'App/Services/Services/ServiceService'
 import ServiceValidator from 'App/Validators/Services/ServiceValidator'
 import ServicesTypeService from 'App/Services/Services/ServicesTypeService'
 import { Error } from 'Contracts/services'
+import { EXPERIENCE_TYPES } from 'Config/services'
 import { ResponseMessages } from 'Contracts/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
@@ -11,7 +12,9 @@ export default class ServicesController {
   public async index({ view, route, request }: HttpContextContract) {
     let baseURL: string = route!.pattern
     let page: number = request.input('page', 1)
-    let services: Service[] = await ServiceService.getAll({ baseURL, page, relations: ['servicesType', 'user'] })
+
+    let columns: typeof Service['columns'][number][] = ['id', 'experienceType', 'isBanned', 'userId', 'servicesTypeId', 'createdAt']
+    let services: Service[] = await ServiceService.paginate({ baseURL, page, relations: ['servicesType', 'user'] }, columns)
 
     return view.render('pages/services/index', { services })
   }
@@ -43,8 +46,8 @@ export default class ServicesController {
     let id: Service['id'] = params.id
 
     try {
-      let experienceTypes: string[] = ['До 1 года', 'До 3 лет', 'До 6 лет', 'До 10 лет']
-      let servicesTypes: ServicesType[] = await ServicesTypeService.getAll(['id', 'name'])
+      let columns: typeof ServicesType['columns'][number][] = ['id', 'name']
+      let servicesTypes: ServicesType[] = await ServicesTypeService.getAll(columns)
       let item: Service = await ServiceService.get(id ,{ relations: ['user', 'servicesType', 'labels'] })
 
       let labels: string[] | string = []
@@ -53,7 +56,7 @@ export default class ServicesController {
       }
       labels = labels.join(', ')
 
-      return view.render('pages/services/edit', { item, experienceTypes, servicesTypes, labels })
+      return view.render('pages/services/edit', { item, experienceTypes: EXPERIENCE_TYPES, servicesTypes, labels })
     } catch (err: Error | any) {
       session.flash('error', err.message)
       return response.redirect().back()
