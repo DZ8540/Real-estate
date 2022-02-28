@@ -4,7 +4,10 @@ import ExceptionService from 'App/Services/ExceptionService'
 import RealEstateService from 'App/Services/RealEstates/RealEstateService'
 import RealEstateValidator from 'App/Validators/RealEstates/RealEstateValidator'
 import RealEstateApiValidator from 'App/Validators/Api/RealEstates/RealEstateValidator'
+import RealEstatePopularValidator from 'App/Validators/Api/RealEstates/RealEstatePopularValidator'
+import RealEstateRecommendedValidator from 'App/Validators/Api/RealEstates/RealEstateRecommendedValidator'
 import { Error } from 'Contracts/services'
+import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
@@ -59,7 +62,52 @@ export default class RealEstatesController {
     try {
       let item: RealEstate = await RealEstateService.create(payload)
 
-      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, item))
+      return response.status(200).send(ResponseService.success(ResponseMessages.REAL_ESTATE_CREATED, item))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
+  public async popular({ request, response }: HttpContextContract) {
+    let payload: RealEstatePopularValidator['schema']['props']
+
+    try {
+      payload = await request.validate(RealEstatePopularValidator)
+    } catch (err: any) {
+      throw new ExceptionService({
+        code: ResponseCodes.VALIDATION_ERROR,
+        message: ResponseMessages.VALIDATION_ERROR,
+        body: err.messages
+      })
+    }
+
+    try {
+      let popularRealEstates: ModelPaginatorContract<RealEstate> = await RealEstateService.getAll({ page: 1, limit: payload.limit, orderByColumn: 'viewsCount', orderBy: 'desc' }, [])
+      let data = popularRealEstates.toJSON().data
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, data))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
+  public async recommended({ request, response }: HttpContextContract) {
+    let payload: RealEstateRecommendedValidator['schema']['props']
+
+    try {
+      payload = await request.validate(RealEstateRecommendedValidator)
+    } catch (err: any) {
+      throw new ExceptionService({
+        code: ResponseCodes.VALIDATION_ERROR,
+        message: ResponseMessages.VALIDATION_ERROR,
+        body: err.messages
+      })
+    }
+
+    try {
+      let recommended: RealEstate[] = await RealEstateService.recommended(payload)
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, recommended))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }

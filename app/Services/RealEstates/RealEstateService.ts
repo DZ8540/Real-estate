@@ -1,11 +1,16 @@
 import BaseService from '../BaseService'
+import User from 'App/Models/Users/User'
 import Drive from '@ioc:Adonis/Core/Drive'
 import Logger from '@ioc:Adonis/Core/Logger'
+import UserService from '../Users/UserService'
 import Database from '@ioc:Adonis/Lucid/Database'
+import Estate from 'App/Models/RealEstates/Estate'
 import RealEstate from 'App/Models/RealEstates/RealEstate'
 import RealEstateValidator from 'App/Validators/RealEstates/RealEstateValidator'
 import RealEstateApiValidator from 'App/Validators/Api/RealEstates/RealEstateValidator'
+import RealEstateRecommendedValidator from 'App/Validators/Api/RealEstates/RealEstateRecommendedValidator'
 import { REAL_ESTATE_PATH } from 'Config/drive'
+import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { removeFirstWord, removeLastLetter } from '../../../helpers'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
@@ -14,7 +19,7 @@ type Columns = typeof RealEstate['columns'][number]
 type ValidatorPayload = RealEstateValidator['schema']['props']
 
 export default class RealEstateService extends BaseService {
-  public static async getAll(config: PaginateConfig<Columns, RealEstate>, columns: Columns[] = ['id', 'uuid', 'image', 'userId', 'roomType', 'price', 'totalArea', 'houseType', 'createdAt']): Promise<RealEstate[]> {
+  public static async getAll(config: PaginateConfig<Columns, RealEstate>, columns: Columns[] = ['id', 'uuid', 'image', 'userId', 'roomType', 'price', 'totalArea', 'houseType', 'createdAt']): Promise<ModelPaginatorContract<RealEstate>> {
     let query = RealEstate.query().select(columns)
     if (config.relations) {
       for (let item of config.relations) {
@@ -289,6 +294,31 @@ export default class RealEstateService extends BaseService {
       return await query.get({ page: payload.page, limit: payload.limit, orderBy: payload.orderBy })
     } catch (err: any) {
       Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async recommended(payload: RealEstateRecommendedValidator['schema']['props']): Promise<RealEstate[]> {
+    let user: User
+    let recommended: RealEstate[] = []
+
+    try {
+      user = await UserService.getById(payload.userId, { relations: ['realEstatesWishList'] })
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    try {
+      for (let i = 0; i < payload.limit; i++) {
+        let random: number = Math.floor(Math.random() * user.realEstatesWishList.length)
+        let estateId: Estate['id'] = user.realEstatesWishList[random].id
+
+        let realEstateItem: RealEstate = await RealEstate.query().where('estateId', estateId).random()
+        recommended.push(realEstateItem)
+      }
+
+      return recommended
+    } catch (err: any) {
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
   }

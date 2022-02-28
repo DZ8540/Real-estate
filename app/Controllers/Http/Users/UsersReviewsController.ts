@@ -21,7 +21,7 @@ export default class UsersReviewsController {
     let id: UsersReview['id'] = params.id
 
     try {
-      let item: UsersReview = await UsersReviewService.get({ column: 'id', val: id, relations: ['from', 'to'] })
+      let item: UsersReview = await UsersReviewService.get(id, { relations: ['from', 'to'] })
 
       return view.render('pages/usersReviews/show', { item })
     } catch (err: Error | any) {
@@ -34,7 +34,7 @@ export default class UsersReviewsController {
     let id: UsersReview['id'] = params.id
 
     try {
-      let item: UsersReview = await UsersReviewService.get({ column: 'id', val: id, relations: ['from', 'to'] })
+      let item: UsersReview = await UsersReviewService.get(id, { relations: ['from', 'to'] })
 
       return view.render('pages/usersReviews/edit', { item })
     } catch (err: Error | any) {
@@ -48,7 +48,7 @@ export default class UsersReviewsController {
     let payload = await request.validate(UsersReviewValidator)
 
     try {
-      await UsersReviewService.update({ column: 'id', val: id }, payload)
+      await UsersReviewService.update(id, payload)
 
       session.flash('success', ResponseMessages.USERS_REVIEW_UPDATED)
       return response.redirect().toRoute('users_reviews.index')
@@ -62,7 +62,7 @@ export default class UsersReviewsController {
     let id: UsersReview['id'] = params.id
 
     try {
-      await UsersReviewService.delete({ column: 'id', val: id })
+      await UsersReviewService.delete(id)
 
       session.flash('success', ResponseMessages.USERS_REVIEW_DELETED)
     } catch (err: Error | any) {
