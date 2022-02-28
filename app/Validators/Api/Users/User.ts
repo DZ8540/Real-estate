@@ -1,9 +1,9 @@
-import BaseValidator from '../BaseValidator'
-import { OwnerTypes } from 'Config/users'
+import BaseValidator from 'App/Validators/BaseValidator'
+import { Sex } from 'Config/users'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class RegisterValidator extends BaseValidator {
+export default class UserValidator extends BaseValidator {
   constructor(protected ctx: HttpContextContract) {
     super()
   }
@@ -28,33 +28,31 @@ export default class RegisterValidator extends BaseValidator {
    *    ```
    */
   public schema = schema.create({
-    ownerType: schema.number([
-      rules.required(),
-      rules.unsigned(),
-      rules.range(OwnerTypes.OWNER, OwnerTypes.AGENT)
-    ]),
     firstName: schema.string({}, [
-      rules.required(),
       rules.minLength(2),
-      rules.maxLength(30),
+      rules.maxLength(50),
     ]),
     lastName: schema.string({}, [
-      rules.required(),
       rules.minLength(2),
-      rules.maxLength(30),
+      rules.maxLength(50),
+    ]),
+    sex: schema.number.optional([
+      rules.unsigned(),
+      rules.range(Sex.MAN, Sex.WOMAN),
+    ]),
+    birthday: schema.date.optional({ format: 'dd.mm.yyyy' }, [
+      rules.before('today'),
+    ]),
+    phone: schema.string.optional({}, [
+      rules.mobile(),
     ]),
     email: schema.string({}, [
       rules.email(),
-      rules.required(),
-      rules.unique({ table: 'users', column: 'email' })
     ]),
-    password: schema.string({}, [
-      rules.required(),
-      rules.minLength(8),
-      rules.maxLength(30),
-      rules.containNumber(),
-      rules.containUppercase(),
-    ]),
+    isSubscribed: schema.boolean.optional(),
+    avatar: schema.file.optional({
+      extnames: ['jpg', 'gif', 'png', 'jpeg', 'webp']
+    }),
   })
 
   /**

@@ -9,10 +9,11 @@ import Env from '@ioc:Adonis/Core/Env'
 import { DriveConfig } from '@ioc:Adonis/Core/Drive'
 import Application from '@ioc:Adonis/Core/Application'
 
-export const IMG_PLACEHOLDER: string = '/images/placeholder.jpg'
-export const NEWS_PATH: string = './News'
-export const REAL_ESTATE_PATH: string = './Real-estates'
-export const MESSAGES_PATH: string = './Messages'
+export const IMG_PLACEHOLDER = '/images/placeholder.jpg' as const
+export const NEWS_PATH = './News' as const
+export const REAL_ESTATE_PATH = './Real-estates' as const
+export const MESSAGES_PATH = './Messages' as const
+export const USERS_PATH = './Users' as const
 
 /*
 |--------------------------------------------------------------------------

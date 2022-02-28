@@ -1,6 +1,6 @@
 import Role from 'App/Models/Users/Role'
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
-import { Roles } from 'Contracts/users'
+import { Roles } from 'Config/users'
 
 export default class RoleSeeder extends BaseSeeder {
   public async run () {

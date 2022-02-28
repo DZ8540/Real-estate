@@ -3,7 +3,7 @@ import User from 'App/Models/Users/User'
 import Logger from '@ioc:Adonis/Core/Logger'
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
 import RoleService from 'App/Services/Users/RoleService'
-import { Roles } from 'Contracts/users'
+import { Roles } from 'Config/users'
 import { UserFactory } from 'Database/factories'
 
 export default class UserSeeder extends BaseSeeder {

@@ -7,9 +7,9 @@ import RoleService from 'App/Services/Users/RoleService'
 import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
 import { v4 as uuid } from 'uuid'
-import { OWNER_TYPES } from 'Config/users'
-import { Roles, Sex } from 'Contracts/users'
+import { Roles } from 'Config/users'
 import { IMG_PLACEHOLDER } from 'Config/drive'
+import { OWNER_TYPES, SEX_TYPES } from 'Config/users'
 import {
   BaseModel, beforeSave, BelongsTo,
   belongsTo, column, computed,
@@ -133,14 +133,10 @@ export default class User extends BaseModel {
 
   @computed()
   public get sexForUser(): string {
-    switch (this.sex) {
-      case Sex.MAN:
-        return 'Мужской'
-      case Sex.WOMAN:
-        return 'Женский'
-      default:
-        return 'Не установлен'
-    }
+    if (this.sex)
+      return SEX_TYPES[this.sex]
+
+    return 'Не установлен'
   }
 
   @beforeSave()

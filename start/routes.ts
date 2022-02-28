@@ -137,13 +137,19 @@ Route.group(() => {
 
     }).prefix('/usersReviewsReports')
 
+    Route.group(() => {
+
+      Route.post('/:id', 'Api/Users/UsersController.get')
+      Route.patch('/update/:uuid', 'Api/Users/UsersController.update')
+      Route.delete('/deleteAvatar/:uuid', 'Api/Users/UsersController.deleteAvatar')
+
+    }).prefix('/users')
+
     Route.post('/realEstateTypes', 'Api/RealEstates/RealEstateTypesController.all')
 
     Route.post('/servicesTypes', 'Api/Services/ServicesTypesController.all')
 
     Route.post('/services', 'Api/Services/ServicesController.all')
-
-    Route.post('/users/:id', 'Api/Users/UsersController.get')
   }).middleware('CheckAccessToken')
 
   Route.post('/messages/addImages', 'Api/MessagesController.addImages')

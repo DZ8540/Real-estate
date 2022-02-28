@@ -7,7 +7,7 @@ import UserService from './Users/UserService'
 import Database from '@ioc:Adonis/Lucid/Database'
 import LoginValidator from 'App/Validators/Auth/LoginValidator'
 import RegisterValidator from 'App/Validators/Auth/RegisterValidator'
-import { Roles } from 'Contracts/users'
+import { Roles } from 'Config/users'
 import { Error } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 

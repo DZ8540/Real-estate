@@ -1,7 +1,10 @@
 import User from 'App/Models/Users/User'
 import BaseService from '../BaseService'
+import Drive from '@ioc:Adonis/Core/Drive'
 import Logger from '@ioc:Adonis/Core/Logger'
+import UserValidator from 'App/Validators/Api/Users/User'
 import RegisterValidator from 'App/Validators/Auth/RegisterValidator'
+import { USERS_PATH } from 'Config/drive'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
@@ -81,13 +84,64 @@ export default class UserService extends BaseService {
     }
   }
 
+  public static async update(uuid: User['uuid'], payload: UserValidator['schema']['props'], { trx }: ServiceConfig<User> = {}): Promise<User> {
+    let item: User
+    let avatar: string | undefined = undefined
+    let avatarPath: string = `${USERS_PATH}/${uuid}`
+
+    try {
+      item = await this.get(uuid, { trx })
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    if (payload.avatar) {
+      try {
+        await payload.avatar.moveToDisk(avatarPath)
+        avatar = `${avatarPath}/${payload.avatar.fileName}`
+      } catch (err: any) {
+        Logger.error(err)
+        throw { code: ResponseCodes.SERVER_ERROR, message: ResponseMessages.ERROR } as Error
+      }
+    }
+
+    try {
+      return await item.merge({ ...payload, avatar }).save()
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async deleteAvatar(uuid: User['uuid'], { trx }: ServiceConfig<User> = {}): Promise<User> {
+    let item: User
+
+    try {
+      item = await this.get(uuid, { trx })
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    if (item.avatar) {
+      try {
+        await Drive.delete(item.avatar)
+
+        return await item.merge({ avatar: undefined }).save()
+      } catch (err: any) {
+        Logger.error(err)
+        throw { code: ResponseCodes.SERVER_ERROR, message: ResponseMessages.ERROR } as Error
+      }
+    } else {
+      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.USER_AVATAR_IS_EMPTY } as Error
+    }
+  }
+
   public static async activate(uuid: User['uuid'], config: ServiceConfig<User> = {}): Promise<void> {
     let item: User
 
     try {
       item = await this.get(uuid, config)
     } catch (err: Error | any) {
-      Logger.error(err)
       throw err
     }
 

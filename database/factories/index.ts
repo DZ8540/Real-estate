@@ -9,7 +9,7 @@ import RoleService from 'App/Services/Users/RoleService'
 import RealEstate from 'App/Models/RealEstates/RealEstate'
 import ServicesType from 'App/Models/Services/ServicesType'
 import RealEstateType from 'App/Models/RealEstates/RealEstateType'
-import { OwnerTypes, Roles } from 'Contracts/users'
+import { OwnerTypes, Roles } from 'Config/users'
 import {
   BalconyTypes, ElevatorTypes, HouseBuildingTypes,
   HouseTypes, LayoutTypes, PrepaymentTypes,
