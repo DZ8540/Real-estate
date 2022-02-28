@@ -18,7 +18,7 @@ export default class UsersReportsController {
     let id: UsersReport['id'] = params.id
 
     try {
-      await UsersReportService.delete({ column: 'id', val: id })
+      await UsersReportService.deleteById(id)
 
       session.flash('success', ResponseMessages.USERS_REPORT_DELETED)
     } catch (err: Error | any) {

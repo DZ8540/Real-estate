@@ -1,7 +1,7 @@
 import Logger from '@ioc:Adonis/Core/Logger'
 import UsersReview from 'App/Models/Users/UsersReview'
 import UsersReviewValidator from 'App/Validators/Users/UsersReviewValidator'
-import UsersReviewApiValidator from 'App/Validators/Api/UsersReviewValidator'
+import UsersReviewApiValidator from 'App/Validators/Api/Users/UsersReviewValidator'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 import { ModelObject, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'

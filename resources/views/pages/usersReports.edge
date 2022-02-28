@@ -47,8 +47,8 @@
                         </svg>
                       </button>
                       <div class="dropdown-menu" style="">
-                        <a class="dropdown-item" href="{{ route('users.show', { id: item.from.id }) }}">Показать от кого</a>
-                        <a class="dropdown-item" href="{{ route('users.show', { id: item.to.id }) }}">Показать кому</a>
+                        <a class="dropdown-item" href="{{ route('users.show', { uuid: item.from.uuid }) }}">Показать от кого</a>
+                        <a class="dropdown-item" href="{{ route('users.show', { uuid: item.to.uuid }) }}">Показать кому</a>
 
                         <form action="{{ route('users_reports.destroy', { id: item.id }, { qs: { _method: 'DELETE' } }) }}" method="POST">
                           <button type="submit" class="dropdown-item">Удалить</button>

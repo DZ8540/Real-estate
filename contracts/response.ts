@@ -72,6 +72,7 @@ export enum ResponseMessages {
   REAL_ESTATES_WISHLIST_CREATED = 'Объявление было успешно добавлено в избранное!',
   REAL_ESTATES_WISHLIST_DELETED = 'Объявление было успешно удалено из избранного!',
 
+  USERS_REPORT_CREATED = 'Жалоба на пользователя была успешно подана!',
   USERS_REPORT_DELETED = 'Жалоба на пользователя была успешно удалена!',
   USERS_REPORT_NOT_FOUND = 'Жалоба на пользователя не была найдена!',
 

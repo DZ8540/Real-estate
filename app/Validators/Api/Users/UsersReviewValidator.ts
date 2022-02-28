@@ -1,4 +1,4 @@
-import ApiValidator from './ApiValidator'
+import ApiValidator from '../ApiValidator'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
