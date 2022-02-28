@@ -130,6 +130,13 @@ Route.group(() => {
 
     }).prefix('/usersReports')
 
+    Route.group(() => {
+
+      Route.post('/', 'Api/Users/UsersReviewsReportsController.add')
+      Route.delete('/', 'Api/Users/UsersReviewsReportsController.delete')
+
+    }).prefix('/usersReviewsReports')
+
     Route.post('/realEstateTypes', 'Api/RealEstates/RealEstateTypesController.all')
 
     Route.post('/servicesTypes', 'Api/Services/ServicesTypesController.all')

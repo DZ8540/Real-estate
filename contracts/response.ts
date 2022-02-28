@@ -81,6 +81,7 @@ export enum ResponseMessages {
   USERS_REVIEW_DELETED = 'Отзыв на пользователя был успешно удален!',
   USERS_REVIEW_NOT_FOUND = 'Отзыв на пользователя не был найден!',
 
+  USERS_REVIEWS_REPORT_CREATED = 'Жалоба на отзыв пользователя была успешно подана!',
   USERS_REVIEWS_REPORT_DELETED = 'Жалоба на отзыв пользователя была успешно удалена!',
   USERS_REVIEWS_REPORT_NOT_FOUND = 'Жалоба на отзыв пользователя не была найдена!',
 

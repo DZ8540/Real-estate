@@ -65,6 +65,7 @@ export default class UsersReviewService {
     try {
       return await UsersReview.create(payload, { client: trx })
     } catch (err: any) {
+      Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
   }

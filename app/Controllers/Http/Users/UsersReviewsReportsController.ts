@@ -7,7 +7,9 @@ export default class UsersReviewsReportsController {
   public async index({ route, request, view }: HttpContextContract) {
     let baseURL: string = route!.pattern
     let page: number = request.input('page', 1)
-    let reports: UsersReviewsReport[] = await UsersReviewsReportService.paginate({ baseURL, page, relations: ['user', 'usersReview'] })
+
+    let columns: typeof UsersReviewsReport['columns'][number][] = ['id', 'usersReviewId', 'userId', 'createdAt']
+    let reports: UsersReviewsReport[] = await UsersReviewsReportService.paginate({ baseURL, page, relations: ['user', 'usersReview'] }, columns)
 
     return view.render('pages/usersReviewsReports', { reports })
   }
@@ -16,7 +18,7 @@ export default class UsersReviewsReportsController {
     let id: UsersReviewsReport['id'] = params.id
 
     try {
-      await UsersReviewsReportService.delete({ column: 'id', val: id })
+      await UsersReviewsReportService.deleteById(id)
 
       session.flash('success', ResponseMessages.USERS_REVIEWS_REPORT_DELETED)
     } catch (err: Error | any) {
