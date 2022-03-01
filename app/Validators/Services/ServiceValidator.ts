@@ -29,7 +29,6 @@ export default class ServiceValidator extends BaseValidator {
    */
   public schema = schema.create({
     userId: schema.number([
-      rules.required(),
       rules.unsigned(),
       rules.exists({ table: 'users', column: 'id' }),
     ]),
@@ -38,7 +37,6 @@ export default class ServiceValidator extends BaseValidator {
       rules.range(ExperienceTypes.BEFORE_ONE_YEAR, ExperienceTypes.BEFORE_TEN_YEAR),
     ]),
     description: schema.string({}, [
-      rules.required(),
       rules.maxLength(1024),
       rules.minLength(5),
     ]),

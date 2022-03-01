@@ -36,7 +36,6 @@ export default class ServicesTypeValidator extends BaseValidator {
       rules.minLength(2),
     ]),
     name: schema.string({}, [
-      rules.required(),
       rules.maxLength(20),
       rules.minLength(2),
     ]),

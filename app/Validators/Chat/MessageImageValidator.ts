@@ -29,7 +29,6 @@ export default class MessageImageValidator extends BaseValidator {
   public schema = schema.create({
     images: schema.array().members(schema.file({ extnames: ['jpg', 'jpeg', 'png', 'webp'] })),
     messageId: schema.number([
-      rules.required(),
       rules.unsigned(),
       rules.exists({ table: 'messages', column: 'id' })
     ]),

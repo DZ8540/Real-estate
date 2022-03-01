@@ -31,7 +31,6 @@ export default class LabelValidator extends BaseValidator {
    */
   public schema = schema.create({
     name: schema.string({}, [
-      rules.required(),
       rules.unique({ table: 'labels', column: 'name', whereNot: { id: this.currentLabelId } }),
       rules.minLength(2),
       rules.maxLength(30),

@@ -57,7 +57,7 @@ export default class RealEstateValidator extends BaseValidator {
       rules.range(0, 100),
     ]),
     address: schema.string({}, [
-      rules.required(),
+      rules.minLength(2),
       rules.maxLength(255),
     ]),
     houseType: schema.number([
@@ -111,7 +111,7 @@ export default class RealEstateValidator extends BaseValidator {
     isMortgage: schema.boolean.optional(),
     isEncumbrances: schema.boolean.optional(),
     description: schema.string({}, [
-      rules.required(),
+      rules.minLength(2),
       rules.maxLength(4096),
     ]),
     houseBuildingType: schema.number([

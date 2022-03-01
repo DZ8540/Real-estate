@@ -34,7 +34,8 @@ export default class RealEstateTypeValidator extends BaseValidator {
       rules.unique({ table: 'realEstateTypes', column: 'slug', whereNot: { slug: this.currentSlug } }),
     ]),
     name: schema.string({}, [
-      rules.required(),
+      rules.minLength(2),
+      rules.maxLength(255),
     ]),
   })
 

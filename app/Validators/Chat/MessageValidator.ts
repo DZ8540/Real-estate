@@ -29,13 +29,9 @@ export default class MessageValidator extends BaseValidator {
     text: schema.string({}, [
       rules.minLength(1),
       rules.maxLength(4096),
-      rules.required(),
     ]),
-    isFromMessage: schema.boolean([
-      rules.required(),
-    ]),
+    isFromMessage: schema.boolean(),
     dialogId: schema.number([
-      rules.required(),
       rules.unsigned(),
       rules.exists({ table: 'dialogs', column: 'id' })
     ]),

@@ -30,10 +30,8 @@ export default class LoginValidator extends BaseValidator {
     email: schema.string({}, [
       rules.email(),
       rules.exists({ table: 'users', column: 'email' }),
-      rules.required(),
     ]),
     password: schema.string({}, [
-      rules.required(),
       rules.minLength(8),
       rules.maxLength(30),
       rules.containNumber(),

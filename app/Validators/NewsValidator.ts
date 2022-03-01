@@ -35,13 +35,14 @@ export default class NewsValidator extends BaseValidator {
       rules.unique({ table: this.table, column: 'slug', whereNot: { slug: this.currentNewsSlug } }),
     ]),
     title: schema.string({}, [
-      rules.required(),
+      rules.minLength(2),
+      rules.maxLength(255),
     ]),
     description: schema.string({}, [
-      rules.required(),
+      rules.minLength(10),
+      rules.maxLength(8192),
     ]),
     readingTime: schema.number([
-      rules.required(),
       rules.unsigned(),
     ]),
     image: schema.file.optional({

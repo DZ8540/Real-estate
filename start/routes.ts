@@ -145,11 +145,18 @@ Route.group(() => {
 
     }).prefix('/users')
 
+    Route.group(() => {
+
+      Route.post('/', 'Api/Services/ServicesController.all')
+      Route.post('/add', 'Api/Services/ServicesController.add')
+      Route.patch('/:id', 'Api/Services/ServicesController.update')
+      Route.delete('/:id', 'Api/Services/ServicesController.delete')
+
+    }).prefix('/services')
+
     Route.post('/realEstateTypes', 'Api/RealEstates/RealEstateTypesController.all')
 
     Route.post('/servicesTypes', 'Api/Services/ServicesTypesController.all')
-
-    Route.post('/services', 'Api/Services/ServicesController.all')
   }).middleware('CheckAccessToken')
 
   Route.post('/messages/addImages', 'Api/MessagesController.addImages')

@@ -34,7 +34,8 @@ export default class EstateValidator extends BaseValidator {
       rules.unique({ table: 'estates', column: 'slug', whereNot: { slug: this.currentEstateSlug } }),
     ]),
     name: schema.string({}, [
-      rules.required(),
+      rules.minLength(2),
+      rules.maxLength(255),
     ]),
     realEstateTypeId: schema.number.optional([
       rules.exists({ table: 'realEstateTypes', column: 'id' })

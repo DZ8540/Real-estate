@@ -29,27 +29,22 @@ export default class RegisterValidator extends BaseValidator {
    */
   public schema = schema.create({
     ownerType: schema.number([
-      rules.required(),
       rules.unsigned(),
       rules.range(OwnerTypes.OWNER, OwnerTypes.AGENT)
     ]),
     firstName: schema.string({}, [
-      rules.required(),
       rules.minLength(2),
       rules.maxLength(30),
     ]),
     lastName: schema.string({}, [
-      rules.required(),
       rules.minLength(2),
       rules.maxLength(30),
     ]),
     email: schema.string({}, [
       rules.email(),
-      rules.required(),
       rules.unique({ table: 'users', column: 'email' })
     ]),
     password: schema.string({}, [
-      rules.required(),
       rules.minLength(8),
       rules.maxLength(30),
       rules.containNumber(),
