@@ -48,7 +48,42 @@ export default class UsersReviewsController {
     try {
       let item: UsersReview = await UsersReviewService.create(payload)
 
-      return response.status(200).send(ResponseService.success(ResponseMessages.USERS_REVIEW_CREATED, item.serialize()))
+      return response.status(200).send(ResponseService.success(ResponseMessages.USERS_REVIEW_CREATED, item))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
+  public async update({ request, params, response }: HttpContextContract) {
+    let payload: UsersReviewValidator['schema']['props']
+    let id: UsersReview['id'] = params.id
+
+    try {
+      payload = await request.validate(UsersReviewValidator)
+    } catch (err: any) {
+      throw new ExceptionService({
+        code: ResponseCodes.VALIDATION_ERROR,
+        message: ResponseMessages.VALIDATION_ERROR,
+        body: err.messages,
+      })
+    }
+
+    try {
+      let item: UsersReview = await UsersReviewService.update(id, payload)
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.USERS_REVIEW_UPDATED, item))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
+  public async delete({ params, response }: HttpContextContract) {
+    let id: UsersReview['id'] = params.id
+
+    try {
+      await UsersReviewService.delete(id)
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.USERS_REVIEW_DELETED))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }

@@ -120,6 +120,8 @@ Route.group(() => {
 
       Route.post('/', 'Api/Users/UsersReviewsController.paginate')
       Route.post('/add', 'Api/Users/UsersReviewsController.add')
+      Route.patch(':id', 'Api/Users/UsersReviewsController.update')
+      Route.delete(':id', 'Api/Users/UsersReviewsController.delete')
 
     }).prefix('/usersReviews')
 
