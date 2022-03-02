@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: root
+      PGDATA: '/var/lib/postgresql/data/pgdata'
+    ports:
+      - 5432:5432
+    volumes:
+      - ~/Postgres/Kino++/:/var/lib/postgresql/data
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379

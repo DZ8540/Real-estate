@@ -7,9 +7,9 @@ import RealEstateApiValidator from 'App/Validators/Api/RealEstates/RealEstateVal
 import RealEstatePopularValidator from 'App/Validators/Api/RealEstates/RealEstatePopularValidator'
 import RealEstateRecommendedValidator from 'App/Validators/Api/RealEstates/RealEstateRecommendedValidator'
 import { Error } from 'Contracts/services'
-import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
+import { ModelObject, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 
 export default class RealEstatesController {
   public async all({ request, response }: HttpContextContract) {
@@ -38,9 +38,12 @@ export default class RealEstatesController {
     let uuid: RealEstate['uuid'] = params.uuid
 
     try {
-      let item: RealEstate = await RealEstateService.get(uuid, { relations: ['images', 'user'] })
+      let item: RealEstate = await RealEstateService.get(uuid, { relations: ['images', 'user'], isForApi: true })
+      let todayViewsCount: number = await RealEstateService.incrementTodayViewsCount(item)
 
-      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, item))
+      let fullItem: ModelObject = { ...item.serialize(), todayViewsCount }
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, fullItem))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }

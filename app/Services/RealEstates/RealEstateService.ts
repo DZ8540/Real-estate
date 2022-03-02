@@ -1,6 +1,7 @@
 import BaseService from '../BaseService'
 import User from 'App/Models/Users/User'
 import Drive from '@ioc:Adonis/Core/Drive'
+import Redis from '@ioc:Adonis/Addons/Redis'
 import Logger from '@ioc:Adonis/Core/Logger'
 import UserService from '../Users/UserService'
 import Database from '@ioc:Adonis/Lucid/Database'
@@ -9,6 +10,7 @@ import RealEstate from 'App/Models/RealEstates/RealEstate'
 import RealEstateValidator from 'App/Validators/RealEstates/RealEstateValidator'
 import RealEstateApiValidator from 'App/Validators/Api/RealEstates/RealEstateValidator'
 import RealEstateRecommendedValidator from 'App/Validators/Api/RealEstates/RealEstateRecommendedValidator'
+import { DateTime } from 'luxon'
 import { REAL_ESTATE_PATH } from 'Config/drive'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
@@ -17,6 +19,9 @@ import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
 type Columns = typeof RealEstate['columns'][number]
 type ValidatorPayload = RealEstateValidator['schema']['props']
+type GetMethodConfig = ServiceConfig<RealEstate> & {
+  isForApi?: boolean,
+}
 
 export default class RealEstateService extends BaseService {
   public static async paginate(config: PaginateConfig<Columns, RealEstate>, columns: Columns[] = []): Promise<ModelPaginatorContract<RealEstate>> {
@@ -30,7 +35,7 @@ export default class RealEstateService extends BaseService {
     return await query.get(config)
   }
 
-  public static async get(uuid: RealEstate['uuid'], config: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
+  public static async get(uuid: RealEstate['uuid'], config: GetMethodConfig = {}): Promise<RealEstate> {
     let item: RealEstate | null
 
     try {
@@ -318,6 +323,23 @@ export default class RealEstateService extends BaseService {
       }
 
       return recommended
+    } catch (err: any) {
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async incrementTodayViewsCount(item: RealEstate): Promise<number> {
+    const DAY_IN_SECONDS: number = 86400
+    const CURRENT_TIME: number = DateTime.now().second
+    const EXPIRATION: number = DAY_IN_SECONDS - CURRENT_TIME
+
+    try {
+      let currentViewsCount: number = Number(await Redis.get(item.uuid))
+      let incrementedViewsCount: number = ++currentViewsCount
+
+      await Redis.set(item.uuid, incrementedViewsCount, 'EX', EXPIRATION)
+
+      return incrementedViewsCount
     } catch (err: any) {
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
