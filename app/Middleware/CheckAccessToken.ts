@@ -1,3 +1,4 @@
+import Env from '@ioc:Adonis/Core/Env'
 import TokenService from 'App/Services/TokenService'
 import ClientException from 'App/Exceptions/ClientException'
 import { ResponseMessages } from 'Contracts/response'
@@ -11,7 +12,7 @@ export default class CheckAccessToken {
       throw new ClientException(ResponseMessages.TOKEN_EXPIRED)
 
     try {
-      TokenService.validateAccessToken(token)
+      TokenService.validateToken(token, Env.get('ACCESS_TOKEN_KEY'))
     } catch (err: Error | any) {
       throw new ClientException(ResponseMessages.TOKEN_EXPIRED)
     }

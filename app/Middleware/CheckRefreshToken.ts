@@ -1,3 +1,4 @@
+import Env from '@ioc:Adonis/Core/Env'
 import TokenService from 'App/Services/TokenService'
 import ClientException from 'App/Exceptions/ClientException'
 import { Error } from 'Contracts/services'
@@ -13,7 +14,7 @@ export default class CheckToken {
       throw new ClientException(ResponseMessages.TOKEN_EXPIRED)
 
     try {
-      TokenService.validateRefreshToken(token)
+      TokenService.validateToken(token, Env.get('REFRESH_TOKEN_KEY'))
     } catch (err: Error | any) {
       await TokenService.deleteRefreshToken(token)
 

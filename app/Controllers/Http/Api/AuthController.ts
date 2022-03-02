@@ -1,5 +1,4 @@
 import Env from '@ioc:Adonis/Core/Env'
-import User from 'App/Models/Users/User'
 import AuthService from 'App/Services/AuthService'
 import TokenService from 'App/Services/TokenService'
 import UserService from 'App/Services/Users/UserService'
@@ -9,10 +8,9 @@ import LoginValidator from 'App/Validators/Auth/LoginValidator'
 import RegisterValidator from 'App/Validators/Auth/RegisterValidator'
 import ActivateUserValidator from 'App/Validators/Users/ActivateUserValidator'
 import { Error } from 'Contracts/services'
-import { TokenCredentials } from 'Contracts/tokens'
-import { COOKIE_REFRESH_TOKEN_KEY } from 'Contracts/auth'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
+import { COOKIE_REFRESH_TOKEN_KEY, LoginHeaders } from 'Contracts/auth'
 
 export default class AuthController {
   public async register({ request, response }: HttpContextContract) {
@@ -39,6 +37,11 @@ export default class AuthController {
 
   public async login({ request, response }: HttpContextContract) {
     let payload: LoginValidator['schema']['props']
+    let headers: LoginHeaders = {
+      fingerprint: request.header('User-Fingerprint')!,
+      ua: request.header('User-Agent')!,
+      ip: request.ip(),
+    }
 
     try {
       payload = await request.validate(LoginValidator)
@@ -51,31 +54,14 @@ export default class AuthController {
     }
 
     try {
-      let user: User = await AuthService.login(payload)
+      let data = await AuthService.loginViaApi(payload, headers)
 
-      let tokens: { access: string, refresh: string } = TokenService.generateTokens({
-        uuid: user.uuid,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        roleId: user.roleId,
-      })
-      let tokenCredentials: TokenCredentials = {
-        token: tokens.refresh,
-        fingerprint: request.header('User-Fingerprint')!,
-        ua: request.header('User-Agent')!,
-        ip: request.ip(),
-        userId: user.id,
-      }
-
-      await TokenService.createRefreshToken(tokenCredentials)
-      response.cookie(COOKIE_REFRESH_TOKEN_KEY, tokens.refresh, { maxAge: Env.get('REFRESH_TOKEN_TIME'), path: '/api/auth' })
-
+      response.cookie(COOKIE_REFRESH_TOKEN_KEY, data.refreshToken, { maxAge: Env.get('REFRESH_TOKEN_TIME'), path: '/api/auth' })
       return response
         .status(200)
         .send(ResponseService.success(ResponseMessages.USER_LOGIN, {
-          user: user.serializeForToken(),
-          tokens: { access: tokens.access },
+          user: data.user.serializeForToken(),
+          tokens: { access: data.accessToken },
         }))
     } catch (err: Error | any) {
       throw new ExceptionService(err)

@@ -2,48 +2,25 @@ import Token from 'App/Models/Token'
 import Env from '@ioc:Adonis/Core/Env'
 import BaseService from './BaseService'
 import Logger from '@ioc:Adonis/Core/Logger'
-import { sign, verify } from 'jsonwebtoken'
+import { sign, SignOptions, verify } from 'jsonwebtoken'
 import { TokenCredentials, TokenPayload } from 'Contracts/tokens'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, RefreshRefreshTokenConfig } from 'Contracts/services'
 
+type ReturnRefreshTokenData = {
+  access: string,
+  refresh: string
+}
+
 export default class TokenService extends BaseService {
-  private static readonly accessKey: string = Env.get('ACCESS_TOKEN_KEY')
-  private static readonly accessTime: string = Env.get('ACCESS_TOKEN_TIME')
-  private static readonly refreshKey: string = Env.get('REFRESH_TOKEN_KEY')
-  private static readonly refreshTime: string = Env.get('REFRESH_TOKEN_TIME')
-
-  public static async getRefreshToken(column: 'token', val: Token['token']): Promise<Token> {
-    try {
-      let item: Token = (await Token.findBy(column, val))!
-
-      await item.load('user')
-      return item
-    } catch (err: any) {
-      Logger.error(err)
-      throw { code: ResponseCodes.TOKEN_EXPIRED, message: ResponseMessages.TOKEN_EXPIRED } as Error
-    }
+  public static createToken(payload: any, key: string, options: SignOptions = {}): string {
+    return sign(payload, key, options)
   }
 
-  public static generateTokens(payload: TokenPayload): { access: string, refresh: string } {
-    let access: string = sign(payload, this.accessKey, { expiresIn: this.accessTime })
-    let refresh: string = sign(payload, this.refreshKey, { expiresIn: this.refreshTime })
-
-    return { access, refresh }
-  }
-
-  public static async createRefreshToken(payload: TokenCredentials): Promise<void> {
-    try {
-      (await Token.create(payload))!
-    } catch (err: any) {
-      Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
-    }
-  }
-
-  public static async refreshToken(config: RefreshRefreshTokenConfig): Promise<{ access: string, refresh: string }> {
+  public static async refreshToken(config: RefreshRefreshTokenConfig): Promise<ReturnRefreshTokenData> {
     let currentToken: Token
-    let tokens: { access: string, refresh: string }
+    let accessToken: string
+    let refreshToken: string
 
     try {
       currentToken = await this.getRefreshToken('token', config.userToken)
@@ -58,7 +35,7 @@ export default class TokenService extends BaseService {
     }
 
     try {
-      let validateData: TokenPayload = this.validateRefreshToken(config.userToken)
+      let validateData: TokenPayload = this.validateToken(config.userToken, Env.get('REFRESH_TOKEN_KEY'))
       let payload: TokenPayload = {
         uuid: validateData.uuid,
         firstName: validateData.firstName,
@@ -67,19 +44,41 @@ export default class TokenService extends BaseService {
         roleId: validateData.roleId,
       }
 
-      tokens = this.generateTokens(payload)
+      accessToken = this.createToken(payload, Env.get('ACCESS_TOKEN_KEY'), { expiresIn: Env.get('ACCESS_TOKEN_TIME') })
+      refreshToken = this.createToken(payload, Env.get('REFRESH_TOKEN_KEY'), { expiresIn: Env.get('REFRESH_TOKEN_TIME') })
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.TOKEN_EXPIRED, message: ResponseMessages.TOKEN_EXPIRED } as Error
     }
 
     try {
-      await currentToken.merge({ token: tokens.refresh }).save()
+      await currentToken.merge({ token: refreshToken }).save()
 
-      return tokens
+      return { access: accessToken, refresh: refreshToken }
     } catch (err: any) {
       await currentToken.delete()
 
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async getRefreshToken(column: 'token', val: Token['token']): Promise<Token> {
+    try {
+      let item: Token = (await Token.findBy(column, val))!
+
+      await item.load('user')
+      return item
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.TOKEN_EXPIRED, message: ResponseMessages.TOKEN_EXPIRED } as Error
+    }
+  }
+
+  public static async createRefreshToken(payload: TokenCredentials): Promise<void> {
+    try {
+      await Token.create(payload)
+    } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
@@ -94,18 +93,9 @@ export default class TokenService extends BaseService {
     }
   }
 
-  public static validateAccessToken(token: string): TokenPayload {
+  public static validateToken(token: string, key: string): TokenPayload {
     try {
-      return verify(token, this.accessKey) as TokenPayload
-    } catch (err: any) {
-      Logger.error(err)
-      throw { code: ResponseCodes.TOKEN_EXPIRED, message: ResponseMessages.TOKEN_EXPIRED } as Error
-    }
-  }
-
-  public static validateRefreshToken(token: string): TokenPayload {
-    try {
-      return verify(token, this.refreshKey) as TokenPayload
+      return verify(token, key) as TokenPayload
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.TOKEN_EXPIRED, message: ResponseMessages.TOKEN_EXPIRED } as Error

@@ -11,4 +11,12 @@ declare module '@ioc:Adonis/Addons/Mail' {
   interface MailersList {
     smtp: MailDrivers['smtp'],
   }
+
+  export type MailerConfig = {
+    from: string,
+    to: string,
+    title: string,
+    template: string,
+    data?: any,
+  }
 }

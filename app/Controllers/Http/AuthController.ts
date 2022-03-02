@@ -30,7 +30,7 @@ export default class AuthController {
     }
 
     try {
-      let candidate: User = await AuthService.login(payload)
+      let candidate: User = await AuthService.loginViaServer(payload)
       session.put(SESSION_USER_KEY, { uuid: candidate.uuid, fullName: candidate.fullName } as SessionUser)
 
       return response.redirect().toRoute('index')

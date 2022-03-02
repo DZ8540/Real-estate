@@ -1,7 +1,9 @@
+import Env from '@ioc:Adonis/Core/Env'
 import BaseService from './BaseService'
+import MailService from './MailService'
 import User from 'App/Models/Users/User'
 import Hash from '@ioc:Adonis/Core/Hash'
-import Mail from '@ioc:Adonis/Addons/Mail'
+import TokenService from './TokenService'
 import Logger from '@ioc:Adonis/Core/Logger'
 import UserService from './Users/UserService'
 import Database from '@ioc:Adonis/Lucid/Database'
@@ -9,7 +11,17 @@ import LoginValidator from 'App/Validators/Auth/LoginValidator'
 import RegisterValidator from 'App/Validators/Auth/RegisterValidator'
 import { Roles } from 'Config/users'
 import { Error } from 'Contracts/services'
+import { SignOptions } from 'jsonwebtoken'
+import { LoginHeaders } from 'Contracts/auth'
+import { MailerConfig } from '@ioc:Adonis/Addons/Mail'
+import { TokenCredentials, TokenPayload } from 'Contracts/tokens'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
+
+type ReturnLoginData = {
+  user: User,
+  accessToken: string,
+  refreshToken: string,
+}
 
 export default class AuthService extends BaseService {
   public static async register(payload: RegisterValidator['schema']['props']): Promise<void> {
@@ -25,7 +37,7 @@ export default class AuthService extends BaseService {
     }
 
     try {
-      await AuthService.sendActivationMail(user)
+      await this.sendActivationMail(user)
     } catch (err: Error | any) {
       await trx.rollback()
 
@@ -35,19 +47,76 @@ export default class AuthService extends BaseService {
     await trx.commit()
   }
 
-  public static async login({ email, password }: LoginValidator['schema']['props']): Promise<User> {
+  public static async loginViaServer({ email, password }: LoginValidator['schema']['props']): Promise<User> {
+    let user: User
+
     try {
-      let candidate: User = (await User.findBy('email', email))!
-      await candidate.load('realEstatesWishList')
-      await candidate.load('realEstatesReports')
+      user = await UserService.getByEmail(email)
+    } catch (err: Error | any) {
+      throw err
+    }
 
-      if (!candidate.isActivated)
-        throw new Error()
+    if (!user.isActivated || !(await Hash.verify(user.password, password)))
+      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.USER_NOT_FOUND } as Error
 
-      if (await Hash.verify(candidate.password, password))
-        return candidate
-      else
-        throw new Error()
+    try {
+      await user.load('realEstatesWishList')
+      await user.load('realEstatesReports')
+
+      return user
+    } catch (err: Error | any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.USER_NOT_FOUND } as Error
+    }
+  }
+
+  public static async loginViaApi({ email, password }: LoginValidator['schema']['props'], headers: LoginHeaders): Promise<ReturnLoginData> {
+    let user: User
+    let accessToken: string
+    let refreshToken: string
+    let accessTokenParams: [TokenPayload, string, SignOptions]
+    let refreshTokenParams: [TokenPayload, string, SignOptions]
+
+    try {
+      user = await UserService.getByEmail(email)
+
+      let payload: TokenPayload = {
+        uuid: user.uuid,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        roleId: user.roleId,
+      }
+
+      accessTokenParams = [payload, Env.get('ACCESS_TOKEN_KEY'), { expiresIn: Env.get('ACCESS_TOKEN_TIME') }]
+      refreshTokenParams = [payload, Env.get('REFRESH_TOKEN_KEY'), { expiresIn: Env.get('REFRESH_TOKEN_TIME') }]
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    if (!user.isActivated || !(await Hash.verify(user.password, password)))
+      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.USER_NOT_FOUND } as Error
+
+    try {
+      accessToken = TokenService.createToken(...accessTokenParams)
+      refreshToken = TokenService.createToken(...refreshTokenParams)
+
+      let tokenCredentials: TokenCredentials = {
+        ...headers,
+        token: refreshToken,
+        userId: user.id,
+      }
+
+      await TokenService.createRefreshToken(tokenCredentials)
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    try {
+      await user.load('realEstatesWishList')
+      await user.load('realEstatesReports')
+
+      return { user, accessToken, refreshToken }
     } catch (err: Error | any) {
       Logger.error(err)
       throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.USER_NOT_FOUND } as Error
@@ -55,8 +124,8 @@ export default class AuthService extends BaseService {
   }
 
   public static async checkAdmin(uuid: User['uuid']): Promise<void> {
-    let accessRoles: Roles[] = [Roles.ADMIN, Roles.MANAGER]
     let currentUser: User
+    let accessRoles: Roles[] = [Roles.ADMIN, Roles.MANAGER]
 
     try {
       currentUser = await UserService.get(uuid, { relations: ['role'] })
@@ -74,17 +143,18 @@ export default class AuthService extends BaseService {
   }
 
   public static async sendActivationMail(user: User): Promise<void> {
+    let config: MailerConfig = {
+      from: Env.get('SMTP_FROM'),
+      to: user.email,
+      title: 'Подтвердите свой аккаунт',
+      template: 'emails/activation',
+      data: { user },
+    }
+
     try {
-      await Mail.send((message) => {
-        message
-          .from('d.z.mailer@inbox.ru')
-          .to(user.email)
-          .subject('Подтвердите свой аккаунт')
-          .htmlView('emails/activation', { user })
-      })
-    } catch (err: any) {
-      Logger.error(err)
-      throw { code: ResponseCodes.MAILER_ERROR, message: ResponseMessages.EMAIL_NOT_FOUND } as Error
+      await MailService.sendMail(config)
+    } catch (err: Error | any) {
+      throw err
     }
   }
 }

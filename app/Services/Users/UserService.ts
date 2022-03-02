@@ -5,9 +5,9 @@ import Logger from '@ioc:Adonis/Core/Logger'
 import UserValidator from 'App/Validators/Api/Users/User'
 import RegisterValidator from 'App/Validators/Auth/RegisterValidator'
 import { USERS_PATH } from 'Config/drive'
-import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
+import { ExtractModelRelations, LucidRow, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 
 type Columns = typeof User['columns'][number]
 
@@ -32,19 +32,11 @@ export default class UserService extends BaseService {
     }
 
     try {
-      if (!item)
-        throw new Error()
+      await this.checkModelAndLoadModelRelations(item, config.relations)
 
-      if (config.relations) {
-        for (let relationItem of config.relations) {
-          await item.load(relationItem)
-        }
-      }
-
-      return item
-    } catch (err: any) {
-      Logger.error(err)
-      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.USER_NOT_FOUND } as Error
+      return item!
+    } catch (err: Error | any) {
+      throw err
     }
   }
 
@@ -59,19 +51,30 @@ export default class UserService extends BaseService {
     }
 
     try {
-      if (!item)
-        throw new Error()
+      await this.checkModelAndLoadModelRelations(item, config.relations)
 
-      if (config.relations) {
-        for (let relationItem of config.relations) {
-          await item.load(relationItem)
-        }
-      }
+      return item!
+    } catch (err: Error | any) {
+      throw err
+    }
+  }
 
-      return item
+  public static async getByEmail(email: User['email'], config: ServiceConfig<User> = {}): Promise<User> {
+    let item: User | null
+
+    try {
+      item = await User.findBy('email', email, { client: config.trx })
     } catch (err: any) {
       Logger.error(err)
-      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.USER_NOT_FOUND } as Error
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+
+    try {
+      await this.checkModelAndLoadModelRelations(item, config.relations)
+
+      return item!
+    } catch (err: Error | any) {
+      throw err
     }
   }
 
@@ -170,6 +173,22 @@ export default class UserService extends BaseService {
       return (await this.get(uuid, config)).merge({ isBanned: false }).save()
     } catch (err: Error | any) {
       throw err
+    }
+  }
+
+  private static async checkModelAndLoadModelRelations<M extends LucidRow>(model: M | null, relations: ExtractModelRelations<M>[] = []): Promise<void> {
+    if (!model)
+      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.ERROR } as Error
+
+    if (relations) {
+      try {
+        for (let item of relations) {
+          await model.load(item)
+        }
+      } catch (err: any) {
+        Logger.error(err)
+        throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.USER_NOT_FOUND } as Error
+      }
     }
   }
 }
