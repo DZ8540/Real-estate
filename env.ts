@@ -41,4 +41,6 @@ export default Env.rules({
   ACCESS_TOKEN_TIME: Env.schema.string(),
   REFRESH_TOKEN_KEY: Env.schema.string(),
   REFRESH_TOKEN_TIME: Env.schema.string(),
+  REMEMBER_PASSWORD_TOKEN_KEY: Env.schema.string(),
+  REMEMBER_PASSWORD_TOKEN_TIME: Env.schema.string(),
 })

@@ -75,6 +75,14 @@ Route.group(() => {
 Route.group(() => {
   Route.group(() => {
 
+    Route.group(() => {
+
+      Route.post('/checkToken', 'Api/AuthController.checkRememberPasswordToken')
+      Route.patch('/changePassword', 'Api/AuthController.changePassword')
+      Route.post('/:email', 'Api/AuthController.rememberPassword')
+
+    }).prefix('/rememberPassword')
+
     Route.post('/register', 'Api/AuthController.register')
     Route.post('/activate', 'Api/AuthController.activate')
     Route.post('/login', 'Api/AuthController.login').middleware('CheckUserCredentials')

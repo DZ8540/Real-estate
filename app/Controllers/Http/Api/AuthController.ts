@@ -1,4 +1,5 @@
 import Env from '@ioc:Adonis/Core/Env'
+import User from 'App/Models/Users/User'
 import AuthService from 'App/Services/AuthService'
 import TokenService from 'App/Services/TokenService'
 import UserService from 'App/Services/Users/UserService'
@@ -7,6 +8,8 @@ import ExceptionService from 'App/Services/ExceptionService'
 import LoginValidator from 'App/Validators/Auth/LoginValidator'
 import RegisterValidator from 'App/Validators/Auth/RegisterValidator'
 import ActivateUserValidator from 'App/Validators/Users/ActivateUserValidator'
+import ChangeRememberPasswordValidator from 'App/Validators/Api/Auth/ChangeRememberPasswordValidator'
+import CheckRememberPasswordTokenValidator from 'App/Validators/Api/Auth/CheckRememberPasswordTokenValidator'
 import { Error } from 'Contracts/services'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
@@ -126,5 +129,61 @@ export default class AuthController {
     }
 
     return response.status(200).send(ResponseService.success(ResponseMessages.USER_LOGOUT))
+  }
+
+  public async rememberPassword({ params, response }: HttpContextContract) {
+    let email: User['email'] = params.email
+
+    try {
+      await AuthService.rememberPassword(email)
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.USER_SEND_REMEMBER_PASSWORD_LINK))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
+  public async checkRememberPasswordToken({ request, response }: HttpContextContract) {
+    let payload: CheckRememberPasswordTokenValidator['schema']['props']
+
+    try {
+      payload = await request.validate(CheckRememberPasswordTokenValidator)
+    } catch (err: any) {
+      throw new ExceptionService({
+        code: ResponseCodes.VALIDATION_ERROR,
+        message: ResponseMessages.VALIDATION_ERROR,
+        body: err.messages,
+      })
+    }
+
+    try {
+      await AuthService.checkRememberPasswordToken(payload)
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
+  public async changePassword({ request, response }: HttpContextContract) {
+    let payload: ChangeRememberPasswordValidator['schema']['props']
+
+    try {
+      payload = await request.validate(ChangeRememberPasswordValidator)
+    } catch (err: any) {
+      throw new ExceptionService({
+        code: ResponseCodes.VALIDATION_ERROR,
+        message: ResponseMessages.VALIDATION_ERROR,
+        body: err.messages,
+      })
+    }
+
+    try {
+      let user: User = await AuthService.changeRememberPassword(payload)
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.USER_CHANGED_PASSWORD, user))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
   }
 }

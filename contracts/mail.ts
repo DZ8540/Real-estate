@@ -13,10 +13,10 @@ declare module '@ioc:Adonis/Addons/Mail' {
   }
 
   export type MailerConfig = {
-    from: string,
     to: string,
     title: string,
     template: string,
     data?: any,
+    from?: string,
   }
 }
