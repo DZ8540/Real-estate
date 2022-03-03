@@ -37,6 +37,11 @@ export enum ResponseMessages {
   NEWS_DELETED = 'Новость была успешно удалена!',
   NEWS_NOT_FOUND = 'Новость не найдена!',
 
+  BANNER_CREATED = 'Баннер был успешно создан!',
+  BANNER_UPDATED = 'Баннер был успешно обновлен!',
+  BANNER_DELETED = 'Баннер был успешно удален!',
+  BANNER_NOT_FOUND = 'Баннер не найден!',
+
   QUESTION_CREATED = 'Ваш вопрос был отправлен, спасибо!',
   QUESTION_DELETED = 'Вопрос был успешно удален!',
   QUESTION_NOT_FOUNT = 'Вопрос не найден!',

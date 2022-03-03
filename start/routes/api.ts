@@ -34,6 +34,8 @@ Route.group(() => {
 
     Route.post('/realEstateTypes', 'Api/RealEstates/RealEstateTypesController.all')
 
+    Route.post('/banners', 'Api/BannersController.getAll')
+
     Route.group(() => {
 
       Route.post('', 'Api/NewsController.all')

@@ -27,6 +27,8 @@ Route.group(() => {
 
   Route.resource('/news', 'NewsController')
 
+  Route.resource('/banners', 'BannersController').except(['show'])
+
   Route.resource('/realEstateTypes', 'RealEstates/RealEstateTypesController')
 
   Route.resource('/estates', 'RealEstates/EstatesController')

@@ -1,0 +1,67 @@
+@layout('layouts/index')
+
+@set('title', `Баннер - ${item.id}`)
+
+@section('styles')
+  <link href="/vendor/summernote/summernote.css" rel="stylesheet">
+@endsection
+
+@section('body')
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">{{ title }}</h4>
+        <a href="{{ route('banners.index') }}" class="btn btn-primary btn-sm">Назад</a>
+      </div>
+      <div class="card-body">
+        <div class="basic-form">
+          <form action="{{ route('banners.update', { id: item.id }, { qs: { _method: 'PATCH' } }) }}" method="POST" enctype="multipart/form-data">
+
+            <div class="form-group">
+              <label class="mb-1"><strong>Содержание *</strong></label>
+              <textarea id="summernote" class="summernote" name="description">{{ flashMessages.get('description', item.description) }}</textarea>
+
+              @if(flashMessages.has('errors.description'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.description')[0] }}
+                </div>
+              @endif
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="mb-1">Текущее изображение</label>
+              <br>
+              <img src="{{ await item.imageUrl() }}" width="600" height="400" alt="">
+            </div>
+
+            <div class="input-group mb-3">
+              <div class="custom-file">
+                <input type="file" name="image" class="custom-file-input">
+                <label class="custom-file-label">Выберите изображение</label>
+              </div>
+
+              @if(flashMessages.has('errors.image'))
+                <div class="invalid-feedback d-block">
+                  {{ flashMessages.get('errors.image')[0] }}
+                </div>
+              @endif
+            </div>
+
+            {{ csrfField() }}
+
+            <div class="text-right">
+              <button type="submit" class="btn btn-primary btn-block">Обновить</button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+@endsection
+
+@section('scripts')
+  <script src="/vendor/summernote/js/summernote.min.js"></script>
+  <script src="/js/plugins-init/summernote-init.js"></script>
+@endsection
