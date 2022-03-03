@@ -1,3 +1,7 @@
-// import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class BaseController {}
+export default class BaseController {
+  public async index({ view }: HttpContextContract) {
+    return view.render('pages/index')
+  }
+}

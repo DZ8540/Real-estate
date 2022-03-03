@@ -1,5 +1,6 @@
 import News from 'App/Models/News'
 import User from 'App/Models/Users/User'
+import Question from 'App/Models/Question'
 import Label from 'App/Models/Services/Label'
 import Factory from '@ioc:Adonis/Lucid/Factory'
 import Service from 'App/Models/Services/Service'
@@ -103,6 +104,16 @@ export const RealEstateFactory = Factory
       description: faker.lorem.paragraphs(3),
       fromId: (await User.query().random()).id,
       toId: (await User.query().random()).id,
+    }
+  })
+  .build()
+
+export const QuestionsFactory = Factory
+  .define(Question, ({ faker }) => {
+    return {
+      name: faker.vehicle.vehicle(),
+      email: faker.internet.email(),
+      question: faker.lorem.paragraphs(3),
     }
   })
   .build()

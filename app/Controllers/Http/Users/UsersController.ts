@@ -1,11 +1,10 @@
 import User from 'App/Models/Users/User'
-import BaseController from '../BaseController'
 import UserService from 'App/Services/Users/UserService'
 import { Error } from 'Contracts/services'
 import { ResponseMessages } from 'Contracts/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class UsersController extends BaseController {
+export default class UsersController {
   public async index({ view, request, route }: HttpContextContract) {
     let page: number = request.input('page', 1)
 

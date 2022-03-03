@@ -1,0 +1,48 @@
+@layout('layouts/index')
+
+@set('title', `Вопрос - ${item.name}`)
+
+@section('styles')
+  <link href="/vendor/summernote/summernote.css" rel="stylesheet">
+@endsection
+
+@section('body')
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">{{ title }}</h4>
+        <a href="{{ route('questions.index') }}" class="btn btn-primary btn-sm">Назад</a>
+      </div>
+      <div class="card-body">
+        <div class="basic-form">
+
+          <div class="form-group">
+            <label class="mb-1">Имя</label>
+            <input type="string" class="form-control" value="{{ item.name }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Email</label>
+            <input type="string" class="form-control" value="{{ item.email }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Содержание</label>
+            <textarea id="summernote" class="summernote" disabled>{{ item.question }}</textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Дата публикации</label>
+            <input type="string" class="form-control" value="{{ item.createdAtForUser }}" disabled>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+@endsection
+
+@section('scripts')
+  <script src="/vendor/summernote/js/summernote.min.js"></script>
+  <script src="/js/plugins-init/summernote-init.js"></script>
+@endsection

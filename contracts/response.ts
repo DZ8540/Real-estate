@@ -37,6 +37,10 @@ export enum ResponseMessages {
   NEWS_DELETED = 'Новость была успешно удалена!',
   NEWS_NOT_FOUND = 'Новость не найдена!',
 
+  QUESTION_CREATED = 'Ваш вопрос был отправлен, спасибо!',
+  QUESTION_DELETED = 'Вопрос был успешно удален!',
+  QUESTION_NOT_FOUNT = 'Вопрос не найден!',
+
   REAL_ESTATE_TYPES_CREATED = 'Тип недвижимости был успешно создана и опубликован!',
   REAL_ESTATE_TYPES_UPDATED = 'Тип недвижимости был успешно обновлен!',
   REAL_ESTATE_TYPES_DELETED = 'Тип недвижимости был успешно удален!',

@@ -2,36 +2,53 @@
   <div class="deznav-scroll">
     <ul class="metismenu" id="menu">
       <li>
-        <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+        <a class="ai-icon" href="{{ route('index') }}" aria-expanded="false">
           <i class="flaticon-381-networking"></i>
-          <span class="nav-text">Меню</span>
+          <span class="nav-text">Главная</span>
         </a>
-        <ul aria-expanded="false">
-          <li><a href="{{ route('index') }}">Главная</a></li>
-          <li><a href="{{ route('news.index') }}">Новости</a></li>
-          <li><a href="{{ route('estates.index') }}">Объекты</a></li>
-          {{--  <li><a href="{{ route('services.index') }}">Услуги</a></li>  --}}
-          <li><a href="{{ route('real_estate_types.index') }}">Типы недвижимости</a></li>
-          <li><a href="{{ route('real_estates.index') }}">Объявления</a></li>
-          <li><a href="{{ route('real_estates_reports.index') }}">Жалобы на объявления</a></li>
-          <li><a href="{{ route('users_reports.index') }}">Жалобы на пользователей</a></li>
-          <li><a href="{{ route('users_reviews.index') }}">Отзывы на пользователей</a></li>
-          <li><a href="{{ route('users_reviews_reports.index') }}">Жалобы на отзывы пользователей</a></li>
-          {{--  <li><a href="{{ route('services_types.index') }}">Типы услуг</a></li>  --}}
-          {{--  <li><a href="{{ route('labels.index') }}">Предоставляемые услуги</a></li>  --}}
-        </ul>
       </li>
       <li>
-        <a class="ai-icon" href="#" aria-expanded="false">
+        <a class="has-arrow ai-icon" href="javascript: void()" aria-expanded="false">
           <i class="flaticon-381-book"></i>
           <span class="nav-text">Заявки</span>
         </a>
+        <ul aria-expanded="false">
+          <li><a href="{{ route('questions.index') }}">Вопросы</a></li>
+          <li><a href="{{ route('users_reviews.index') }}">Отзывы на пользователей</a></li>
+          <li><a href="{{ route('users_reports.index') }}">Жалобы на пользователей</a></li>
+          <li><a href="{{ route('real_estates_reports.index') }}">Жалобы на объявления</a></li>
+          <li><a href="{{ route('users_reviews_reports.index') }}">Жалобы на отзывы пользователей</a></li>
+        </ul>
+      </li>
+      <li>
+        <a class="has-arrow ai-icon" href="javascript: void()" aria-expanded="false">
+          <i class="flaticon-381-newspaper"></i>
+          <span class="nav-text">Контент</span>
+        </a>
+        <ul aria-expanded="false">
+          <li><a href="{{ route('news.index') }}">Статьи</a></li>
+          {{--  <li><a href="{{ route('mortgage') }}">Ипотека</a></li>  --}}
+        </ul>
       </li>
       <li>
         <a class="ai-icon" href="{{ route('users.index') }}" aria-expanded="false">
           <i class="flaticon-381-user"></i>
           <span class="nav-text">Пользователи</span>
         </a>
+      </li>
+      <li>
+        <a class="has-arrow ai-icon" href="javascript: void()" aria-expanded="false">
+          <i class="flaticon-381-add-2"></i>
+          <span class="nav-text">Объявления</span>
+        </a>
+        <ul aria-expanded="false">
+          <li><a href="{{ route('estates.index') }}">Объекты</a></li>
+          <li><a href="{{ route('real_estate_types.index') }}">Типы недвижимости</a></li>
+          <li><a href="{{ route('real_estates.index') }}">Объявления</a></li>
+          {{--  <li><a href="{{ route('services.index') }}">Услуги</a></li>  --}}
+          {{--  <li><a href="{{ route('services_types.index') }}">Типы услуг</a></li>  --}}
+          {{--  <li><a href="{{ route('labels.index') }}">Предоставляемые услуги</a></li>  --}}
+        </ul>
       </li>
       {{--  <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
           <i class="flaticon-381-television"></i>
