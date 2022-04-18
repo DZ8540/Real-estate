@@ -58,8 +58,6 @@ Route.group(() => {
     Route.post('/recommended', 'Api/RealEstates/RealEstatesController.recommended')
     Route.post('/types', 'Api/RealEstates/RealEstateTypesController.all')
 
-    Route.post('/:uuid', 'Api/RealEstates/RealEstatesController.get')
-
     Route.group(() => {
 
       Route.post('/', 'Api/RealEstates/RealEstatesReportsController.add')
@@ -73,6 +71,8 @@ Route.group(() => {
       Route.delete('/', 'Api/RealEstates/RealEstatesWishListsController.delete')
 
     }).prefix('/wishlist').middleware('CheckAccessToken')
+
+    Route.post('/:uuid', 'Api/RealEstates/RealEstatesController.get')
 
   }).prefix('/realEstates')
 
