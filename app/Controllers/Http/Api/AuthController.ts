@@ -64,7 +64,7 @@ export default class AuthController {
         .status(200)
         .send(ResponseService.success(ResponseMessages.USER_LOGIN, {
           user: data.user.serializeForToken(),
-          tokens: { access: data.accessToken },
+          token: data.accessToken,
         }))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
@@ -108,7 +108,7 @@ export default class AuthController {
       return response
         .status(200)
         .send(ResponseService.success(ResponseMessages.TOKEN_SUCCESS, {
-          tokens: { access: tokens.access }
+          token: tokens.access
         }))
     } catch (err: Error | any) {
       response.clearCookie(COOKIE_REFRESH_TOKEN_KEY)
