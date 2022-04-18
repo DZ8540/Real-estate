@@ -6,7 +6,7 @@ import { Error } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
 export default class MailService extends BaseService {
-  public static async sendMail(config: MailerConfig): Promise<any> {
+  public static async sendMail(config: MailerConfig): Promise<void> {
     if (!config.from)
       config.from = Env.get('SMTP_FROM')
 

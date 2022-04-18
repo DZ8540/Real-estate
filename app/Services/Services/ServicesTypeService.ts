@@ -47,9 +47,8 @@ export default class ServicesTypeService extends BaseService {
 
     try {
       item = await this.get(slug, config)
-    } catch (err: any) {
-      Logger.error(err)
-      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    } catch (err: Error | any) {
+      throw err
     }
 
     try {

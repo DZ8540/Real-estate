@@ -2,7 +2,19 @@ import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
 
+  Route.post('/questions', 'Api/QuestionsController.create')
+
+  Route.post('/servicesTypes', 'Api/Services/ServicesTypesController.all')
+
   Route.post('/messages/addImages', 'Api/MessagesController.addImages')
+
+  Route.post('/realEstateTypes', 'Api/RealEstates/RealEstateTypesController.all')
+
+  Route.post('/banners', 'Api/BannersController.getAll')
+
+  /**
+   * * Auth
+   */
 
   Route.group(() => {
 
@@ -14,7 +26,7 @@ Route.group(() => {
 
     Route.post('/refresh', 'Api/AuthController.refresh').middleware(['CheckUserCredentials', 'CheckRefreshToken'])
 
-    Route.post('/logout', 'Api/AuthController.logout').middleware(['CheckUserCredentials', 'CheckRefreshToken', 'CheckAccessToken'])
+    Route.post('/logout', 'Api/AuthController.logout').middleware(['CheckUserCredentials', 'CheckRefreshToken'])
 
     Route.group(() => {
 
@@ -26,88 +38,94 @@ Route.group(() => {
 
   }).prefix('/auth')
 
+  /**
+   * * News
+   */
+
   Route.group(() => {
 
-    Route.post('/questions', 'Api/QuestionsController.create')
+    Route.post('', 'Api/NewsController.all')
+    Route.post('/random', 'Api/NewsController.random')
+    Route.post('/:slug', 'Api/NewsController.get')
 
-    Route.post('/servicesTypes', 'Api/Services/ServicesTypesController.all')
+  }).prefix('/news')
 
-    Route.post('/realEstateTypes', 'Api/RealEstates/RealEstateTypesController.all')
+  /**
+   * * Real estate
+   */
 
-    Route.post('/banners', 'Api/BannersController.getAll')
+  Route.group(() => {
 
-    Route.group(() => {
+    Route.post('/', 'Api/RealEstates/RealEstatesController.all')
+    Route.post('/create', 'Api/RealEstates/RealEstatesController.create').middleware('CheckAccessToken')
+    Route.post('/popular', 'Api/RealEstates/RealEstatesController.popular')
+    Route.post('/recommended', 'Api/RealEstates/RealEstatesController.recommended')
 
-      Route.post('', 'Api/NewsController.all')
-      Route.post('/random', 'Api/NewsController.random')
-      Route.post('/:slug', 'Api/NewsController.get')
-
-    }).prefix('/news')
-
-    Route.group(() => {
-
-      Route.post('/', 'Api/RealEstates/RealEstatesController.all')
-      Route.post('/create', 'Api/RealEstates/RealEstatesController.create')
-      Route.post('/popular', 'Api/RealEstates/RealEstatesController.popular')
-      Route.post('/recommended', 'Api/RealEstates/RealEstatesController.recommended')
-      Route.post('/:uuid', 'Api/RealEstates/RealEstatesController.get')
-
-    }).prefix('/realEstates')
+    Route.post('/:uuid', 'Api/RealEstates/RealEstatesController.get')
 
     Route.group(() => {
 
       Route.post('/', 'Api/RealEstates/RealEstatesReportsController.add')
       Route.delete('/', 'Api/RealEstates/RealEstatesReportsController.delete')
 
-    }).prefix('/realEstatesReports')
+    }).prefix('/reports').middleware('CheckAccessToken')
 
     Route.group(() => {
 
       Route.post('/', 'Api/RealEstates/RealEstatesWishListsController.add')
       Route.delete('/', 'Api/RealEstates/RealEstatesWishListsController.delete')
 
-    }).prefix('/realEstatesWishLists')
+    }).prefix('/wishlist').middleware('CheckAccessToken')
+
+  }).prefix('/realEstates')
+
+  /**
+   * * User
+   */
+
+  Route.group(() => {
+
+    Route.patch('/update/:uuid', 'Api/Users/UsersController.update').middleware('CheckAccessToken')
+    Route.delete('/deleteAvatar/:uuid', 'Api/Users/UsersController.deleteAvatar').middleware('CheckAccessToken')
 
     Route.group(() => {
 
       Route.post('/', 'Api/Users/UsersReviewsController.paginate')
-      Route.post('/add', 'Api/Users/UsersReviewsController.add')
-      Route.patch(':id', 'Api/Users/UsersReviewsController.update')
-      Route.delete(':id', 'Api/Users/UsersReviewsController.delete')
+      Route.post('/add', 'Api/Users/UsersReviewsController.add').middleware('CheckAccessToken')
+      Route.patch(':id', 'Api/Users/UsersReviewsController.update').middleware('CheckAccessToken')
+      Route.delete(':id', 'Api/Users/UsersReviewsController.delete').middleware('CheckAccessToken')
 
-    }).prefix('/usersReviews')
+    }).prefix('/reviews')
 
     Route.group(() => {
 
       Route.post('/', 'Api/Users/UsersReportsController.add')
       Route.delete('/', 'Api/Users/UsersReportsController.delete')
 
-    }).prefix('/usersReports')
+    }).prefix('/reports').middleware('CheckAccessToken')
 
     Route.group(() => {
 
       Route.post('/', 'Api/Users/UsersReviewsReportsController.add')
       Route.delete('/', 'Api/Users/UsersReviewsReportsController.delete')
 
-    }).prefix('/usersReviewsReports')
+    }).prefix('/reviewsReports').middleware('CheckAccessToken')
 
-    Route.group(() => {
+    Route.post('/:id', 'Api/Users/UsersController.get')
 
-      Route.post('/:id', 'Api/Users/UsersController.get')
-      Route.patch('/update/:uuid', 'Api/Users/UsersController.update')
-      Route.delete('/deleteAvatar/:uuid', 'Api/Users/UsersController.deleteAvatar')
+  }).prefix('/user')
 
-    }).prefix('/users')
+  /**
+   * * Service
+   */
 
-    Route.group(() => {
+  Route.group(() => {
 
-      Route.post('/', 'Api/Services/ServicesController.all')
-      Route.post('/add', 'Api/Services/ServicesController.add')
-      Route.patch('/:id', 'Api/Services/ServicesController.update')
-      Route.delete('/:id', 'Api/Services/ServicesController.delete')
+    Route.post('/', 'Api/Services/ServicesController.all')
+    Route.post('/add', 'Api/Services/ServicesController.add').middleware('CheckAccessToken')
+    Route.patch('/:id', 'Api/Services/ServicesController.update').middleware('CheckAccessToken')
+    Route.delete('/:id', 'Api/Services/ServicesController.delete').middleware('CheckAccessToken')
 
-    }).prefix('/services')
-
-  }).middleware('CheckAccessToken')
+  }).prefix('/services')
 
 }).prefix('/api')

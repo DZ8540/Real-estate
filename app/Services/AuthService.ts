@@ -66,7 +66,7 @@ export default class AuthService extends BaseService {
       await user.load('realEstatesReports')
 
       return user
-    } catch (err: Error | any) {
+    } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.USER_NOT_FOUND } as Error
     }
@@ -138,7 +138,7 @@ export default class AuthService extends BaseService {
     try {
       if (!accessRoles.includes(currentUser.role.name as Roles))
         throw new Error()
-    } catch (err: Error | any) {
+    } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.NOT_ADMIN } as Error
     }
