@@ -4,11 +4,7 @@ Route.group(() => {
 
   Route.post('/questions', 'Api/QuestionsController.create')
 
-  Route.post('/servicesTypes', 'Api/Services/ServicesTypesController.all')
-
   Route.post('/messages/addImages', 'Api/MessagesController.addImages')
-
-  Route.post('/realEstateTypes', 'Api/RealEstates/RealEstateTypesController.all')
 
   Route.post('/banners', 'Api/BannersController.getAll')
 
@@ -60,6 +56,7 @@ Route.group(() => {
     Route.post('/create', 'Api/RealEstates/RealEstatesController.create').middleware('CheckAccessToken')
     Route.post('/popular', 'Api/RealEstates/RealEstatesController.popular')
     Route.post('/recommended', 'Api/RealEstates/RealEstatesController.recommended')
+    Route.post('/types', 'Api/RealEstates/RealEstateTypesController.all')
 
     Route.post('/:uuid', 'Api/RealEstates/RealEstatesController.get')
 
@@ -120,6 +117,8 @@ Route.group(() => {
    */
 
   Route.group(() => {
+
+    Route.post('/types', 'Api/Services/ServicesTypesController.all')
 
     Route.post('/', 'Api/Services/ServicesController.all')
     Route.post('/add', 'Api/Services/ServicesController.add').middleware('CheckAccessToken')
