@@ -324,6 +324,7 @@ export default class RealEstateService extends BaseService {
 
       return recommended
     } catch (err: any) {
+      Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
   }
@@ -341,6 +342,7 @@ export default class RealEstateService extends BaseService {
 
       return incrementedViewsCount
     } catch (err: any) {
+      Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
   }

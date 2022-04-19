@@ -1,9 +1,9 @@
 import Env from '@ioc:Adonis/Core/Env'
 import TokenService from 'App/Services/TokenService'
+import TokenException from 'App/Exceptions/TokenException'
 import ClientException from 'App/Exceptions/ClientException'
 import { ResponseMessages } from 'Contracts/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import TokenException from 'App/Exceptions/TokenException'
 
 export default class CheckAccessToken {
   public async handle({ request }: HttpContextContract, next: () => Promise<void>) {

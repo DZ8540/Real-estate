@@ -10,7 +10,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ~/Postgres/Kino++/:/var/lib/postgresql/data
+      - ~/Postgres/Real-estate/:/var/lib/postgresql/data
 
   redis:
     image: redis
