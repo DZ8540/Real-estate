@@ -27,7 +27,7 @@ export default class RealEstateService extends BaseService {
   public static async paginate(config: PaginateConfig<Columns, RealEstate>, columns: Columns[] = []): Promise<ModelPaginatorContract<RealEstate>> {
     let query = RealEstate.query().select(columns)
     if (config.relations) {
-      for (let item of config.relations) {
+      for (const item of config.relations) {
         query = query.preload(item)
       }
     }
@@ -88,7 +88,7 @@ export default class RealEstateService extends BaseService {
       }
 
       if (payload.images) {
-        for (let imageItem of payload.images) {
+        for (const imageItem of payload.images) {
           if (imageItem) {
             await imageItem.moveToDisk(`${imageBasePath}/images`)
             await item.related('images').create({ image: `${imageBasePath}/images/${imageItem.fileName}` })
@@ -134,12 +134,12 @@ export default class RealEstateService extends BaseService {
       }
 
       if (payload.images) {
-        for (let value of item.images) {
+        for (const value of item.images) {
           await Drive.delete(value.image)
           await value.delete()
         }
 
-        for (let imageItem of payload.images) {
+        for (const imageItem of payload.images) {
           if (imageItem) {
             await imageItem.moveToDisk(`${imageBasePath}/images`)
             await item.related('images').create({ image: `${imageBasePath}/images/${imageItem.fileName}` })
@@ -193,7 +193,7 @@ export default class RealEstateService extends BaseService {
         await Drive.delete(item.image)
 
       if (item.images) {
-        for (let imageItem of item.images) {
+        for (const imageItem of item.images) {
           await Drive.delete(imageItem.image)
           await imageItem.delete()
         }
@@ -231,7 +231,7 @@ export default class RealEstateService extends BaseService {
     try {
       let query = RealEstate.query().preload('images')
 
-      for (let key in payload) {
+      for (const key in payload) {
         if (payload[key]) {
           switch (key) {
             // Skip this api's keys
@@ -242,7 +242,7 @@ export default class RealEstateService extends BaseService {
             // Skip this api's keys
 
             case 'districts':
-              for (let item of payload[key]!) {
+              for (const item of payload[key]!) {
                 query = query.orWhere('address', 'like', `%${item}%`)
               }
               break
@@ -305,7 +305,7 @@ export default class RealEstateService extends BaseService {
 
   public static async recommended(payload: RealEstateRecommendedValidator['schema']['props']): Promise<RealEstate[]> {
     let user: User
-    let recommended: RealEstate[] = []
+    const recommended: RealEstate[] = []
 
     try {
       user = await UserService.getById(payload.userId, { relations: ['realEstatesWishList'] })
@@ -315,10 +315,10 @@ export default class RealEstateService extends BaseService {
 
     try {
       for (let i = 0; i < payload.limit; i++) {
-        let random: number = Math.floor(Math.random() * user.realEstatesWishList.length)
-        let estateId: Estate['id'] = user.realEstatesWishList[random].id
+        const random: number = Math.floor(Math.random() * (user.realEstatesWishList.length - 1))
+        const estateId: Estate['id'] = user.realEstatesWishList[random].id
 
-        let realEstateItem: RealEstate = await RealEstate.query().where('estateId', estateId).random()
+        const realEstateItem: RealEstate = await RealEstate.query().where('estateId', estateId).random()
         recommended.push(realEstateItem)
       }
 
@@ -336,7 +336,7 @@ export default class RealEstateService extends BaseService {
 
     try {
       let currentViewsCount: number = Number(await Redis.get(item.uuid))
-      let incrementedViewsCount: number = ++currentViewsCount
+      const incrementedViewsCount: number = ++currentViewsCount
 
       await Redis.set(item.uuid, incrementedViewsCount, 'EX', EXPIRATION)
 

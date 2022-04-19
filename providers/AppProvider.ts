@@ -17,7 +17,7 @@ export default class AppProvider {
 
     ModelQueryBuilder.macro('get', async function({ page, limit, orderByColumn, orderBy, baseURL }: PaginationConfig) {
       orderByColumn = orderByColumn ?? 'id'
-      let query = await this.orderBy(orderByColumn, orderBy).paginate(page, limit)
+      const query = await this.orderBy(orderByColumn, orderBy).paginate(page, limit)
 
       if (baseURL)
         return query.baseUrl(baseURL)
@@ -26,8 +26,8 @@ export default class AppProvider {
     })
 
     ModelQueryBuilder.macro('random', async function() {
-      let allRecords = await this.orderBy('id', 'desc')
-      let randomQuery: number = Math.floor(Math.random() * allRecords.length)
+      const allRecords = await this.orderBy('id', 'desc')
+      const randomQuery: number = Math.floor(Math.random() * (allRecords.length - 1))
 
       return await this.where('id', allRecords[randomQuery].id).first()
     })
