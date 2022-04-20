@@ -303,6 +303,21 @@ export default class RealEstateService extends BaseService {
     }
   }
 
+  public static async popular(limit?: number): Promise<ModelPaginatorContract<RealEstate>> {
+    const popularConfig: PaginateConfig<Columns, RealEstate> = {
+      limit,
+      page: 1,
+      orderByColumn: 'viewsCount',
+      orderBy: 'desc',
+    }
+
+    try {
+      return await this.paginate(popularConfig)
+    } catch (err: Error | any) {
+      throw err
+    }
+  }
+
   public static async recommended(payload: RealEstateRecommendedValidator['schema']['props']): Promise<RealEstate[]> {
     let user: User
     const recommended: RealEstate[] = []
@@ -314,12 +329,21 @@ export default class RealEstateService extends BaseService {
     }
 
     try {
-      for (let i = 0; i < payload.limit; i++) {
-        const random: number = Math.floor(Math.random() * (user.realEstatesWishList.length - 1))
-        const estateId: Estate['id'] = user.realEstatesWishList[random].id
+      if (user.realEstatesWishList.length) {
+        for (let i = 0; i < payload.limit; i++) {
+          const random: number = Math.floor(Math.random() * user.realEstatesWishList.length)
+          const estateId: Estate['id'] = user.realEstatesWishList[random - 1].estateId
 
-        const realEstateItem: RealEstate = await RealEstate.query().where('estateId', estateId).random()
-        recommended.push(realEstateItem)
+          const realEstateItem: RealEstate = await RealEstate.query().where('estateId', estateId).random()
+          recommended.push(realEstateItem)
+        }
+      } else {
+        const popular = await this.popular(payload.limit)
+
+        for (const item of popular) {
+          const realEstateItem: RealEstate = await RealEstate.query().where('estateId', item.estateId).random()
+          recommended.push(realEstateItem)
+        }
       }
 
       return recommended

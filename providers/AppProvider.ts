@@ -27,7 +27,7 @@ export default class AppProvider {
 
     ModelQueryBuilder.macro('random', async function() {
       const allRecords = await this.orderBy('id', 'desc')
-      const randomQuery: number = Math.floor(Math.random() * (allRecords.length - 1))
+      const randomQuery: number = Math.floor(Math.random() * allRecords.length)
 
       return await this.where('id', allRecords[randomQuery].id).first()
     })
