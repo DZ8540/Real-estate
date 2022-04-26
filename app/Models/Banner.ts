@@ -2,11 +2,15 @@ import Drive from '@ioc:Adonis/Core/Drive'
 import CamelCaseNamingStrategy from '../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
 import { IMG_PLACEHOLDER } from 'Config/drive'
-import { BaseModel, column, computed } from '@ioc:Adonis/Lucid/Orm'
+import { afterFetch, afterFind, BaseModel, column, computed } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Banner extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
   public static readonly columns = ['id', 'description', 'image', 'createdAt', 'updatedAt'] as const
+
+  /**
+   * * Columns
+   */
 
   @column({ isPrimary: true })
   public id: number
@@ -26,6 +30,26 @@ export default class Banner extends BaseModel {
     serializeAs: null,
   })
   public updatedAt: DateTime
+
+  /**
+   * * Hooks
+   */
+
+  @afterFind()
+  public static async setImageUrl(item: Banner) {
+    item.image = await Drive.getUrl(item.image)
+  }
+
+  @afterFetch()
+  public static async setImagesUrl(banners: Banner[]) {
+    await Promise.all(banners.map(async (item) => {
+      item.image = await Drive.getUrl(item.image)
+    }))
+  }
+
+  /**
+   * * Computed properties
+   */
 
   @computed()
   public get createdAtForUser(): string {
