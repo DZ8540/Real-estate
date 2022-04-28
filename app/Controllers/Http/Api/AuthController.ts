@@ -102,13 +102,14 @@ export default class AuthController {
     let ip: string = request.ip()
 
     try {
-      let tokens: { access: string, refresh: string } = await TokenService.refreshToken({ userToken, fingerprint, ua, ip, payload })
-      response.cookie(COOKIE_REFRESH_TOKEN_KEY, tokens.refresh, { path: '/api/auth' })
+      let data: { user: User, tokens: { access: string, refresh: string } } = await TokenService.refreshToken({ userToken, fingerprint, ua, ip, payload })
+      response.cookie(COOKIE_REFRESH_TOKEN_KEY, data.tokens.refresh, { path: '/api/auth' })
 
       return response
         .status(200)
         .send(ResponseService.success(ResponseMessages.TOKEN_SUCCESS, {
-          token: tokens.access
+          user: data.user,
+          token: data.tokens.access,
         }))
     } catch (err: Error | any) {
       response.clearCookie(COOKIE_REFRESH_TOKEN_KEY)

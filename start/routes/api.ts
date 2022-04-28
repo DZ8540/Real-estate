@@ -84,6 +84,8 @@ Route.group(() => {
 
     Route.patch('/update/:uuid', 'Api/Users/UsersController.update').middleware('CheckAccessToken')
     Route.delete('/deleteAvatar/:uuid', 'Api/Users/UsersController.deleteAvatar').middleware('CheckAccessToken')
+    Route.post('/realEstates/:id', 'Api/RealEstates/RealEstatesController.getUserRealEstates').middleware('CheckAccessToken')
+    Route.post('/wishlist/:id', 'Api/RealEstates/RealEstatesController.getUserWishlist').middleware('CheckAccessToken')
 
     Route.group(() => {
 

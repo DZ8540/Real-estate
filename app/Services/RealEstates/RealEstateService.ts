@@ -7,6 +7,7 @@ import UserService from '../Users/UserService'
 import Database from '@ioc:Adonis/Lucid/Database'
 import Estate from 'App/Models/RealEstates/Estate'
 import RealEstate from 'App/Models/RealEstates/RealEstate'
+import ApiValidator from 'App/Validators/Api/ApiValidator'
 import RealEstateValidator from 'App/Validators/RealEstates/RealEstateValidator'
 import RealEstateApiValidator from 'App/Validators/Api/RealEstates/RealEstateValidator'
 import RealEstateRecommendedValidator from 'App/Validators/Api/RealEstates/RealEstateRecommendedValidator'
@@ -365,6 +366,40 @@ export default class RealEstateService extends BaseService {
       await Redis.set(item.uuid, incrementedViewsCount, 'EX', EXPIRATION)
 
       return incrementedViewsCount
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async getUserRealEstates(userId: User['id'], config: ApiValidator['schema']['props']): Promise<ModelPaginatorContract<RealEstate>> {
+    let user: User
+
+    try {
+      user = await UserService.getById(userId)
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    try {
+      return await user.related('realEstates').query().get(config)
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async getUserWishlist(userId: User['id'], config: ApiValidator['schema']['props']): Promise<ModelPaginatorContract<RealEstate>> {
+    let user: User
+
+    try {
+      user = await UserService.getById(userId)
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    try {
+      return await user.related('realEstatesWishList').query().get(config)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error

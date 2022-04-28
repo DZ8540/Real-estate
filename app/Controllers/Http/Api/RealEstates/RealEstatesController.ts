@@ -1,5 +1,7 @@
+import User from 'App/Models/Users/User'
 import RealEstate from 'App/Models/RealEstates/RealEstate'
 import ResponseService from 'App/Services/ResponseService'
+import ApiValidator from 'App/Validators/Api/ApiValidator'
 import ExceptionService from 'App/Services/ExceptionService'
 import RealEstateService from 'App/Services/RealEstates/RealEstateService'
 import RealEstateValidator from 'App/Validators/RealEstates/RealEstateValidator'
@@ -111,6 +113,52 @@ export default class RealEstatesController {
       let recommended: RealEstate[] = await RealEstateService.recommended(payload)
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, recommended))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
+  public async getUserRealEstates({ request, params, response }: HttpContextContract) {
+    let config: ApiValidator['schema']['props']
+    const userId: User['id'] = params.id
+
+    try {
+      config = await request.validate(ApiValidator)
+    } catch (err: any) {
+      throw new ExceptionService({
+        code: ResponseCodes.VALIDATION_ERROR,
+        message: ResponseMessages.ERROR,
+        body: err.messages,
+      })
+    }
+
+    try {
+      const realEstates: ModelPaginatorContract<RealEstate> = await RealEstateService.getUserRealEstates(userId, config)
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, realEstates))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
+  public async getUserWishlist({ request, params, response }: HttpContextContract) {
+    let config: ApiValidator['schema']['props']
+    const userId: User['id'] = params.id
+
+    try {
+      config = await request.validate(ApiValidator)
+    } catch (err: any) {
+      throw new ExceptionService({
+        code: ResponseCodes.VALIDATION_ERROR,
+        message: ResponseMessages.ERROR,
+        body: err.messages,
+      })
+    }
+
+    try {
+      const wishlist: ModelPaginatorContract<RealEstate> = await RealEstateService.getUserWishlist(userId, config)
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, wishlist))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }

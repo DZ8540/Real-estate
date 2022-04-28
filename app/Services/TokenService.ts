@@ -1,7 +1,9 @@
 import Token from 'App/Models/Token'
 import Env from '@ioc:Adonis/Core/Env'
 import BaseService from './BaseService'
+import User from 'App/Models/Users/User'
 import Logger from '@ioc:Adonis/Core/Logger'
+import UserService from './Users/UserService'
 import { sign, SignOptions, verify } from 'jsonwebtoken'
 import { TokenCredentials, TokenPayload } from 'Contracts/tokens'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
@@ -17,7 +19,8 @@ export default class TokenService extends BaseService {
     return sign(payload, key, options)
   }
 
-  public static async refreshToken(config: RefreshRefreshTokenConfig): Promise<ReturnRefreshTokenData> {
+  public static async refreshToken(config: RefreshRefreshTokenConfig): Promise<{ user: User, tokens: ReturnRefreshTokenData }> {
+    let user: User
     let currentToken: Token
     let accessToken: string
     let refreshToken: string
@@ -52,9 +55,21 @@ export default class TokenService extends BaseService {
     }
 
     try {
+      user = await UserService.getById(currentToken.userId)
+    } catch (err: Error | any) {
+      throw err
+    }
+
+    try {
       await currentToken.merge({ token: refreshToken }).save()
 
-      return { access: accessToken, refresh: refreshToken }
+      return {
+        user,
+        tokens: {
+          access: accessToken,
+          refresh: refreshToken,
+        }
+      }
     } catch (err: any) {
       await currentToken.delete()
 
