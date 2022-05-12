@@ -146,7 +146,7 @@ export default class RealEstateValidator extends BaseValidator {
     maxFloor: schema.number.optional([
       rules.unsigned(),
     ]),
-    yearOfConstruction: schema.date.optional({ format: 'd MMMM, yyyy' }, [
+    yearOfConstruction: schema.date.optional({ format: 'yyyy' }, [
       rules.before('today'),
     ]),
     ceilingHeight: schema.number.optional([
