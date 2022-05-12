@@ -139,6 +139,8 @@ export default class RealEstateValidator extends ApiValidator {
     ceilingHeight: schema.number.optional([
       rules.unsigned(),
     ]),
+    image: schema.file.optional({ extnames: ['jpg', 'jpeg', 'png', 'webp'] }),
+    images: schema.array.optional().members(schema.file.optional({ extnames: ['jpg', 'jpeg', 'png', 'webp'] })),
   })
 
   /**
