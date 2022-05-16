@@ -78,7 +78,7 @@ export default class RealEstateValidator extends ApiValidator {
     withKids: schema.boolean.optional(),
     withPets: schema.boolean.optional(),
     hasRamp: schema.boolean.optional(),
-    hasGarbageСhute: schema.boolean.optional(),
+    hasGarbage: schema.boolean.optional(),
     hasGroundParking: schema.boolean.optional(),
     hasUnderGroundParking: schema.boolean.optional(),
     hasMoreLayerParking: schema.boolean.optional(),
@@ -138,6 +138,7 @@ export default class RealEstateValidator extends ApiValidator {
     ])),
     ceilingHeight: schema.number.optional([
       rules.unsigned(),
+      rules.range(3, 100),
     ]),
   })
 

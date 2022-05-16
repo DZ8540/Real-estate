@@ -89,7 +89,7 @@ export default class RealEstates extends BaseSchema {
         3 - Пассажирский/Грузовой
       `)
       table.boolean('hasRamp').defaultTo(0).notNullable().comment('Есть ли пандус. 0 - нету, 1 - есть')
-      table.boolean('hasGarbageСhute').defaultTo(0).notNullable().comment('Есть ли мусоропровод. 0 - нету, 1 - есть')
+      table.boolean('hasGarbage').defaultTo(0).notNullable().comment('Есть ли мусоропровод. 0 - нету, 1 - есть')
       table.boolean('hasGroundParking').defaultTo(0).notNullable().comment('Есть ли наземная парковка')
       table.boolean('hasUnderGroundParking').defaultTo(0).notNullable().comment('Есть ли подземная парковка')
       table.boolean('hasMoreLayerParking').defaultTo(0).notNullable().comment('Есть ли многоуровневая парковка')
@@ -113,7 +113,7 @@ export default class RealEstates extends BaseSchema {
       table.integer('kitchenArea').nullable().comment('Площадь кухни')
       table.integer('maxFloor').nullable().comment('Максимальное кол-во этажей в доме. Не может быть меньше поля этажа квартиры')
       table.date('yearOfConstruction').nullable().comment('Дата постройки')
-      table.decimal('ceilingHeight', 2, 1).nullable().comment('Высота потолков')
+      table.decimal('ceilingHeight', 4, 1).nullable().comment('Высота потолков')
       table.string('metro').nullable()
 
       table

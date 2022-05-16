@@ -27,7 +27,7 @@ export default class RealEstate extends BaseModel {
     'hasConditioner', 'hasInternet', 'hasBathroom',
     'hasShowerCabin', 'withKids', 'withPets',
     'description', 'image', 'houseBuildingType',
-    'elevatorType', 'hasRamp', 'hasGarbageСhute',
+    'elevatorType', 'hasRamp', 'hasGarbage',
     'hasGroundParking', 'hasUnderGroundParking', 'hasMoreLayerParking',
     'price', 'isMortgage', 'isEncumbrances',
     'viewsCount', 'isVip', 'isHot', 'isBanned',
@@ -135,7 +135,7 @@ export default class RealEstate extends BaseModel {
   public hasRamp: boolean
 
   @column()
-  public hasGarbageСhute: boolean
+  public hasGarbage: boolean
 
   @column()
   public hasGroundParking: boolean

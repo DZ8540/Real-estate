@@ -104,7 +104,7 @@ export default class RealEstateValidator extends BaseValidator {
     withKids: schema.boolean.optional(),
     withPets: schema.boolean.optional(),
     hasRamp: schema.boolean.optional(),
-    hasGarbageСhute: schema.boolean.optional(),
+    hasGarbage: schema.boolean.optional(),
     hasGroundParking: schema.boolean.optional(),
     hasUnderGroundParking: schema.boolean.optional(),
     hasMoreLayerParking: schema.boolean.optional(),
@@ -151,6 +151,7 @@ export default class RealEstateValidator extends BaseValidator {
     ]),
     ceilingHeight: schema.number.optional([
       rules.unsigned(),
+      rules.range(3, 100),
     ]),
     metro: schema.string.optional({}, [
       rules.maxLength(255)
