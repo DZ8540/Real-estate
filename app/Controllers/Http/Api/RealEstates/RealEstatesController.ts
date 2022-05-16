@@ -4,6 +4,7 @@ import ResponseService from 'App/Services/ResponseService'
 import ApiValidator from 'App/Validators/Api/ApiValidator'
 import ExceptionService from 'App/Services/ExceptionService'
 import RealEstateService from 'App/Services/RealEstates/RealEstateService'
+import RealEstateValidator from 'App/Validators/RealEstates/RealEstateValidator'
 import RealEstateApiValidator from 'App/Validators/Api/RealEstates/RealEstateValidator'
 import RealEstatePopularValidator from 'App/Validators/Api/RealEstates/RealEstatePopularValidator'
 import RealEstateRecommendedValidator from 'App/Validators/Api/RealEstates/RealEstateRecommendedValidator'
@@ -11,7 +12,6 @@ import { Error } from 'Contracts/services'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { ModelObject, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
-import CreateRealEstateValidator from 'App/Validators/Api/RealEstates/CreateRealEstateValidator'
 
 export default class RealEstatesController {
   public async all({ request, response }: HttpContextContract) {
@@ -52,10 +52,10 @@ export default class RealEstatesController {
   }
 
   public async create({ request, response }: HttpContextContract) {
-    let payload: CreateRealEstateValidator['schema']['props']
+    let payload: RealEstateValidator['schema']['props']
 
     try {
-      payload = await request.validate(CreateRealEstateValidator)
+      payload = await request.validate(RealEstateValidator)
     } catch (err: any) {
       throw new ExceptionService({
         code: ResponseCodes.VALIDATION_ERROR,

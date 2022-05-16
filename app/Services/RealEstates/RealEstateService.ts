@@ -17,7 +17,6 @@ import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { removeFirstWord, removeLastLetter } from '../../../helpers'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
-import CreateRealEstateValidator from 'App/Validators/Api/RealEstates/CreateRealEstateValidator'
 
 type Columns = typeof RealEstate['columns'][number]
 type ValidatorPayload = RealEstateValidator['schema']['props']
@@ -64,7 +63,7 @@ export default class RealEstateService extends BaseService {
     }
   }
 
-  public static async create(payload: CreateRealEstateValidator['schema']['props'], { trx }: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
+  public static async create(payload: RealEstateValidator['schema']['props'], { trx }: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
     let item: RealEstate
     let image: string | undefined
     let imageBasePath: string
