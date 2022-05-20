@@ -51,7 +51,7 @@ export default class UserValidator extends BaseValidator {
     ]),
     isSubscribed: schema.boolean.optional(),
     avatar: schema.file.optional({
-      extnames: ['jpg', 'gif', 'png', 'jpeg', 'webp']
+      extnames: ['jpg', 'gif', 'png', 'jpeg', 'webp'],
     }),
   })
 

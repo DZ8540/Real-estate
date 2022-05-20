@@ -65,7 +65,7 @@ export default class RealEstates extends BaseSchema {
       table.boolean('hasRefrigerator').defaultTo(0).notNullable().comment('Есть ли холодильник. 0 - нету, 1 - есть')
       table.boolean('hasWashingMachine').defaultTo(0).notNullable().comment('Есть ли стиральная машина. 0 - нету, 1 - есть')
       table.boolean('hasDishWasher').defaultTo(0).notNullable().comment('Есть ли посудомоечная машина. 0 - нету, 1 - есть')
-      table.boolean('hasTV').defaultTo(0).notNullable().comment('Есть ли телевизор. 0 - нету, 1 - есть')
+      table.boolean('hasTv').defaultTo(0).notNullable().comment('Есть ли телевизор. 0 - нету, 1 - есть')
       table.boolean('hasConditioner').defaultTo(0).notNullable().comment('Есть ли кондиционер. 0 - нету, 1 - есть')
       table.boolean('hasInternet').defaultTo(0).notNullable().comment('Есть ли интернет. 0 - нету, 1 - есть')
       table.boolean('hasBathroom').defaultTo(0).notNullable().comment('Есть ли ванна. 0 - нету, 1 - есть')

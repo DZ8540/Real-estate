@@ -6,7 +6,12 @@ import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
 import { v4 as uuid } from 'uuid'
 import { IMG_PLACEHOLDER } from 'Config/drive'
-import { BaseModel, beforeSave, BelongsTo, belongsTo, column, computed, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel, beforeFetch, beforeFind,
+  beforeSave, BelongsTo, belongsTo,
+  column, computed, HasMany,
+  hasMany, ModelQueryBuilderContract
+} from '@ioc:Adonis/Lucid/Orm'
 import {
   BALCONY_TYPES, ELEVATOR_TYPES, HOUSE_BUILDING_TYPES,
   HOUSE_TYPES, LAYOUT_TYPES, PREPAYMENT_TYPES,
@@ -23,7 +28,7 @@ export default class RealEstate extends BaseModel {
     'totalArea', 'floor', 'WCType',
     'balconyType', 'layoutType', 'repairType',
     'hasKitchenFurniture', 'hasFurniture', 'hasRefrigerator',
-    'hasWashingMachine', 'hasDishWasher', 'hasTV',
+    'hasWashingMachine', 'hasDishWasher', 'hasTv',
     'hasConditioner', 'hasInternet', 'hasBathroom',
     'hasShowerCabin', 'withKids', 'withPets',
     'description', 'image', 'houseBuildingType',
@@ -102,7 +107,7 @@ export default class RealEstate extends BaseModel {
   public hasDishWasher: boolean
 
   @column()
-  public hasTV: boolean
+  public hasTv: boolean
 
   @column()
   public hasConditioner: boolean
@@ -354,6 +359,12 @@ export default class RealEstate extends BaseModel {
   @beforeSave()
   public static setAddressToLowerCase(realEstate: RealEstate) {
     realEstate.address = realEstate.address.toLowerCase()
+  }
+
+  @beforeFind()
+  @beforeFetch()
+  public static async preloadRelations(query: ModelQueryBuilderContract<typeof RealEstate>) {
+    query.preload('user')
   }
 
   @hasMany(() => RealEstateImage)

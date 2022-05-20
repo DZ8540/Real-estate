@@ -70,7 +70,7 @@ export default class RealEstateValidator extends ApiValidator {
     hasRefrigerator: schema.boolean.optional(),
     hasWashingMachine: schema.boolean.optional(),
     hasDishWasher: schema.boolean.optional(),
-    hasTV: schema.boolean.optional(),
+    hasTv: schema.boolean.optional(),
     hasConditioner: schema.boolean.optional(),
     hasInternet: schema.boolean.optional(),
     hasBathroom: schema.boolean.optional(),

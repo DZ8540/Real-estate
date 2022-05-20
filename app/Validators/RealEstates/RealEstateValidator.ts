@@ -96,7 +96,7 @@ export default class RealEstateValidator extends BaseValidator {
     hasRefrigerator: schema.boolean.optional(),
     hasWashingMachine: schema.boolean.optional(),
     hasDishWasher: schema.boolean.optional(),
-    hasTV: schema.boolean.optional(),
+    hasTv: schema.boolean.optional(),
     hasConditioner: schema.boolean.optional(),
     hasInternet: schema.boolean.optional(),
     hasBathroom: schema.boolean.optional(),
@@ -156,8 +156,14 @@ export default class RealEstateValidator extends BaseValidator {
     metro: schema.string.optional({}, [
       rules.maxLength(255)
     ]),
-    image: schema.file.optional({ extnames: ['jpg', 'jpeg', 'png', 'webp'] }),
-    images: schema.array.optional().members(schema.file.optional({ extnames: ['jpg', 'jpeg', 'png', 'webp'] })),
+    image: schema.file.optional({
+      extnames: ['jpg', 'jpeg', 'png', 'webp'],
+    }),
+    images: schema.array.optional().members(
+      schema.file.optional({
+        extnames: ['jpg', 'jpeg', 'png', 'webp'],
+      })
+    ),
   })
 
   /**

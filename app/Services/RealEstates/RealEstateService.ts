@@ -86,6 +86,8 @@ export default class RealEstateService extends BaseService {
       if (payload.image) {
         await payload.image.moveToDisk(imageBasePath)
         image = `${imageBasePath}/${payload.image.fileName}`
+
+        item = await item.merge({ image }).save()
       }
 
       if (payload.images) {
