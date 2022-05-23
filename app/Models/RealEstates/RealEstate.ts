@@ -384,7 +384,14 @@ export default class RealEstate extends BaseModel {
       .andWhere('realEstate_id', item.id)
       .first()
 
+    const isInReports = await Database
+      .from('realEstatesReports')
+      .where('user_id', currentUserId)
+      .andWhere('realEstate_id', item.id)
+      .first()
+
     item.wishlistStatus = isInWishlist ? true : false
+    item.reportStatus = isInReports ? true : false
 
     return item
   }
