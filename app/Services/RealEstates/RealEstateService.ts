@@ -16,7 +16,7 @@ import { REAL_ESTATE_PATH } from 'Config/drive'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { removeFirstWord, removeLastLetter } from '../../../helpers'
-import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
+import { Error, JSONPaginate, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
 type Columns = typeof RealEstate['columns'][number]
 type ValidatorPayload = RealEstateValidator['schema']['props']
@@ -227,7 +227,7 @@ export default class RealEstateService extends BaseService {
     }
   }
 
-  public static async search(payload: RealEstateApiValidator['schema']['props']): Promise<RealEstate[]> {
+  public static async search(payload: RealEstateApiValidator['schema']['props']): Promise<JSONPaginate> {
     if (!payload.limit)
       payload.limit = 15
 
@@ -299,7 +299,7 @@ export default class RealEstateService extends BaseService {
         }
       }
 
-      return await query.get({ page: payload.page, limit: payload.limit, orderBy: payload.orderBy })
+      return (await query.get({ page: payload.page, limit: payload.limit, orderBy: payload.orderBy })).toJSON()
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error

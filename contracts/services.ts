@@ -1,7 +1,7 @@
 import { TokenCredentials } from './tokens'
 import { ResponseCodes, ResponseMessages } from './response'
 import { TransactionClientContract } from '@ioc:Adonis/Lucid/Database'
-import { ExtractModelRelations, LucidRow } from '@ioc:Adonis/Lucid/Orm'
+import { ExtractModelRelations, LucidRow, ModelObject } from '@ioc:Adonis/Lucid/Orm'
 
 export type PaginateConfig<C extends string, M extends LucidRow = LucidRow> = {
   page: number,
@@ -29,6 +29,11 @@ export type RefreshRefreshTokenConfig = {
   fingerprint: TokenCredentials['fingerprint'],
   ua: TokenCredentials['ua'],
   ip: TokenCredentials['ip'],
+}
+
+export type JSONPaginate = {
+  meta: any,
+  data: ModelObject[],
 }
 
 export enum ExperienceTypes {

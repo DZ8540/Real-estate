@@ -8,14 +8,15 @@ import RealEstateValidator from 'App/Validators/RealEstates/RealEstateValidator'
 import RealEstateApiValidator from 'App/Validators/Api/RealEstates/RealEstateValidator'
 import RealEstatePopularValidator from 'App/Validators/Api/RealEstates/RealEstatePopularValidator'
 import RealEstateRecommendedValidator from 'App/Validators/Api/RealEstates/RealEstateRecommendedValidator'
-import { Error } from 'Contracts/services'
+import { ModelObject } from '@ioc:Adonis/Lucid/Orm'
+import { Error, JSONPaginate } from 'Contracts/services'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
-import { ModelObject, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 
 export default class RealEstatesController {
-  public async all({ request, response }: HttpContextContract) {
+  public async all({ request, response, params }: HttpContextContract) {
     let payload: RealEstateApiValidator['schema']['props']
+    const currentUserId: User['id'] | undefined = params.currentUserId
 
     try {
       payload = await request.validate(RealEstateApiValidator)
@@ -28,7 +29,10 @@ export default class RealEstatesController {
     }
 
     try {
-      let realEstates: RealEstate[] = await RealEstateService.search(payload)
+      let realEstates: JSONPaginate = await RealEstateService.search(payload)
+
+      if (currentUserId)
+        realEstates.data = await Promise.all(realEstates.data.map(async (item: RealEstate) => await item.getForUser(currentUserId)))
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, realEstates))
     } catch (err: Error | any) {
@@ -37,13 +41,18 @@ export default class RealEstatesController {
   }
 
   public async get({ params, response }: HttpContextContract) {
-    let uuid: RealEstate['uuid'] = params.uuid
+    const uuid: RealEstate['uuid'] = params.uuid
+    const currentUserId: User['id'] | undefined = params.currentUserId
 
     try {
-      let item: RealEstate = await RealEstateService.get(uuid, { relations: ['images', 'user'], isForApi: true })
-      let todayViewsCount: number = await RealEstateService.incrementTodayViewsCount(item)
+      let fullItem: ModelObject
+      const item: RealEstate = await RealEstateService.get(uuid, { relations: ['images', 'user'], isForApi: true })
+      const todayViewsCount: number = await RealEstateService.incrementTodayViewsCount(item)
 
-      let fullItem: ModelObject = { ...item.serialize(), todayViewsCount }
+      if (currentUserId)
+        fullItem = { ...(await item.getForUser(currentUserId)), todayViewsCount }
+      else
+        fullItem = { ...item.serialize(), todayViewsCount }
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, fullItem))
     } catch (err: Error | any) {
@@ -65,7 +74,7 @@ export default class RealEstatesController {
     }
 
     try {
-      let item: RealEstate = await RealEstateService.create(payload)
+      const item: RealEstate = await RealEstateService.create(payload)
 
       return response.status(200).send(ResponseService.success(ResponseMessages.REAL_ESTATE_CREATED, item))
     } catch (err: Error | any) {
@@ -73,8 +82,9 @@ export default class RealEstatesController {
     }
   }
 
-  public async popular({ request, response }: HttpContextContract) {
+  public async popular({ request, response, params }: HttpContextContract) {
     let payload: RealEstatePopularValidator['schema']['props']
+    const currentUserId: User['id'] | undefined = params.currentUserId
 
     try {
       payload = await request.validate(RealEstatePopularValidator)
@@ -87,17 +97,20 @@ export default class RealEstatesController {
     }
 
     try {
-      let popularRealEstates: ModelPaginatorContract<RealEstate> = await RealEstateService.popular(payload.limit)
-      let data = popularRealEstates.toJSON().data
+      const popularRealEstates: JSONPaginate = (await RealEstateService.popular(payload.limit)).toJSON()
 
-      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, data))
+      if (currentUserId)
+        popularRealEstates.data = await Promise.all(popularRealEstates.data.map((item: RealEstate) => item.getForUser(currentUserId)))
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, popularRealEstates.data))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }
   }
 
-  public async recommended({ request, response }: HttpContextContract) {
+  public async recommended({ request, response, params }: HttpContextContract) {
     let payload: RealEstateRecommendedValidator['schema']['props']
+    const currentUserId: User['id'] | undefined = params.currentUserId
 
     try {
       payload = await request.validate(RealEstateRecommendedValidator)
@@ -110,7 +123,10 @@ export default class RealEstatesController {
     }
 
     try {
-      let recommended: RealEstate[] = await RealEstateService.recommended(payload)
+      let recommended: RealEstate[] | ModelObject[] = await RealEstateService.recommended(payload)
+
+      if (currentUserId)
+        recommended = await Promise.all(recommended.map(async (item: RealEstate) => await item.getForUser(currentUserId)))
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, recommended))
     } catch (err: Error | any) {
@@ -121,6 +137,7 @@ export default class RealEstatesController {
   public async getUserRealEstates({ request, params, response }: HttpContextContract) {
     let config: ApiValidator['schema']['props']
     const userId: User['id'] = params.id
+    const currentUserId: User['id'] = params.currentUserId ?? userId
 
     try {
       config = await request.validate(ApiValidator)
@@ -133,7 +150,9 @@ export default class RealEstatesController {
     }
 
     try {
-      const realEstates: ModelPaginatorContract<RealEstate> = await RealEstateService.getUserRealEstates(userId, config)
+      const realEstates: JSONPaginate = (await RealEstateService.getUserRealEstates(userId, config)).toJSON()
+
+      realEstates.data = await Promise.all(realEstates.data.map(async (item: RealEstate) => await item.getForUser(currentUserId)))
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, realEstates))
     } catch (err: Error | any) {
@@ -156,7 +175,9 @@ export default class RealEstatesController {
     }
 
     try {
-      const wishlist: ModelPaginatorContract<RealEstate> = await RealEstateService.getUserWishlist(userId, config)
+      const wishlist: JSONPaginate = (await RealEstateService.getUserWishlist(userId, config)).toJSON()
+
+      wishlist.data = await Promise.all(wishlist.data.map(async (item: RealEstate) => await item.getForUser(userId)))
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, wishlist))
     } catch (err: Error | any) {

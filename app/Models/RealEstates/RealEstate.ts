@@ -2,6 +2,7 @@ import Estate from './Estate'
 import User from '../Users/User'
 import Drive from '@ioc:Adonis/Core/Drive'
 import RealEstateImage from './RealEstateImage'
+import Database from '@ioc:Adonis/Lucid/Database'
 import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
 import { v4 as uuid } from 'uuid'
@@ -10,13 +11,13 @@ import {
   BaseModel, beforeFetch, beforeFind,
   beforeSave, BelongsTo, belongsTo,
   column, computed, HasMany,
-  hasMany, ModelQueryBuilderContract
+  hasMany, ModelObject, ModelQueryBuilderContract,
 } from '@ioc:Adonis/Lucid/Orm'
 import {
   BALCONY_TYPES, ELEVATOR_TYPES, HOUSE_BUILDING_TYPES,
   HOUSE_TYPES, LAYOUT_TYPES, PREPAYMENT_TYPES,
   RENTAL_TYPES, REPAIR_TYPES, ROOM_TYPES,
-  TRANSACTION_TYPES, WC_TYPES
+  TRANSACTION_TYPES, WC_TYPES,
 } from 'Config/realEstatesTypes'
 
 export default class RealEstate extends BaseModel {
@@ -305,7 +306,7 @@ export default class RealEstate extends BaseModel {
 
   @computed()
   public get yearOfConstructionForUser(): string {
-    return this.yearOfConstruction?.toFormat('d MMMM, yyyy') ?? ''
+    return this.yearOfConstruction?.toFormat('yyyy') ?? ''
   }
 
   @computed()
@@ -372,5 +373,19 @@ export default class RealEstate extends BaseModel {
 
   public async imageUrl(): Promise<string> {
     return this.image ? await Drive.getUrl(this.image) : IMG_PLACEHOLDER
+  }
+
+  public async getForUser(currentUserId: User['id']): Promise<ModelObject> {
+    const item: ModelObject = { ...this.serialize() }
+
+    const isInWishlist = await Database
+      .from('realEstatesWishlists')
+      .where('user_id', currentUserId)
+      .andWhere('realEstate_id', item.id)
+      .first()
+
+    item.wishlistStatus = isInWishlist ? true : false
+
+    return item
   }
 }

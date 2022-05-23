@@ -52,10 +52,10 @@ Route.group(() => {
 
   Route.group(() => {
 
-    Route.post('/', 'Api/RealEstates/RealEstatesController.all')
+    Route.post('/paginate/:currentUserId?', 'Api/RealEstates/RealEstatesController.all')
     Route.post('/create', 'Api/RealEstates/RealEstatesController.create').middleware('CheckAccessToken')
-    Route.post('/popular', 'Api/RealEstates/RealEstatesController.popular')
-    Route.post('/recommended', 'Api/RealEstates/RealEstatesController.recommended')
+    Route.post('/popular/:currentUserId?', 'Api/RealEstates/RealEstatesController.popular')
+    Route.post('/recommended/:currentUserId?', 'Api/RealEstates/RealEstatesController.recommended')
     Route.post('/types', 'Api/RealEstates/RealEstateTypesController.all')
 
     Route.group(() => {
@@ -72,7 +72,7 @@ Route.group(() => {
 
     }).prefix('/wishlist').middleware('CheckAccessToken')
 
-    Route.post('/:uuid', 'Api/RealEstates/RealEstatesController.get')
+    Route.post('/:uuid/:currentUserId?', 'Api/RealEstates/RealEstatesController.get')
 
   }).prefix('/realEstates')
 
@@ -84,7 +84,7 @@ Route.group(() => {
 
     Route.patch('/update/:uuid', 'Api/Users/UsersController.update').middleware('CheckAccessToken')
     Route.delete('/deleteAvatar/:uuid', 'Api/Users/UsersController.deleteAvatar').middleware('CheckAccessToken')
-    Route.post('/realEstates/:id', 'Api/RealEstates/RealEstatesController.getUserRealEstates').middleware('CheckAccessToken')
+    Route.post('/realEstates/:id/:currentUserId?', 'Api/RealEstates/RealEstatesController.getUserRealEstates').middleware('CheckAccessToken')
     Route.post('/wishlist/:id', 'Api/RealEstates/RealEstatesController.getUserWishlist').middleware('CheckAccessToken')
 
     Route.group(() => {
