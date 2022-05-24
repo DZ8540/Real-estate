@@ -54,6 +54,8 @@ Route.group(() => {
 
     Route.post('/paginate/:currentUserId?', 'Api/RealEstates/RealEstatesController.all')
     Route.post('/create', 'Api/RealEstates/RealEstatesController.create').middleware('CheckAccessToken')
+    Route.patch('/update/:uuid', 'Api/RealEstates/RealEstatesController.update').middleware('CheckAccessToken')
+    Route.delete('/delete/:uuid', 'Api/RealEstates/RealEstatesController.delete').middleware('CheckAccessToken')
     Route.post('/popular/:currentUserId?', 'Api/RealEstates/RealEstatesController.popular')
     Route.post('/recommended/:currentUserId?', 'Api/RealEstates/RealEstatesController.recommended')
     Route.post('/types', 'Api/RealEstates/RealEstateTypesController.all')

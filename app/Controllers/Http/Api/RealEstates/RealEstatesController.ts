@@ -82,6 +82,41 @@ export default class RealEstatesController {
     }
   }
 
+  public async update({ request, response, params }: HttpContextContract) {
+    let payload: RealEstateValidator['schema']['props']
+    const uuid: RealEstate['uuid'] = params.uuid
+
+    try {
+      payload = await request.validate(RealEstateValidator)
+    } catch (err: any) {
+      throw new ExceptionService({
+        code: ResponseCodes.VALIDATION_ERROR,
+        message: ResponseMessages.VALIDATION_ERROR,
+        body: err.messages
+      })
+    }
+
+    try {
+      const item: RealEstate = await RealEstateService.update(uuid, payload)
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.REAL_ESTATE_UPDATED, item))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
+  public async delete({ response, params }: HttpContextContract) {
+    const uuid: RealEstate['uuid'] = params.uuid
+
+    try {
+      await RealEstateService.delete(uuid)
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.REAL_ESTATE_DELETED))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
   public async popular({ request, response, params }: HttpContextContract) {
     let payload: RealEstatePopularValidator['schema']['props']
     const currentUserId: User['id'] | undefined = params.currentUserId
