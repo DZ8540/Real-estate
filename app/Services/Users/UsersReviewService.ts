@@ -26,9 +26,7 @@ export default class UsersReviewService {
       payload.limit = 10
 
     try {
-      let data: ModelPaginatorContract<UsersReview> = await UsersReview.query().where('to_id', payload.userId).get(payload)
-
-      return data.toJSON().data
+      return await UsersReview.query().where('to_id', payload.userId).get(payload)
     } catch (err: any) {
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
@@ -62,6 +60,9 @@ export default class UsersReviewService {
   }
 
   public static async create(payload: UsersReviewPayload, { trx }: ServiceConfig<UsersReview> = {}): Promise<UsersReview> {
+    if (payload.fromId == payload.toId)
+      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.ERROR } as Error
+
     try {
       return await UsersReview.create(payload, { client: trx })
     } catch (err: any) {

@@ -73,9 +73,7 @@ export default class User extends BaseModel {
   @column()
   public isActivated: boolean
 
-  @column({
-    columnName: 'role_id'
-  })
+  @column({ columnName: 'role_id' })
   public roleId: Role['id']
 
   @column.dateTime({ autoCreate: true })
@@ -87,6 +85,9 @@ export default class User extends BaseModel {
     serializeAs: null,
   })
   public updatedAt: DateTime
+
+  @column({ columnName: 'realEstates_count' })
+  public realEstatesCount?: number
 
   @computed()
   public get ownerTypeForUser(): string {
@@ -133,7 +134,7 @@ export default class User extends BaseModel {
 
   @computed()
   public get sexForUser(): string {
-    if (this.sex)
+    if (typeof this.sex == 'number')
       return SEX_TYPES[this.sex]
 
     return 'Не установлен'

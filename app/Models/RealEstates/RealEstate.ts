@@ -352,20 +352,19 @@ export default class RealEstate extends BaseModel {
   }
 
   @beforeSave()
-  public static setCommission(realEstate: RealEstate) {
+  public static setCommissionAndAddress(realEstate: RealEstate) {
     if (realEstate.commission > 100)
       realEstate.commission = 100
-  }
 
-  @beforeSave()
-  public static setAddressToLowerCase(realEstate: RealEstate) {
     realEstate.address = realEstate.address.toLowerCase()
   }
 
   @beforeFind()
   @beforeFetch()
   public static async preloadRelations(query: ModelQueryBuilderContract<typeof RealEstate>) {
-    query.preload('user')
+    query
+      .preload('user')
+      .preload('images')
   }
 
   @hasMany(() => RealEstateImage)

@@ -46,7 +46,10 @@ export default class RealEstatesController {
 
     try {
       let fullItem: ModelObject
-      const item: RealEstate = await RealEstateService.get(uuid, { relations: ['images', 'user'], isForApi: true })
+      const item: RealEstate = await RealEstateService.get(uuid, { relations: ['images'], isForApi: true })
+      await item.load('user', (query) => {
+        query.withCount('realEstates')
+      })
       const todayViewsCount: number = await RealEstateService.incrementTodayViewsCount(item)
 
       if (currentUserId)

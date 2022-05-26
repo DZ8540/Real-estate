@@ -1,7 +1,11 @@
 import User from './User'
 import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel, beforeFetch, beforeFind,
+  BelongsTo, belongsTo, column,
+  computed, ModelQueryBuilderContract
+} from '@ioc:Adonis/Lucid/Orm'
 
 export default class UsersReview extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
@@ -46,4 +50,10 @@ export default class UsersReview extends BaseModel {
     foreignKey: 'toId',
   })
   public to: BelongsTo<typeof User>
+
+  @beforeFind()
+  @beforeFetch()
+  public static async preloadRelations(query: ModelQueryBuilderContract<typeof UsersReview>) {
+    query.preload('from')
+  }
 }
