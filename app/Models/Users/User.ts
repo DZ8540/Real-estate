@@ -1,7 +1,10 @@
 import Role from './Role'
+import UsersReport from './UsersReport'
+import UsersReview from './UsersReview'
 import Hash from '@ioc:Adonis/Core/Hash'
 import Service from '../Services/Service'
 import Drive from '@ioc:Adonis/Core/Drive'
+import Database from '@ioc:Adonis/Lucid/Database'
 import RealEstate from '../RealEstates/RealEstate'
 import RoleService from 'App/Services/Users/RoleService'
 import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
@@ -203,5 +206,26 @@ export default class User extends BaseModel {
         }
       }
     })
+  }
+
+  public async getForUser(currentUserId: User['id']): Promise<ModelObject> {
+    const item: ModelObject = { ...this.serialize() }
+
+    const isInReports: UsersReport | undefined = await Database
+      .from('usersReports')
+      .where('from_id', currentUserId)
+      .andWhere('to_id', item.id)
+      .first()
+
+    const isInReviews: UsersReview | undefined = await Database
+      .from('usersReviews')
+      .where('from_id', currentUserId)
+      .andWhere('to_id', item.id)
+      .first()
+
+    item.reportStatus = isInReports ? true : false
+    item.reviewStatus = isInReviews ? true : false
+
+    return item
   }
 }

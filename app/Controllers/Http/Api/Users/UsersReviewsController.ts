@@ -1,17 +1,18 @@
+import User from 'App/Models/Users/User'
 import UsersReview from 'App/Models/Users/UsersReview'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
 import UsersReviewService from 'App/Services/Users/UsersReviewService'
 import UsersReviewValidator from 'App/Validators/Users/UsersReviewValidator'
 import UsersReviewApiValidator from 'App/Validators/Api/Users/UsersReviewValidator'
-import { Error } from 'Contracts/services'
-import { ModelObject } from '@ioc:Adonis/Lucid/Orm'
+import { Error, JSONPaginate } from 'Contracts/services'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
 export default class UsersReviewsController {
-  public async paginate({ request, response }: HttpContextContract) {
+  public async paginate({ request, response, params }: HttpContextContract) {
     let payload: UsersReviewApiValidator['schema']['props']
+    const currentUserId: User['id'] | undefined = params.currentUserId
 
     try {
       payload = await request.validate(UsersReviewApiValidator)
@@ -24,7 +25,7 @@ export default class UsersReviewsController {
     }
 
     try {
-      let data: ModelObject[] = await UsersReviewService.getAllUsersReviews(payload)
+      const data: JSONPaginate = await UsersReviewService.getAllUsersReviews(payload, currentUserId)
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, data))
     } catch (err: Error | any) {
@@ -46,7 +47,7 @@ export default class UsersReviewsController {
     }
 
     try {
-      let item: UsersReview = await UsersReviewService.create(payload)
+      const item: UsersReview = await UsersReviewService.create(payload)
 
       return response.status(200).send(ResponseService.success(ResponseMessages.USERS_REVIEW_CREATED, item))
     } catch (err: Error | any) {
@@ -56,7 +57,7 @@ export default class UsersReviewsController {
 
   public async update({ request, params, response }: HttpContextContract) {
     let payload: UsersReviewValidator['schema']['props']
-    let id: UsersReview['id'] = params.id
+    const id: UsersReview['id'] = params.id
 
     try {
       payload = await request.validate(UsersReviewValidator)
@@ -69,7 +70,7 @@ export default class UsersReviewsController {
     }
 
     try {
-      let item: UsersReview = await UsersReviewService.update(id, payload)
+      const item: UsersReview = await UsersReviewService.update(id, payload)
 
       return response.status(200).send(ResponseService.success(ResponseMessages.USERS_REVIEW_UPDATED, item))
     } catch (err: Error | any) {
@@ -78,7 +79,7 @@ export default class UsersReviewsController {
   }
 
   public async delete({ params, response }: HttpContextContract) {
-    let id: UsersReview['id'] = params.id
+    const id: UsersReview['id'] = params.id
 
     try {
       await UsersReviewService.delete(id)

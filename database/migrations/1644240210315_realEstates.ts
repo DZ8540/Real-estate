@@ -12,14 +12,6 @@ export default class RealEstates extends BaseSchema {
       table.integer('transactionType').unsigned().notNullable().comment('Тип сделки. 0 - аренда, 1 - продажа')
       table.boolean('isCountersSeparately').defaultTo(1).notNullable()
       table.integer('pledge').unsigned().defaultTo(0).notNullable().comment('Залог, если равен 0, то отсутствует')
-      table.integer('prepaymentType').unsigned().notNullable().comment(`
-        Предоплата
-        0 - 1 месяц
-        1 - 2 месяца
-        2 - 3 месяца
-        ...
-        11 - год
-      `)
       table.integer('commission').unsigned().defaultTo(0).notNullable().comment('Комиссия, может быть значением от 0 до 100 процентов, но никак не выше')
       table.string('address', 1024).notNullable()
       table.integer('houseType').unsigned().notNullable().comment('Тип жилья. 0 - квартира, 1 - апартаменты')
@@ -101,6 +93,15 @@ export default class RealEstates extends BaseSchema {
       table.boolean('isHot').defaultTo(0).notNullable().comment('Срочная продажа или нет (статус hot)')
       table.boolean('isBanned').defaultTo(0).notNullable()
       table.string('image').nullable()
+      table.integer('prepaymentType').unsigned().nullable().comment(`
+        Предоплата
+        0 - нет
+        1 - 1 месяц
+        2 - 2 месяца
+        3 - 3 месяца
+        ...
+        12 - год
+      `)
       table.integer('rentalType').unsigned().nullable().comment(`
         Если пустое, то сделка является продажей.
         0 - Длительно

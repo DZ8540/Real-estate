@@ -1,10 +1,11 @@
+import User from 'App/Models/Users/User'
 import Logger from '@ioc:Adonis/Core/Logger'
 import UsersReview from 'App/Models/Users/UsersReview'
 import UsersReviewValidator from 'App/Validators/Users/UsersReviewValidator'
 import UsersReviewApiValidator from 'App/Validators/Api/Users/UsersReviewValidator'
+import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
-import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
-import { ModelObject, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
+import { Error, JSONPaginate, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
 type Columns = typeof UsersReview['columns'][number]
 type UsersReviewPayload = UsersReviewValidator['schema']['props']
@@ -21,12 +22,22 @@ export default class UsersReviewService {
     return await query.select(columns).get(config)
   }
 
-  public static async getAllUsersReviews(payload: UsersReviewApiValidator['schema']['props']): Promise<ModelObject[]> {
+  public static async getAllUsersReviews(payload: UsersReviewApiValidator['schema']['props'], currentUserId?: User['id']): Promise<JSONPaginate> {
     if (!payload.limit)
       payload.limit = 10
 
     try {
-      return await UsersReview.query().where('to_id', payload.userId).get(payload)
+      const userReviews: JSONPaginate = (await UsersReview
+        .query()
+        .where('to_id', payload.userId)
+        .get(payload))
+        .toJSON()
+
+      if (currentUserId) {
+        userReviews.data = await Promise.all(userReviews.data.map(async (item: UsersReview) => await item.getForUser(currentUserId)))
+      }
+
+      return userReviews
     } catch (err: any) {
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }

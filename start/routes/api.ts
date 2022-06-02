@@ -91,10 +91,11 @@ Route.group(() => {
 
     Route.group(() => {
 
-      Route.post('/', 'Api/Users/UsersReviewsController.paginate')
       Route.post('/add', 'Api/Users/UsersReviewsController.add').middleware('CheckAccessToken')
       Route.patch('/:id', 'Api/Users/UsersReviewsController.update').middleware('CheckAccessToken')
       Route.delete('/:id', 'Api/Users/UsersReviewsController.delete').middleware('CheckAccessToken')
+
+      Route.post('/:currentUserId?', 'Api/Users/UsersReviewsController.paginate')
 
     }).prefix('/reviews')
 
@@ -112,7 +113,7 @@ Route.group(() => {
 
     }).prefix('/reviewsReports').middleware('CheckAccessToken')
 
-    Route.post('/:id', 'Api/Users/UsersController.get')
+    Route.post('/:id/:currentUserId?', 'Api/Users/UsersController.get')
 
   }).prefix('/user')
 

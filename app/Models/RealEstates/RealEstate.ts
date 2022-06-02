@@ -60,9 +60,6 @@ export default class RealEstate extends BaseModel {
   public pledge: number
 
   @column()
-  public prepaymentType: number
-
-  @column()
   public commission: number
 
   @column()
@@ -177,6 +174,9 @@ export default class RealEstate extends BaseModel {
   public image: string | undefined
 
   @column()
+  public prepaymentType: number | undefined
+
+  @column()
   public rentalType: number | undefined
 
   @column()
@@ -226,7 +226,10 @@ export default class RealEstate extends BaseModel {
 
   @computed()
   public get prepaymentTypeForUser(): string {
-    return PREPAYMENT_TYPES[this.prepaymentType]
+    if (this.prepaymentType)
+      return PREPAYMENT_TYPES[this.prepaymentType]
+
+    return 'Нету'
   }
 
   @computed()

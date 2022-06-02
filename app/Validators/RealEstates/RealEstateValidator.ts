@@ -48,10 +48,6 @@ export default class RealEstateValidator extends BaseValidator {
     pledge: schema.number([
       rules.unsigned(),
     ]),
-    prepaymentType: schema.number([
-      rules.unsigned(),
-      rules.range(0, PrepaymentTypes.YEAR),
-    ]),
     commission: schema.number([
       rules.unsigned(),
       rules.range(0, 100),
@@ -127,6 +123,10 @@ export default class RealEstateValidator extends BaseValidator {
     ]),
     isVip: schema.boolean.optional(),
     isHot: schema.boolean.optional(),
+    prepaymentType: schema.number.optional([
+      rules.unsigned(),
+      rules.range(0, PrepaymentTypes.YEAR),
+    ]),
     rentalType: schema.number.optional([
       rules.unsigned(),
       rules.range(0, RentalTypes.DAILY),

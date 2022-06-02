@@ -1,10 +1,12 @@
 import User from './User'
+import Database from '@ioc:Adonis/Lucid/Database'
+import UsersReviewsReport from './UsersReviewsReport'
 import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
 import {
   BaseModel, beforeFetch, beforeFind,
   BelongsTo, belongsTo, column,
-  computed, ModelQueryBuilderContract
+  computed, ModelObject, ModelQueryBuilderContract
 } from '@ioc:Adonis/Lucid/Orm'
 
 export default class UsersReview extends BaseModel {
@@ -55,5 +57,19 @@ export default class UsersReview extends BaseModel {
   @beforeFetch()
   public static async preloadRelations(query: ModelQueryBuilderContract<typeof UsersReview>) {
     query.preload('from')
+  }
+
+  public async getForUser(currentUserId: User['id']): Promise<ModelObject> {
+    const item: ModelObject = { ...this.serialize() }
+
+    const isInReports: UsersReviewsReport | undefined = await Database
+      .from('usersReviewsReports')
+      .where('user_id', currentUserId)
+      .andWhere('usersReview_id', item.id)
+      .first()
+
+    item.reportStatus = isInReports ? true : false
+
+    return item
   }
 }
