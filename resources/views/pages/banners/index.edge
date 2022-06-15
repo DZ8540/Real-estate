@@ -30,7 +30,7 @@
               @each(item in banners)
                 <tr>
                   <td><strong>{{ item.id }}</strong></td>
-                  <td><img src="{{ await item.imageUrl() }}" width="200" height="100" alt=""></td>
+                  <td><img src="{{ item.image }}" width="200" height="100" alt=""></td>
                   <td>{{ item.createdAtForUser }}</td>
 
                   <td>

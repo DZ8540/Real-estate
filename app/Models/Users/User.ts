@@ -59,7 +59,7 @@ export default class User extends BaseModel {
   public email: string
 
   @column()
-  public avatar: string | undefined
+  public avatar?: string | null
 
   @column()
   public rating: number
@@ -119,13 +119,13 @@ export default class User extends BaseModel {
 
   @computed()
   public get createdAtForUser(): string {
-    return this.createdAt?.setLocale('ru-RU').toFormat('yyyy.MM.dd')
+    return this.createdAt?.setLocale('ru-RU').toFormat('dd.MM.yyyy')
   }
 
   @computed()
   public get birthdayForUser(): string {
     if (this.birthday)
-      return this.birthday.setLocale('ru-RU').toFormat('yyyy.MM.dd')
+      return this.birthday.setLocale('ru-RU').toFormat('dd.MM.yyyy')
 
     return 'Не установлен'
   }

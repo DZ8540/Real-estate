@@ -89,7 +89,7 @@ export default class UserService extends BaseService {
 
   public static async update(uuid: User['uuid'], payload: UserValidator['schema']['props'], { trx }: ServiceConfig<User> = {}): Promise<User> {
     let item: User
-    let avatar: string | undefined = undefined
+    let avatar: string | null = null
     let avatarPath: string = `${USERS_PATH}/${uuid}`
 
     try {
@@ -109,10 +109,16 @@ export default class UserService extends BaseService {
     }
 
     try {
-      return await item.merge({ ...payload, avatar }).save()
+      await item.merge({ ...payload, avatar }).save()
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+
+    try {
+      return await this.get(uuid)
+    } catch (err: Error | any) {
+      throw err
     }
   }
 

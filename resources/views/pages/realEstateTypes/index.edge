@@ -7,8 +7,6 @@
     <div class="card">
       <div class="card-header">
         <h4 class="card-title">{{ title }}</h4>
-
-        <a href="{{ route('real_estate_types.create') }}" class="btn btn-primary btn-sm">Создать</a>
       </div>
 
       <div class="card-body">
@@ -49,12 +47,6 @@
                       <div class="dropdown-menu" style="">
                         <a class="dropdown-item" href="{{ route('real_estate_types.show', { id: item.slug }) }}">Показать</a>
                         <a class="dropdown-item" href="{{ route('real_estate_types.edit', { id: item.slug }) }}">Редактировать</a>
-
-                        <form action="{{ route('real_estate_types.destroy', { id: item.slug }, { qs: { _method: 'DELETE' } }) }}" method="POST">
-                          <button type="submit" class="dropdown-item">Удалить</button>
-
-                          {{ csrfField() }}
-                        </form>
                       </div>
                     </div>
                   </td>

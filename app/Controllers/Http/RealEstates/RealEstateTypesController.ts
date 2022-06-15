@@ -12,24 +12,6 @@ export default class RealEstateTypesController {
     return view.render('pages/realEstateTypes/index', { realEstateTypes })
   }
 
-  public async create({ view }: HttpContextContract) {
-    return view.render('pages/realEstateTypes/create')
-  }
-
-  public async store({ request, response, session }: HttpContextContract) {
-    let payload = await request.validate(RealEstateTypeValidator)
-
-    try {
-      await RealEstateTypeService.create(payload)
-
-      session.flash('success', ResponseMessages.REAL_ESTATE_TYPES_CREATED)
-      return response.redirect().toRoute('real_estate_types.index')
-    } catch (err: Error | any) {
-      session.flash('error', err.message)
-      return response.redirect().back()
-    }
-  }
-
   public async show({ view, response, params, session }: HttpContextContract) {
     let slug: RealEstateType['slug'] = params.id
 
@@ -69,19 +51,5 @@ export default class RealEstateTypesController {
       session.flash('error', err.message)
       return response.redirect().back()
     }
-  }
-
-  public async destroy({ response, params, session }: HttpContextContract) {
-    let slug: RealEstateType['slug'] = params.id
-
-    try {
-      await RealEstateTypeService.delete(slug)
-
-      session.flash('success', ResponseMessages.REAL_ESTATE_TYPES_DELETED)
-    } catch (err: Error | any) {
-      session.flash('error', err.message)
-    }
-
-    return response.redirect().back()
   }
 }

@@ -56,6 +56,7 @@ export default class Banner extends BaseModel {
     return this.createdAt.setLocale('ru-RU').toFormat('dd.MM.yy')
   }
 
+  // ! Do not use this method!!!
   public async imageUrl(): Promise<string> {
     return this.image ? await Drive.getUrl(this.image) : IMG_PLACEHOLDER
   }
