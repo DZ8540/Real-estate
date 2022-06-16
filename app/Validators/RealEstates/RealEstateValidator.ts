@@ -52,9 +52,21 @@ export default class RealEstateValidator extends BaseValidator {
       rules.unsigned(),
       rules.range(0, 100),
     ]),
-    address: schema.string({}, [
+    address: schema.string({ trim: true }, [
       rules.minLength(2),
       rules.maxLength(255),
+    ]),
+    metro: schema.string({ trim: true }, [
+      rules.maxLength(255)
+    ]),
+    district: schema.string({ trim: true }, [
+      rules.maxLength(255)
+    ]),
+    latitude: schema.string({ trim: true }, [
+      rules.maxLength(255)
+    ]),
+    longitude: schema.string({ trim: true }, [
+      rules.maxLength(255)
     ]),
     houseType: schema.number([
       rules.unsigned(),
@@ -106,7 +118,7 @@ export default class RealEstateValidator extends BaseValidator {
     hasMoreLayerParking: schema.boolean.optional(),
     isMortgage: schema.boolean.optional(),
     isEncumbrances: schema.boolean.optional(),
-    description: schema.string({}, [
+    description: schema.string({ trim: true }, [
       rules.minLength(2),
       rules.maxLength(4096),
     ]),
@@ -134,7 +146,7 @@ export default class RealEstateValidator extends BaseValidator {
     communalPrice: schema.number.optional([
       rules.unsigned(),
     ]),
-    residentalComplex: schema.string.optional({}, [
+    residentalComplex: schema.string.optional({ trim: true }, [
       rules.maxLength(255),
     ]),
     livingArea: schema.number.optional([
@@ -152,9 +164,6 @@ export default class RealEstateValidator extends BaseValidator {
     ceilingHeight: schema.number.optional([
       rules.unsigned(),
       rules.range(3, 100),
-    ]),
-    metro: schema.string.optional({}, [
-      rules.maxLength(255)
     ]),
     image: schema.file.optional({
       extnames: ['jpg', 'jpeg', 'png', 'webp'],
