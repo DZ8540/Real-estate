@@ -246,7 +246,13 @@ export default class RealEstateService extends BaseService {
 
             case 'districts':
               for (const item of payload[key]!) {
-                query = query.orWhere('address', 'like', `%${item}%`)
+                query = query.orWhere('district', 'like', `%${item}%`)
+              }
+              break
+
+            case 'metros':
+              for (const item of payload[key]!) {
+                query = query.orWhere('metro', 'like', `%${item}%`)
               }
               break
 

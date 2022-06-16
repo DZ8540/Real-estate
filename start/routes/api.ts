@@ -8,6 +8,8 @@ Route.group(() => {
 
   Route.post('/banners', 'Api/BannersController.getAll')
 
+  Route.post('/cities', 'Api/CitiesController.getAll')
+
   /**
    * * Auth
    */

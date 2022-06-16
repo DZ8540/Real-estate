@@ -25,7 +25,8 @@ export default class RealEstate extends BaseModel {
   public static readonly columns = [
     'id', 'uuid', 'transactionType', 'isCountersSeparately',
     'pledge', 'prepaymentType', 'commission',
-    'address', 'houseType', 'roomType',
+    'address', 'metro', 'longitude',
+    'latitude', 'houseType', 'roomType',
     'totalArea', 'floor', 'WCType',
     'balconyType', 'layoutType', 'repairType',
     'hasKitchenFurniture', 'hasFurniture', 'hasRefrigerator',
@@ -39,9 +40,8 @@ export default class RealEstate extends BaseModel {
     'viewsCount', 'isVip', 'isHot', 'isBanned',
     'rentalType', 'communalPrice', 'residentalComplex',
     'livingArea', 'kitchenArea', 'maxFloor',
-    'yearOfConstruction', 'ceilingHeight', 'metro',
-    'userId', 'estateId', 'createdAt',
-    'updatedAt'
+    'yearOfConstruction', 'ceilingHeight', 'userId',
+    'estateId', 'createdAt', 'updatedAt'
   ] as const
 
   @column({ isPrimary: true })
@@ -64,6 +64,18 @@ export default class RealEstate extends BaseModel {
 
   @column()
   public address: string
+
+  @column()
+  public metro: string
+
+  @column()
+  public district: string
+
+  @column()
+  public longitude: string
+
+  @column()
+  public latitude: string
 
   @column()
   public houseType: number
@@ -199,9 +211,6 @@ export default class RealEstate extends BaseModel {
 
   @column()
   public ceilingHeight: number | undefined
-
-  @column()
-  public metro: string | undefined
 
   @column({ columnName: 'user_id' })
   public userId: User['id']

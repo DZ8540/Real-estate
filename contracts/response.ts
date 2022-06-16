@@ -20,6 +20,7 @@ export enum ResponseCodes {
 
 export enum ResponseMessages {
   SUCCESS = 'Успешно!',
+  CITY_UNDEFINED = 'Город пустой!',
 
   USER_UPDATED = 'Данные пользователя были успешно изменены!',
   USER_UNBLOCKED = 'Пользователь был успешно разблокирован!',
