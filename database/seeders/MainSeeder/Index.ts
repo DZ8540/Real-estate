@@ -24,6 +24,7 @@ export default class IndexSeeder extends BaseSeeder {
     await this.runSeeder(await import('../Users/User'))
     await this.runSeeder(await import('../Services/Service'))
     await this.runSeeder(await import('../Users/UsersReview'))
+    await this.runSeeder(await import('../District'))
     await this.runSeeder(await import('../Question'))
     // await this.runSeeder(await import('../RealEstates/RealEstate'))
   }

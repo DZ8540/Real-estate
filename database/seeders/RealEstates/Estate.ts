@@ -5,7 +5,7 @@ import { EstateFactory } from 'Database/factories'
 export default class EstateSeeder extends BaseSeeder {
   public async run () {
     try {
-      await EstateFactory.createMany(50)
+      await EstateFactory.createMany(5)
     } catch (err) {
       Logger.error(err)
     }

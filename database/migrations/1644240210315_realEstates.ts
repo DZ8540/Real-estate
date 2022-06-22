@@ -14,8 +14,6 @@ export default class RealEstates extends BaseSchema {
       table.integer('pledge').unsigned().defaultTo(0).notNullable().comment('Залог, если равен 0, то отсутствует')
       table.integer('commission').unsigned().defaultTo(0).notNullable().comment('Комиссия, может быть значением от 0 до 100 процентов, но никак не выше')
       table.string('address', 1024).notNullable()
-      table.string('metro').notNullable()
-      table.string('district').notNullable()
       table.string('longitude').notNullable()
       table.string('latitude').notNullable()
       table.integer('houseType').unsigned().notNullable().comment('Тип жилья. 0 - квартира, 1 - апартаменты')
@@ -132,6 +130,13 @@ export default class RealEstates extends BaseSchema {
         .unsigned()
         .notNullable()
         .references('estates.id')
+        .onDelete('CASCADE')
+
+      table
+        .integer('district_id')
+        .unsigned()
+        .notNullable()
+        .references('districts.id')
         .onDelete('CASCADE')
 
       /**

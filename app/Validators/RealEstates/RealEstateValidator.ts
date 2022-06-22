@@ -56,12 +56,14 @@ export default class RealEstateValidator extends BaseValidator {
       rules.minLength(2),
       rules.maxLength(255),
     ]),
-    metro: schema.string({ trim: true }, [
-      rules.maxLength(255)
-    ]),
-    district: schema.string({ trim: true }, [
-      rules.maxLength(255)
-    ]),
+    district: schema.object().members({
+      name: schema.string({ trim: true }, [
+        rules.maxLength(255),
+      ]),
+      city: schema.string({ trim: true }, [
+        rules.maxLength(255),
+      ])
+    }),
     latitude: schema.string({ trim: true }, [
       rules.maxLength(255)
     ]),

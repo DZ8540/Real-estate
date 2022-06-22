@@ -1,9 +1,11 @@
 import BaseService from '../BaseService'
 import User from 'App/Models/Users/User'
 import Drive from '@ioc:Adonis/Core/Drive'
+import District from 'App/Models/District'
 import Redis from '@ioc:Adonis/Addons/Redis'
 import Logger from '@ioc:Adonis/Core/Logger'
 import UserService from '../Users/UserService'
+import DistrictService from '../DistrictService'
 import Database from '@ioc:Adonis/Lucid/Database'
 import Estate from 'App/Models/RealEstates/Estate'
 import RealEstate from 'App/Models/RealEstates/RealEstate'
@@ -13,9 +15,9 @@ import RealEstateApiValidator from 'App/Validators/Api/RealEstates/RealEstateVal
 import RealEstateRecommendedValidator from 'App/Validators/Api/RealEstates/RealEstateRecommendedValidator'
 import { DateTime } from 'luxon'
 import { REAL_ESTATE_PATH } from 'Config/drive'
-import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { removeFirstWord, removeLastLetter } from '../../../helpers'
+import { ModelObject, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { Error, JSONPaginate, PaginateConfig, ServiceConfig } from 'Contracts/services'
 
 type Columns = typeof RealEstate['columns'][number]
@@ -34,6 +36,36 @@ export default class RealEstateService extends BaseService {
     }
 
     return await query.get(config)
+  }
+
+  public static async getForMap(city: string): Promise<RealEstate[]> {
+    try {
+      const columns: typeof RealEstate.columns[number][] = ['id', 'longitude', 'latitude', 'isHot', 'isVip']
+
+      return RealEstate
+        .query()
+        .select(columns)
+        .whereHas('district', (query) => {
+          query.where('city', city)
+        })
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async getFromMap(realEstatesIds: RealEstate['id'][], currentUserId?: User['id']): Promise<ModelObject[]> {
+    try {
+      let realEstates: ModelObject[] = await RealEstate.query().whereIn('id', realEstatesIds)
+
+      if (currentUserId)
+        realEstates = await Promise.all(realEstates.map((item: RealEstate) => item.getForUser(currentUserId)))
+
+      return realEstates
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
   }
 
   public static async get(uuid: RealEstate['uuid'], config: GetMethodConfig = {}): Promise<RealEstate> {
@@ -67,12 +99,20 @@ export default class RealEstateService extends BaseService {
     let item: RealEstate
     let image: string | undefined
     let imageBasePath: string
+    let districtId: District['id']
+    const { district, ...realEstatePayload } = payload
 
     if (!trx)
       trx = await Database.transaction()
 
     try {
-      item = await RealEstate.create({ ...payload, image }, { client: trx })
+      districtId = (await DistrictService.create(payload.district.name, payload.district.city, { trx })).id
+    } catch (err: Error | any) {
+      districtId = (await DistrictService.getByNameAndCity(payload.district.name, payload.district.city)).id
+    }
+
+    try {
+      item = await RealEstate.create({ ...realEstatePayload, image, districtId }, { client: trx })
 
       imageBasePath = `${REAL_ESTATE_PATH}/${item.uuid}`
     } catch (err: any) {
@@ -113,6 +153,17 @@ export default class RealEstateService extends BaseService {
     let item: RealEstate
     let image: string | undefined
     let imageBasePath: string
+    let districtId: District['id']
+    const { district, ...realEstatePayload } = payload
+
+    if (!trx)
+      trx = await Database.transaction()
+
+    try {
+      districtId = (await DistrictService.create(payload.district.name, payload.district.city, { trx })).id
+    } catch (err: Error | any) {
+      districtId = (await DistrictService.getByNameAndCity(payload.district.name, payload.district.city)).id
+    }
 
     if (!trx)
       trx = await Database.transaction()
@@ -159,7 +210,7 @@ export default class RealEstateService extends BaseService {
     try {
       await trx.commit()
 
-      return await item.merge({ ...payload, image }).save()
+      return await item.merge({ ...realEstatePayload, image, districtId }).save()
     } catch (err: any) {
       await trx.rollback()
 
@@ -227,12 +278,16 @@ export default class RealEstateService extends BaseService {
     }
   }
 
-  public static async search(payload: RealEstateApiValidator['schema']['props']): Promise<JSONPaginate> {
+  public static async search(city: string, payload: RealEstateApiValidator['schema']['props']): Promise<JSONPaginate> {
     if (!payload.limit)
       payload.limit = 15
 
     try {
-      let query = RealEstate.query().preload('images')
+      let query = RealEstate
+        .query()
+        .whereHas('district', (query) => {
+          query.where('city', city)
+        })
 
       for (const key in payload) {
         if (payload[key]) {
@@ -246,7 +301,7 @@ export default class RealEstateService extends BaseService {
 
             case 'districts':
               for (const item of payload[key]!) {
-                query = query.orWhere('district', 'like', `%${item}%`)
+                query = query.orWhere('districtId', item)
               }
               break
 
@@ -312,7 +367,7 @@ export default class RealEstateService extends BaseService {
     }
   }
 
-  public static async popular(limit?: number): Promise<ModelPaginatorContract<RealEstate>> {
+  public static async popular(city: string, limit?: number): Promise<ModelPaginatorContract<RealEstate>> {
     const popularConfig: PaginateConfig<Columns, RealEstate> = {
       limit,
       page: 1,
@@ -321,13 +376,18 @@ export default class RealEstateService extends BaseService {
     }
 
     try {
-      return await this.paginate(popularConfig)
+      return await RealEstate
+        .query()
+        .whereHas('district', (query) => {
+          query.where('city', city)
+        })
+        .get(popularConfig)
     } catch (err: Error | any) {
       throw err
     }
   }
 
-  public static async recommended(payload: RealEstateRecommendedValidator['schema']['props']): Promise<RealEstate[]> {
+  public static async recommended(city: string, payload: RealEstateRecommendedValidator['schema']['props']): Promise<RealEstate[]> {
     let user: User
     const recommended: RealEstate[] = []
 
@@ -347,7 +407,7 @@ export default class RealEstateService extends BaseService {
           recommended.push(realEstateItem)
         }
       } else {
-        const popular = await this.popular(payload.limit)
+        const popular = await this.popular(city, payload.limit)
 
         for (const item of popular) {
           const realEstateItem: RealEstate = await RealEstate.query().where('estateId', item.estateId).random()

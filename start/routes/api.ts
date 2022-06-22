@@ -10,6 +10,8 @@ Route.group(() => {
 
   Route.post('/cities', 'Api/CitiesController.getAll')
 
+  Route.post('/districts/:city', 'Api/DistrictsController.getAll')
+
   /**
    * * Auth
    */
@@ -54,12 +56,16 @@ Route.group(() => {
 
   Route.group(() => {
 
-    Route.post('/paginate/:currentUserId?', 'Api/RealEstates/RealEstatesController.all')
     Route.post('/create', 'Api/RealEstates/RealEstatesController.create').middleware('CheckAccessToken')
     Route.patch('/update/:uuid', 'Api/RealEstates/RealEstatesController.update').middleware('CheckAccessToken')
     Route.delete('/delete/:uuid', 'Api/RealEstates/RealEstatesController.delete').middleware('CheckAccessToken')
-    Route.post('/popular/:currentUserId?', 'Api/RealEstates/RealEstatesController.popular')
-    Route.post('/recommended/:currentUserId?', 'Api/RealEstates/RealEstatesController.recommended')
+
+    Route.post('/getForMap/:city', 'Api/RealEstates/RealEstatesController.getForMap')
+    Route.post('/getFromMap/:currentUserId?', 'Api/RealEstates/RealEstatesController.getFromMap')
+    Route.post('/paginate/:city/:currentUserId?', 'Api/RealEstates/RealEstatesController.all')
+    Route.post('/popular/:city/:currentUserId?', 'Api/RealEstates/RealEstatesController.popular')
+    Route.post('/recommended/:city/:currentUserId?', 'Api/RealEstates/RealEstatesController.recommended')
+
     Route.post('/types', 'Api/RealEstates/RealEstateTypesController.all')
 
     Route.group(() => {

@@ -1,6 +1,7 @@
 import News from 'App/Models/News'
 import User from 'App/Models/Users/User'
 import Question from 'App/Models/Question'
+import District from 'App/Models/District'
 import Label from 'App/Models/Services/Label'
 import Factory from '@ioc:Adonis/Lucid/Factory'
 import Service from 'App/Models/Services/Service'
@@ -53,6 +54,15 @@ export const EstateFactory = Factory
   })
   .build()
 
+export const DistrictFactory = Factory
+  .define(District, async ({ faker }) => {
+    return {
+      name: faker.address.direction(),
+      city: faker.address.cityName(),
+    }
+  })
+  .build()
+
 export const LabelFactory = Factory
   .define(Label, async ({ faker }) => {
     return { name: faker.lorem.words(2) }
@@ -97,6 +107,7 @@ export const RealEstateFactory = Factory
       isHot: faker.datatype.boolean(),
       userId: (await User.query().random()).id,
       estateId: (await Estate.query().random()).id,
+      districtId: (await District.query().random()).id,
     }
   })
   .build()

@@ -16,6 +16,7 @@ import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 export default class RealEstatesController {
   public async all({ request, response, params }: HttpContextContract) {
     let payload: RealEstateApiValidator['schema']['props']
+    const city: string = params.city
     const currentUserId: User['id'] | undefined = params.currentUserId
 
     try {
@@ -29,10 +30,35 @@ export default class RealEstatesController {
     }
 
     try {
-      let realEstates: JSONPaginate = await RealEstateService.search(payload)
+      let realEstates: JSONPaginate = await RealEstateService.search(city, payload)
 
       if (currentUserId)
         realEstates.data = await Promise.all(realEstates.data.map(async (item: RealEstate) => await item.getForUser(currentUserId)))
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, realEstates))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
+  public async getForMap({ response, params }: HttpContextContract) {
+    const city: string = params.city
+
+    try {
+      const realEstates: RealEstate[] = await RealEstateService.getForMap(city)
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, realEstates))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
+  public async getFromMap({ request, response, params }: HttpContextContract) {
+    const currentUserId: User['id'] | undefined = params.currentUserId
+    const realEstatesIdsArr: RealEstate['id'][] = request.input('realEstatesIds', [])
+
+    try {
+      const realEstates: ModelObject[] = await RealEstateService.getFromMap(realEstatesIdsArr, currentUserId)
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, realEstates))
     } catch (err: Error | any) {
@@ -122,6 +148,7 @@ export default class RealEstatesController {
 
   public async popular({ request, response, params }: HttpContextContract) {
     let payload: RealEstatePopularValidator['schema']['props']
+    const city: string = params.city
     const currentUserId: User['id'] | undefined = params.currentUserId
 
     try {
@@ -135,7 +162,7 @@ export default class RealEstatesController {
     }
 
     try {
-      const popularRealEstates: JSONPaginate = (await RealEstateService.popular(payload.limit)).toJSON()
+      const popularRealEstates: JSONPaginate = (await RealEstateService.popular(city, payload.limit)).toJSON()
 
       if (currentUserId)
         popularRealEstates.data = await Promise.all(popularRealEstates.data.map((item: RealEstate) => item.getForUser(currentUserId)))
@@ -148,6 +175,7 @@ export default class RealEstatesController {
 
   public async recommended({ request, response, params }: HttpContextContract) {
     let payload: RealEstateRecommendedValidator['schema']['props']
+    const city: string = params.city
     const currentUserId: User['id'] | undefined = params.currentUserId
 
     try {
@@ -161,7 +189,7 @@ export default class RealEstatesController {
     }
 
     try {
-      let recommended: RealEstate[] | ModelObject[] = await RealEstateService.recommended(payload)
+      let recommended: RealEstate[] | ModelObject[] = await RealEstateService.recommended(city, payload)
 
       if (currentUserId)
         recommended = await Promise.all(recommended.map(async (item: RealEstate) => await item.getForUser(currentUserId)))

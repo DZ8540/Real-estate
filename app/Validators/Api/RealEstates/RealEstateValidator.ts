@@ -41,8 +41,8 @@ export default class RealEstateValidator extends ApiValidator {
       rules.unsigned(),
       rules.range(0, TransactionTypes.SALE),
     ]),
-    districts: schema.array.optional().members(schema.string({}, [
-      rules.maxLength(255),
+    districts: schema.array.optional().members(schema.number([
+      rules.unsigned(),
     ])),
     addressOrResidentalComplex: schema.string.optional({}, [
       rules.maxLength(255),

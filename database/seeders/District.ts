@@ -1,11 +1,11 @@
 import Logger from '@ioc:Adonis/Core/Logger'
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
-import { NewsFactory } from 'Database/factories'
+import { DistrictFactory } from 'Database/factories'
 
-export default class NewsSeeder extends BaseSeeder {
+export default class DistrictSeeder extends BaseSeeder {
   public async run () {
     try {
-      await NewsFactory.createMany(15)
+      await DistrictFactory.createMany(30)
     } catch (err: any) {
       Logger.error(err)
     }

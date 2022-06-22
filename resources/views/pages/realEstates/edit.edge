@@ -566,17 +566,6 @@
               @endif
             </div>
 
-            <div class="form-group">
-              <label class="mb-1">Метро</label>
-              <input type="string" class="form-control" name="metro" value="{{ flashMessages.get('metro', item.metro) ?? '' }}">
-
-              @if(flashMessages.has('errors.metro'))
-                <div class="invalid-feedback d-block">
-                  {{ flashMessages.get('errors.metro')[0] }}
-                </div>
-              @endif
-            </div>
-
             <div class="form-group mb-3">
               <label class="mb-1">Текущее изображение</label>
               <br>

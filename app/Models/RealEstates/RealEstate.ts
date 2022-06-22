@@ -1,5 +1,6 @@
 import Estate from './Estate'
 import User from '../Users/User'
+import District from '../District'
 import Drive from '@ioc:Adonis/Core/Drive'
 import RealEstateImage from './RealEstateImage'
 import Database from '@ioc:Adonis/Lucid/Database'
@@ -25,7 +26,7 @@ export default class RealEstate extends BaseModel {
   public static readonly columns = [
     'id', 'uuid', 'transactionType', 'isCountersSeparately',
     'pledge', 'prepaymentType', 'commission',
-    'address', 'metro', 'longitude',
+    'address', 'longitude', 'ceilingHeight',
     'latitude', 'houseType', 'roomType',
     'totalArea', 'floor', 'WCType',
     'balconyType', 'layoutType', 'repairType',
@@ -40,8 +41,8 @@ export default class RealEstate extends BaseModel {
     'viewsCount', 'isVip', 'isHot', 'isBanned',
     'rentalType', 'communalPrice', 'residentalComplex',
     'livingArea', 'kitchenArea', 'maxFloor',
-    'yearOfConstruction', 'ceilingHeight', 'userId',
-    'estateId', 'createdAt', 'updatedAt'
+    'yearOfConstruction', 'userId', 'estateId',
+    'createdAt', 'updatedAt'
   ] as const
 
   @column({ isPrimary: true })
@@ -64,12 +65,6 @@ export default class RealEstate extends BaseModel {
 
   @column()
   public address: string
-
-  @column()
-  public metro: string
-
-  @column()
-  public district: string
 
   @column()
   public longitude: string
@@ -218,6 +213,9 @@ export default class RealEstate extends BaseModel {
   @column({ columnName: 'estate_id' })
   public estateId: Estate['id']
 
+  @column({ columnName: 'district_id' })
+  public districtId: District['id']
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
@@ -327,11 +325,6 @@ export default class RealEstate extends BaseModel {
   }
 
   @computed()
-  public get metroForUser(): string {
-    return this.metro?.toString() ?? 'Не установлено'
-  }
-
-  @computed()
   public get createdAtForUser(): string {
     return this.createdAt.setLocale('ru-RU').toFormat('d MMMM, yyyy')
   }
@@ -357,6 +350,12 @@ export default class RealEstate extends BaseModel {
   @belongsTo(() => Estate)
   public estate: BelongsTo<typeof Estate>
 
+  @belongsTo(() => District)
+  public district: BelongsTo<typeof District>
+
+  @hasMany(() => RealEstateImage)
+  public images: HasMany<typeof RealEstateImage>
+
   @beforeSave()
   public static createUuid(realEstate: RealEstate) {
     if (!realEstate.uuid)
@@ -377,10 +376,8 @@ export default class RealEstate extends BaseModel {
     query
       .preload('user')
       .preload('images')
+      .preload('district')
   }
-
-  @hasMany(() => RealEstateImage)
-  public images: HasMany<typeof RealEstateImage>
 
   public async imageUrl(): Promise<string> {
     return this.image ? await Drive.getUrl(this.image) : IMG_PLACEHOLDER
