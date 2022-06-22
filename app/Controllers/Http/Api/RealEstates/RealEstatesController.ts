@@ -16,7 +16,7 @@ import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 export default class RealEstatesController {
   public async all({ request, response, params }: HttpContextContract) {
     let payload: RealEstateApiValidator['schema']['props']
-    const city: string = params.city
+    const city: string = decodeURIComponent(params.city)
     const currentUserId: User['id'] | undefined = params.currentUserId
 
     try {
@@ -42,7 +42,7 @@ export default class RealEstatesController {
   }
 
   public async getForMap({ response, params }: HttpContextContract) {
-    const city: string = params.city
+    const city: string = decodeURIComponent(params.city)
 
     try {
       const realEstates: RealEstate[] = await RealEstateService.getForMap(city)
@@ -148,7 +148,7 @@ export default class RealEstatesController {
 
   public async popular({ request, response, params }: HttpContextContract) {
     let payload: RealEstatePopularValidator['schema']['props']
-    const city: string = params.city
+    const city: string = decodeURIComponent(params.city)
     const currentUserId: User['id'] | undefined = params.currentUserId
 
     try {
@@ -175,7 +175,7 @@ export default class RealEstatesController {
 
   public async recommended({ request, response, params }: HttpContextContract) {
     let payload: RealEstateRecommendedValidator['schema']['props']
-    const city: string = params.city
+    const city: string = decodeURIComponent(params.city)
     const currentUserId: User['id'] | undefined = params.currentUserId
 
     try {

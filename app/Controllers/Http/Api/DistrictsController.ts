@@ -8,7 +8,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class DistrictsController {
   public async getAll({ response, params }: HttpContextContract) {
-    const city: District['city'] = params.city
+    const city: District['city'] = decodeURIComponent(params.city)
 
     try {
       const districts: District[] = await DistrictService.getAllByCity(city)
