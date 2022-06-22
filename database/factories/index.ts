@@ -87,7 +87,6 @@ export const RealEstateFactory = Factory
       transactionType: faker.datatype.number(TransactionTypes.SALE),
       prepaymentType: faker.datatype.number(PrepaymentTypes.YEAR),
       address: faker.address.cardinalDirection(),
-      metro: faker.address.direction(),
       district: faker.address.direction(),
       longitude: faker.address.longitude(),
       latitude: faker.address.latitude(),
