@@ -12,13 +12,14 @@ import RealEstate from 'App/Models/RealEstates/RealEstate'
 import ApiValidator from 'App/Validators/Api/ApiValidator'
 import RealEstateValidator from 'App/Validators/RealEstates/RealEstateValidator'
 import RealEstateApiValidator from 'App/Validators/Api/RealEstates/RealEstateValidator'
+import RealEstateGetForMapValidator from 'App/Validators/Api/RealEstates/RealEstateGetForMapValidator'
 import RealEstateRecommendedValidator from 'App/Validators/Api/RealEstates/RealEstateRecommendedValidator'
 import { DateTime } from 'luxon'
 import { REAL_ESTATE_PATH } from 'Config/drive'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { removeFirstWord, removeLastLetter } from '../../../helpers'
-import { ModelObject, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { Error, JSONPaginate, PaginateConfig, ServiceConfig } from 'Contracts/services'
+import { ModelObject, ModelPaginatorContract, ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
 
 type Columns = typeof RealEstate['columns'][number]
 type ValidatorPayload = RealEstateValidator['schema']['props']
@@ -38,16 +39,19 @@ export default class RealEstateService extends BaseService {
     return await query.get(config)
   }
 
-  public static async getForMap(city: string): Promise<RealEstate[]> {
+  public static async getForMap(city: string, payload: RealEstateGetForMapValidator['schema']['props']): Promise<RealEstate[]> {
     try {
       const columns: typeof RealEstate.columns[number][] = ['id', 'longitude', 'latitude', 'isHot', 'isVip']
-
-      return RealEstate
+      let query = RealEstate
         .query()
         .select(columns)
         .whereHas('district', (query) => {
           query.where('city', city)
         })
+
+      query = this.filter(payload, query)
+
+      return await query
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
@@ -289,76 +293,7 @@ export default class RealEstateService extends BaseService {
           query.where('city', city)
         })
 
-      for (const key in payload) {
-        if (payload[key]) {
-          switch (key) {
-            // Skip this api's keys
-            case 'page':
-            case 'limit':
-            case 'orderBy':
-              break
-            // Skip this api's keys
-
-            case 'districts':
-              for (const item of payload[key]!) {
-                query = query.orWhere('districtId', item)
-              }
-              break
-
-            case 'metros':
-              for (const item of payload[key]!) {
-                query = query.orWhere('metro', 'like', `%${item}%`)
-              }
-              break
-
-            case 'addressOrResidentalComplex':
-              query = query
-                .where('residentalComplex', 'like', `%${payload[key]}%`)
-                .orWhere('address', 'like', `%${payload[key]}%`)
-              break
-
-            case 'ceilingHeight':
-            case 'yearOfConstruction': // @ts-ignore
-              query = query.where(key, '>=', payload[key]!)
-              break
-
-            case 'WCTypes':
-            case 'roomTypes':
-            case 'repairTypes':
-            case 'rentalTypes':
-            case 'layoutTypes':
-            case 'balconyTypes':
-            case 'elevatorTypes':
-            case 'houseBuildingTypes':
-              for (let item of payload[key]!) {
-                query = query.orWhere(removeLastLetter(key), item!)
-              }
-              break
-
-            case 'startPrice':
-            case 'startFloor':
-            case 'startMaxFloor':
-            case 'startTotalArea':
-            case 'startLivingArea':
-            case 'startKitchenArea':
-              query = query.where(removeFirstWord(key, 'start'), '>=', payload[key]!)
-              break
-
-            case 'endPrice':
-            case 'endFloor':
-            case 'endMaxFloor':
-            case 'endTotalArea':
-            case 'endLivingArea':
-            case 'endKitchenArea':
-              query = query.where(removeFirstWord(key, 'end'), '<=', payload[key]!)
-              break
-
-            default:
-              query = query.where(key, payload[key])
-              break
-          }
-        }
-      }
+      query = this.filter(payload, query)
 
       return (await query.get({ page: payload.page, limit: payload.limit, orderBy: payload.orderBy })).toJSON()
     } catch (err: any) {
@@ -472,5 +407,71 @@ export default class RealEstateService extends BaseService {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
+  }
+
+  /**
+   * * Private method
+   */
+
+  private static filter(payload: RealEstateGetForMapValidator['schema']['props'], query: ModelQueryBuilderContract<typeof RealEstate, RealEstate>): ModelQueryBuilderContract<typeof RealEstate, RealEstate> {
+    for (const key in payload) {
+      if (payload[key]) {
+        switch (key) {
+          case 'districts':
+            for (const item of payload[key]!) {
+              query = query.orWhere('districtId', item)
+            }
+            break
+
+          case 'addressOrResidentalComplex':
+            query = query
+              .where('residentalComplex', 'like', `%${payload[key]}%`)
+              .orWhere('address', 'like', `%${payload[key]}%`)
+            break
+
+          case 'ceilingHeight':
+          case 'yearOfConstruction': // @ts-ignore
+            query = query.where(key, '>=', payload[key]!)
+            break
+
+          case 'WCTypes':
+          case 'roomTypes':
+          case 'repairTypes':
+          case 'rentalTypes':
+          case 'layoutTypes':
+          case 'balconyTypes':
+          case 'elevatorTypes':
+          case 'houseBuildingTypes':
+            for (let item of payload[key]!) {
+              query = query.orWhere(removeLastLetter(key), item!)
+            }
+            break
+
+          case 'startPrice':
+          case 'startFloor':
+          case 'startMaxFloor':
+          case 'startTotalArea':
+          case 'startLivingArea':
+          case 'startKitchenArea':
+            query = query.where(removeFirstWord(key, 'start'), '>=', payload[key]!)
+            break
+
+          case 'endPrice':
+          case 'endFloor':
+          case 'endMaxFloor':
+          case 'endTotalArea':
+          case 'endLivingArea':
+          case 'endKitchenArea':
+            query = query.where(removeFirstWord(key, 'end'), '<=', payload[key]!)
+            break
+
+          default:
+            query = query.where(key, payload[key])
+            break
+        }
+      }
+    }
+
+    return query
   }
 }

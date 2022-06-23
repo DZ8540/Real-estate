@@ -7,6 +7,7 @@ import RealEstateService from 'App/Services/RealEstates/RealEstateService'
 import RealEstateValidator from 'App/Validators/RealEstates/RealEstateValidator'
 import RealEstateApiValidator from 'App/Validators/Api/RealEstates/RealEstateValidator'
 import RealEstatePopularValidator from 'App/Validators/Api/RealEstates/RealEstatePopularValidator'
+import RealEstateGetForMapValidator from 'App/Validators/Api/RealEstates/RealEstateGetForMapValidator'
 import RealEstateRecommendedValidator from 'App/Validators/Api/RealEstates/RealEstateRecommendedValidator'
 import { ModelObject } from '@ioc:Adonis/Lucid/Orm'
 import { Error, JSONPaginate } from 'Contracts/services'
@@ -41,11 +42,22 @@ export default class RealEstatesController {
     }
   }
 
-  public async getForMap({ response, params }: HttpContextContract) {
+  public async getForMap({ request, response, params }: HttpContextContract) {
+    let payload: RealEstateGetForMapValidator['schema']['props']
     const city: string = decodeURIComponent(params.city)
 
     try {
-      const realEstates: RealEstate[] = await RealEstateService.getForMap(city)
+      payload = await request.validate(RealEstateGetForMapValidator)
+    } catch (err: any) {
+      throw new ExceptionService({
+        code: ResponseCodes.VALIDATION_ERROR,
+        message: ResponseMessages.VALIDATION_ERROR,
+        body: err.messages
+      })
+    }
+
+    try {
+      const realEstates: RealEstate[] = await RealEstateService.getForMap(city, payload)
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, realEstates))
     } catch (err: Error | any) {
