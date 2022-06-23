@@ -41,10 +41,8 @@ export default class RealEstateService extends BaseService {
 
   public static async getForMap(city: string, payload: RealEstateGetForMapValidator['schema']['props']): Promise<RealEstate[]> {
     try {
-      const columns: typeof RealEstate.columns[number][] = ['id', 'longitude', 'latitude', 'isHot', 'isVip']
       let query = RealEstate
         .query()
-        .select(columns)
         .whereHas('district', (query) => {
           query.where('city', city)
         })

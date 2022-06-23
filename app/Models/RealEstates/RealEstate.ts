@@ -42,7 +42,7 @@ export default class RealEstate extends BaseModel {
     'rentalType', 'communalPrice', 'residentalComplex',
     'livingArea', 'kitchenArea', 'maxFloor',
     'yearOfConstruction', 'userId', 'estateId',
-    'createdAt', 'updatedAt'
+    'districtId', 'createdAt', 'updatedAt'
   ] as const
 
   @column({ isPrimary: true })
