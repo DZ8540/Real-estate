@@ -415,6 +415,13 @@ export default class RealEstateService extends BaseService {
     for (const key in payload) {
       if (payload[key]) {
         switch (key) {
+          // Skip this api's keys
+          case 'page':
+          case 'limit':
+          case 'orderBy':
+            break
+          // Skip this api's keys
+
           case 'districts':
             for (const item of payload[key]!) {
               query = query.orWhere('districtId', item)
