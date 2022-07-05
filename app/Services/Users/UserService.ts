@@ -89,7 +89,7 @@ export default class UserService extends BaseService {
 
   public static async update(uuid: User['uuid'], payload: UserValidator['schema']['props'], { trx }: ServiceConfig<User> = {}): Promise<User> {
     let item: User
-    let avatar: string | null = null
+    let avatar: string | undefined | null
     let avatarPath: string = `${USERS_PATH}/${uuid}`
 
     try {
@@ -106,6 +106,8 @@ export default class UserService extends BaseService {
         Logger.error(err)
         throw { code: ResponseCodes.SERVER_ERROR, message: ResponseMessages.ERROR } as Error
       }
+    } else {
+      avatar = item.avatar
     }
 
     try {
@@ -122,26 +124,25 @@ export default class UserService extends BaseService {
     }
   }
 
-  public static async deleteAvatar(uuid: User['uuid'], { trx }: ServiceConfig<User> = {}): Promise<User> {
+  public static async deleteAvatar(uuid: User['uuid']): Promise<User> {
     let item: User
 
     try {
-      item = await this.get(uuid, { trx })
+      item = await this.get(uuid)
     } catch (err: Error | any) {
       throw err
     }
 
-    if (item.avatar) {
-      try {
-        await Drive.delete(item.avatar)
-
-        return await item.merge({ avatar: undefined }).save()
-      } catch (err: any) {
-        Logger.error(err)
-        throw { code: ResponseCodes.SERVER_ERROR, message: ResponseMessages.ERROR } as Error
-      }
-    } else {
+    if (!item.avatar)
       throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.USER_AVATAR_IS_EMPTY } as Error
+
+    try {
+      await Drive.delete(item.avatar)
+
+      return await item.merge({ avatar: null }).save()
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.SERVER_ERROR, message: ResponseMessages.ERROR } as Error
     }
   }
 
