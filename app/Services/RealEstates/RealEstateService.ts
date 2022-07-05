@@ -84,6 +84,13 @@ export default class RealEstateService extends BaseService {
       throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.REAL_ESTATE_NOT_FOUND } as Error
 
     try {
+      if (config.isForApi) {
+        const viewsCount: number = item.viewsCount++
+
+        await item.merge({ viewsCount }).save()
+        item = (await RealEstate.findBy('uuid', uuid, { client: config.trx }))!
+      }
+
       if (config.relations) {
         for (let relationItem of config.relations) {
           await item.load(relationItem)

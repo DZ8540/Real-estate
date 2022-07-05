@@ -40,7 +40,7 @@ export default class UserValidator extends BaseValidator {
       rules.unsigned(),
       rules.range(Sex.MAN, Sex.WOMAN),
     ]),
-    birthday: schema.date.optional({ format: 'dd.mm.yyyy' }, [
+    birthday: schema.date.optional({ format: 'dd.MM.yyyy' }, [
       rules.before('today'),
     ]),
     phone: schema.string.optional({}, [
