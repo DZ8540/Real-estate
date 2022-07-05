@@ -85,7 +85,7 @@ export default class RealEstateService extends BaseService {
 
     try {
       if (config.isForApi) {
-        const viewsCount: number = item.viewsCount++
+        const viewsCount: number = item.viewsCount + 1
 
         await item.merge({ viewsCount }).save()
         item = (await RealEstate.findBy('uuid', uuid, { client: config.trx }))!
