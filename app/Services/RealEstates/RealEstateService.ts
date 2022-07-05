@@ -447,9 +447,7 @@ export default class RealEstateService extends BaseService {
           case 'balconyTypes':
           case 'elevatorTypes':
           case 'houseBuildingTypes':
-            for (let item of payload[key]!) {
-              query = query.orWhere(removeLastLetter(key), item!)
-            }
+            query = query.whereIn(removeLastLetter(key), payload[key]!)
             break
 
           case 'startPrice':
