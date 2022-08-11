@@ -1,7 +1,9 @@
 import BaseService from '../BaseService'
 import Logger from '@ioc:Adonis/Core/Logger'
 import ServicesType from 'App/Models/Services/ServicesType'
+import ServicesTypesAttribute from 'App/Models/Services/ServicesTypesAttribute'
 import ServicesTypeValidator from 'App/Validators/Services/ServicesTypeValidator'
+import ServicesTypesSubService from 'App/Models/Services/ServicesTypesSubService'
 import { Error, ServiceConfig } from 'Contracts/services'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
@@ -9,7 +11,30 @@ type ValidatorPayload = ServicesTypeValidator['schema']['props']
 
 export default class ServicesTypeService extends BaseService {
   public static async getAll(columns: typeof ServicesType['columns'][number][] = []): Promise<ServicesType[]> {
-    return await ServicesType.query().select(columns)
+    try {
+      return await ServicesType.query().select(columns)
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async getAllSubServicesTypes(serviceTypeId: ServicesType['id']): Promise<ServicesTypesSubService[]> {
+    try {
+      return await ServicesTypesSubService.query().where('servicesType_id', serviceTypeId)
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async getAllAttributesTypes(serviceTypeId: ServicesType['id']): Promise<ServicesTypesSubService[]> {
+    try {
+      return await ServicesTypesAttribute.query().where('servicesType_id', serviceTypeId)
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
   }
 
   public static async get(slug: ServicesType['slug'], { trx }: ServiceConfig<ServicesType> = {}): Promise<ServicesType> {

@@ -33,6 +33,8 @@ export default class ServiceValidator extends ApiValidator {
       rules.unsigned(),
       rules.range(ExperienceTypes.BEFORE_ONE_YEAR, ExperienceTypes.BEFORE_TEN_YEAR),
     ])),
+    subServicesTypes: schema.array.optional().members(schema.number([ rules.unsigned() ])),
+    attributesTypes: schema.array.optional().members(schema.number([ rules.unsigned() ])),
     servicesTypeId: schema.number.optional([
       rules.unsigned(),
       rules.exists({ table: 'servicesTypes', column: 'id' }),

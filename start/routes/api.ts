@@ -132,6 +132,8 @@ Route.group(() => {
   Route.group(() => {
 
     Route.post('/types', 'Api/Services/ServicesTypesController.all')
+    Route.post('/subServicesTypes/:serviceTypeId', 'Api/Services/ServicesTypesController.getAllSubServicesTypes')
+    Route.post('/attributesTypes/:serviceTypeId', 'Api/Services/ServicesTypesController.getAllAttributesTypes')
 
     Route.post('/', 'Api/Services/ServicesController.all')
     Route.post('/add', 'Api/Services/ServicesController.add').middleware('CheckAccessToken')
