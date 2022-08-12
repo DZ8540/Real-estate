@@ -1,6 +1,7 @@
 import Label from './Label'
 import User from '../Users/User'
-import ServicesType from './ServicesType'
+import ServicesTypesAttribute from './ServicesTypesAttribute'
+import ServicesTypesSubService from './ServicesTypesSubService'
 import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
 import { EXPERIENCE_TYPES } from 'Config/services'
@@ -14,8 +15,8 @@ export default class Service extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
   public static readonly columns = [
     'id', 'experienceType', 'description',
-    'isBanned', 'userId', 'servicesTypeId',
-    'createdAt', 'updatedAt',
+    'isBanned', 'userId', 'servicesTypesSubServiceId',
+    'servicesTypesAttributeId', 'createdAt', 'updatedAt',
   ] as const
 
   @column({ isPrimary: true })
@@ -33,8 +34,11 @@ export default class Service extends BaseModel {
   @column({ columnName: 'user_id' })
   public userId: User['id']
 
-  @column({ columnName: 'servicesType_id' })
-  public servicesTypeId: ServicesType['id']
+  @column({ columnName: 'servicesTypesSubService_id' })
+  public servicesTypesSubServiceId: ServicesTypesSubService['id']
+
+  @column({ columnName: 'servicesTypesAttribute_id' })
+  public servicesTypesAttributeId?: ServicesTypesAttribute['id']
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -59,8 +63,11 @@ export default class Service extends BaseModel {
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
 
-  @belongsTo(() => ServicesType)
-  public servicesType: BelongsTo<typeof ServicesType>
+  @belongsTo(() => ServicesTypesSubService)
+  public subService: BelongsTo<typeof ServicesTypesSubService>
+
+  @belongsTo(() => ServicesTypesAttribute)
+  public attribute: BelongsTo<typeof ServicesTypesAttribute>
 
   @manyToMany(() => Label, {
     pivotTable: 'labels_services',

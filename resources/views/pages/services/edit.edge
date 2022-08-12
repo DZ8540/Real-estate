@@ -60,21 +60,6 @@
             </div>
 
             <div class="form-group">
-              <label class="mb-1">Тип услуги</label>
-              <select class="form-control" name="servicesTypeId">
-                @each(servicesTypeItem in servicesTypes)
-                  <option value="{{ servicesTypeItem.id }}" {{ servicesTypeItem.id == item.servicesTypeId ? 'selected' : '' }}>{{ servicesTypeItem.name }}</option>
-                @endeach
-              </select>
-
-              @if(flashMessages.has('errors.servicesTypeId'))
-                <div class="invalid-feedback d-block">
-                  {{ flashMessages.get('errors.servicesTypeId')[0] }}
-                </div>
-              @endif
-            </div>
-
-            <div class="form-group">
               <label class="mb-1"><strong>Предоставляемые услуги *</strong> (через запятую!)</label>
               <input type="string" class="form-control" value="{{ labels }}" name="labels">
 

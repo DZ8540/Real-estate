@@ -13,8 +13,8 @@ export default class ServicesController {
     let baseURL: string = route!.pattern
     let page: number = request.input('page', 1)
 
-    let columns: typeof Service['columns'][number][] = ['id', 'experienceType', 'isBanned', 'userId', 'servicesTypeId', 'createdAt']
-    let services: Service[] = await ServiceService.paginate({ baseURL, page, relations: ['servicesType', 'user'] }, columns)
+    let columns: typeof Service['columns'][number][] = ['id', 'experienceType', 'isBanned', 'userId', 'servicesTypesSubServiceId', 'createdAt']
+    let services: Service[] = await ServiceService.paginate({ baseURL, page, relations: ['subService', 'user'] }, columns)
 
     return view.render('pages/services/index', { services })
   }
@@ -27,7 +27,7 @@ export default class ServicesController {
     let id: Service['id'] = params.id
 
     try {
-      let item: Service = await ServiceService.get(id, { relations: ['user', 'servicesType', 'labels'] })
+      let item: Service = await ServiceService.get(id, { relations: ['user', 'subService', 'labels'] })
 
       let labels: string[] | string = []
       for (let labelItem of item.labels) {
@@ -48,7 +48,7 @@ export default class ServicesController {
     try {
       let columns: typeof ServicesType['columns'][number][] = ['id', 'name']
       let servicesTypes: ServicesType[] = await ServicesTypeService.getAll(columns)
-      let item: Service = await ServiceService.get(id ,{ relations: ['user', 'servicesType', 'labels'] })
+      let item: Service = await ServiceService.get(id ,{ relations: ['user', 'subService', 'labels'] })
 
       let labels: string[] | string = []
       for (let labelItem of item.labels) {

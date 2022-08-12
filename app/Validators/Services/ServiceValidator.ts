@@ -41,10 +41,8 @@ export default class ServiceValidator extends BaseValidator {
       rules.minLength(5),
     ]),
     isBanned: schema.boolean.optional(),
-    servicesTypeId: schema.number([
-      rules.unsigned(),
-      rules.exists({ table: 'servicesTypes', column: 'id' })
-    ]),
+    servicesTypesSubServiceId: schema.number([ rules.unsigned() ]),
+    servicesTypesAttributeId: schema.number.optional([ rules.unsigned() ]),
     labels: schema.string.optional({}, []),
   })
 

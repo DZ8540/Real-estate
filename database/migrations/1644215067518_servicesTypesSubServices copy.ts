@@ -1,6 +1,6 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class ServiceTypesSubServices extends BaseSchema {
+export default class ServicesTypesSubServices extends BaseSchema {
   protected tableName = 'servicesTypesSubServices'
 
   public async up () {

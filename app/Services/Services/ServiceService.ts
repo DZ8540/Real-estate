@@ -1,13 +1,13 @@
 import BaseService from '../BaseService'
-import User from 'App/Models/Users/User'
 import LabelService from './LabelService'
 import Logger from '@ioc:Adonis/Core/Logger'
 import Label from 'App/Models/Services/Label'
-import UserService from '../Users/UserService'
 import Service from 'App/Models/Services/Service'
 import Database from '@ioc:Adonis/Lucid/Database'
+import ServicesTypeService from './ServicesTypeService'
 import ServiceValidator from 'App/Validators/Services/ServiceValidator'
 import ServiceApiValidator from 'App/Validators/Api/Services/ServiceValidator'
+import ServicesTypesSubService from 'App/Models/Services/ServicesTypesSubService'
 import { removeLastLetter } from '../../../helpers'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
@@ -59,11 +59,11 @@ export default class ServiceService extends BaseService {
   public static async create(payload: ValidatorPayload, { trx }: ServiceConfig<Service> = {}): Promise<Service> {
     let item: Service
 
-    try {
-      await this.checkUserServiceType(payload.userId, payload.servicesTypeId)
-    } catch (err: Error | any) {
-      throw err
-    }
+    // try {
+    //   await this.checkUserServiceType(payload.userId, payload.servicesTypeId)
+    // } catch (err: Error | any) {
+    //   throw err
+    // }
 
     if (!trx)
       trx = await Database.transaction()
@@ -107,11 +107,11 @@ export default class ServiceService extends BaseService {
   public static async update(id: Service['id'], payload: ValidatorPayload, config: ServiceConfig<Service> = {}): Promise<Service> {
     let item: Service
 
-    try {
-      await this.checkUserServiceType(payload.userId, payload.servicesTypeId)
-    } catch (err: Error | any) {
-      throw err
-    }
+    // try {
+    //   await this.checkUserServiceType(payload.userId, payload.servicesTypeId)
+    // } catch (err: Error | any) {
+    //   throw err
+    // }
 
     if (!config.trx)
       config.trx = await Database.transaction()
@@ -211,22 +211,34 @@ export default class ServiceService extends BaseService {
               }
               break
 
+            // case 'rating':
+            //   query = query.orderByRaw(
+            //     Database.raw('select rating from users where services.FK = users.PK').wrap('(', ')'),
+            //     'desc'
+            //   )
+            //   break
+
+            case 'servicesTypeId':
+              const subServices: ServicesTypesSubService[] = await ServicesTypeService.getAllSubServicesTypes(payload[key]!)
+              const subServicesIds: ServicesTypesSubService['id'][] = subServices.map((item: ServicesTypesSubService) => item.id)
+
+              query = query.whereHas('subService', (query) => {
+                query.whereIn('id', subServicesIds)
+              })
+              break
+
             case 'subServicesTypes':
               for (let item of payload[key]!) {
-                query = query.orWhereHas('servicesType', (query) => {
-                  query.whereHas('subServices', (query) => {
-                    query.where('id', item)
-                  })
+                query = query.orWhereHas('subService', (query) => {
+                  query.where('id', item)
                 })
               }
               break
 
             case 'attributesTypes':
               for (let item of payload[key]!) {
-                query = query.orWhereHas('servicesType', (query) => {
-                  query.whereHas('attributes', (query) => {
-                    query.where('id', item)
-                  })
+                query = query.orWhereHas('attribute', (query) => {
+                  query.where('id', item)
                 })
               }
               break
@@ -246,22 +258,22 @@ export default class ServiceService extends BaseService {
         }
       }
 
-      return await query.get({ page: payload.page, limit: payload.limit, orderBy: payload.orderBy })
+      return await query
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
   }
 
-  private static async checkUserServiceType(userId: User['id'], currentServiceTypeId: Service['servicesTypeId']): Promise<void> {
-    let user: User = await UserService.getById(userId, { relations: ['services'] })
-    let serviceTypeId: Service['servicesTypeId'] = user.services[0].servicesTypeId
+  // private static async checkUserServiceType(userId: User['id'], currentServiceTypeId: Service['servicesTypeId']): Promise<void> {
+  //   let user: User = await UserService.getById(userId, { relations: ['services'] })
+  //   let serviceTypeId: Service['servicesTypeId'] = user.services[0].servicesTypeId
 
-    if (currentServiceTypeId != serviceTypeId) {
-      let message: ResponseMessages = ResponseMessages.SERVICE_TYPE_DIFFERENT
+  //   if (currentServiceTypeId != serviceTypeId) {
+  //     let message: ResponseMessages = ResponseMessages.SERVICE_TYPE_DIFFERENT
 
-      Logger.error(message)
-      throw { code: ResponseCodes.CLIENT_ERROR, message: message } as Error
-    }
-  }
+  //     Logger.error(message)
+  //     throw { code: ResponseCodes.CLIENT_ERROR, message: message } as Error
+  //   }
+  // }
 }
