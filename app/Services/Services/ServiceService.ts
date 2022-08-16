@@ -211,12 +211,12 @@ export default class ServiceService extends BaseService {
               }
               break
 
-            // case 'rating':
-            //   query = query.orderByRaw(
-            //     Database.raw('select rating from users where services.FK = users.PK').wrap('(', ')'),
-            //     'desc'
-            //   )
-            //   break
+            case 'rating':
+              query = query
+                .join('users', 'services.user_id', 'users.id')
+                .select('services.*')
+                .orderBy('users.rating', payload[key])
+              break
 
             case 'servicesTypeId':
               const subServices: ServicesTypesSubService[] = await ServicesTypeService.getAllSubServicesTypes(payload[key]!)
