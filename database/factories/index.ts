@@ -6,17 +6,18 @@ import Label from 'App/Models/Services/Label'
 import Factory from '@ioc:Adonis/Lucid/Factory'
 import Service from 'App/Models/Services/Service'
 import Estate from 'App/Models/RealEstates/Estate'
+import Response from 'App/Models/Services/Response'
 import UsersReview from 'App/Models/Users/UsersReview'
 import RoleService from 'App/Services/Users/RoleService'
 import RealEstate from 'App/Models/RealEstates/RealEstate'
 import ServicesType from 'App/Models/Services/ServicesType'
 import RealEstateType from 'App/Models/RealEstates/RealEstateType'
 import { OwnerTypes, Roles } from 'Config/users'
+import { ResponsesPriceTypes, ResponsesStatusTypes } from 'Contracts/response'
 import {
-  BalconyTypes, ElevatorTypes, HouseBuildingTypes,
-  HouseTypes, LayoutTypes, PrepaymentTypes,
-  RepairTypes, RoomsTypes, WCTypes,
-  TransactionTypes,
+  BalconyTypes, ElevatorTypes, HouseBuildingTypes, HouseTypes,
+  LayoutTypes, PrepaymentTypes, RepairTypes, RoomsTypes,
+  WCTypes, TransactionTypes,
 } from 'Contracts/enums'
 
 export const UserFactory = Factory
@@ -79,6 +80,7 @@ export const ServicesFactory = Factory
     }
   })
   .relation('labels', () => LabelFactory)
+  .relation('responses', () => ResponseFactory)
   .build()
 
 export const RealEstateFactory = Factory
@@ -128,6 +130,24 @@ export const QuestionsFactory = Factory
       name: faker.vehicle.vehicle(),
       email: faker.internet.email(),
       question: faker.lorem.paragraphs(3),
+    }
+  })
+  .build()
+
+export const ResponseFactory = Factory
+  .define(Response, ({ faker }) => {
+    return {
+      description: faker.lorem.paragraphs(2),
+      price: faker.datatype.number(),
+      priceType: faker.datatype.number({
+        min: ResponsesPriceTypes.FOR_SERVICE,
+        max: ResponsesPriceTypes.FOR_SERVICE,
+      }),
+      status: faker.datatype.number({
+        min: ResponsesStatusTypes.UNDER_CONSIDERATION,
+        max: ResponsesStatusTypes.COMPLETED,
+      }),
+      userId: faker.datatype.number({ min: 1, max: 20 }),
     }
   })
   .build()

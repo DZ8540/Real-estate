@@ -119,3 +119,15 @@ export enum ResponseMessages {
   TOKEN_EXPIRED = 'Ваша сессия истекла!',
   TOKEN_SUCCESS = 'Токен успешно обновлен!',
 }
+
+export enum ResponsesStatusTypes {
+  UNDER_CONSIDERATION = 0,
+  IN_PROCESS = 1,
+  COMPLETED = 2,
+}
+
+export enum ResponsesPriceTypes {
+  FOR_SERVICE = 0,
+  FOR_HOUR = 1,
+  FOR_SQUARE_METER = 2,
+}

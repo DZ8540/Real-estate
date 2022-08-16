@@ -5,7 +5,10 @@ import { ServicesFactory } from 'Database/factories'
 export default class ServiceSeeder extends BaseSeeder {
   public async run () {
     try {
-      await ServicesFactory.with('labels', 3).createMany(50)
+      await ServicesFactory
+        .with('labels', 3)
+        .with('responses', 3)
+        .createMany(50)
     } catch (err: any) {
       Logger.error(err)
     }

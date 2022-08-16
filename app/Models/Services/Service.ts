@@ -1,14 +1,15 @@
 import Label from './Label'
 import User from '../Users/User'
+import Response from './Response'
 import ServicesTypesAttribute from './ServicesTypesAttribute'
 import ServicesTypesSubService from './ServicesTypesSubService'
 import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
 import { EXPERIENCE_TYPES } from 'Config/services'
 import {
-  BaseModel, BelongsTo, belongsTo,
-  column, computed, ManyToMany,
-  manyToMany
+  BaseModel, BelongsTo, belongsTo, column,
+  computed, HasMany, hasMany, ManyToMany,
+  manyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Service extends BaseModel {
@@ -68,6 +69,9 @@ export default class Service extends BaseModel {
 
   @belongsTo(() => ServicesTypesAttribute)
   public attribute: BelongsTo<typeof ServicesTypesAttribute>
+
+  @hasMany(() => Response)
+  public responses: HasMany<typeof Response>
 
   @manyToMany(() => Label, {
     pivotTable: 'labels_services',

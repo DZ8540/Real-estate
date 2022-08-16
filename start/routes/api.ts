@@ -142,4 +142,23 @@ Route.group(() => {
 
   }).prefix('/services')
 
+  /**
+   * * Response
+   */
+
+  Route.group(() => {
+
+    Route.post('/incumings/:userId', 'Api/Services/ResponsesController.paginateIncumings')
+    Route.post('/outgoings/:userId', 'Api/Services/ResponsesController.paginateOutgoings')
+
+    Route.post('/inProcess/:userId', 'Api/Services/ResponsesController.paginateInProcess')
+    Route.post('/completed/:userId', 'Api/Services/ResponsesController.paginateCompleted')
+
+    Route.post('/', 'Api/Services/ResponsesController.create')
+    Route.patch('/accept/:id', 'Api/Service s/ResponsesController.accept')
+    Route.patch('/complete/:id', 'Api/Services/ResponsesController.complete')
+    Route.delete('/:id', 'Api/Services/ResponsesController.reject')
+
+  }).prefix('responses').middleware('CheckAccessToken')
+
 }).prefix('/api')
