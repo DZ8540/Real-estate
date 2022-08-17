@@ -17,7 +17,11 @@ export default class UsersController {
     try {
       let item: User | ModelObject = await UserService.getById(id, { relations: ['realEstates'] })
       await item.load('services', (query: ModelQueryBuilderContract<typeof Service>) => {
-        query.preload('labels')
+        query
+          .preload('labels')
+          .preload('subService', (query) => {
+            query.preload('type')
+          })
       })
 
       if (currentUserId)

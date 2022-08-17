@@ -31,6 +31,18 @@ export default class ServicesController {
     }
   }
 
+  public async get({ response, params }: HttpContextContract) {
+    const id: Service['id'] = params.id
+
+    try {
+      const item: Service = await ServiceService.get(id)
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, item))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
   public async add({ request, response }: HttpContextContract) {
     let payload: ServiceValidator['schema']['props']
 

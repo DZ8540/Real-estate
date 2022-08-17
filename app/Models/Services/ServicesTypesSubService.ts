@@ -1,7 +1,7 @@
 import ServicesType from './ServicesType'
 import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { BaseModel, beforeSave, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeSave, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 
 export default class ServicesTypesSubService extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
@@ -21,6 +21,9 @@ export default class ServicesTypesSubService extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @belongsTo(() => ServicesType)
+  public type: BelongsTo<typeof ServicesType>
 
   @beforeSave()
   public static async setNameToLowerCase(item: ServicesTypesSubService) {

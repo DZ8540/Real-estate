@@ -200,7 +200,13 @@ export default class ServiceService extends BaseService {
     }
 
     try {
-      let query = Service.query().preload('user').preload('labels')
+      let query = Service
+        .query()
+        .preload('user')
+        .preload('labels')
+        .preload('subService', (query) => {
+          query.preload('type')
+        })
 
       for (let key in payload) {
         if (payload[key]) {
