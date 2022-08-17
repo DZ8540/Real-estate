@@ -1,9 +1,11 @@
+import Logger from '@ioc:Adonis/Core/Logger'
 import Service from 'App/Models/Services/Service'
 import ResponseService from 'App/Services/ResponseService'
 import ExceptionService from 'App/Services/ExceptionService'
 import ServiceService from 'App/Services/Services/ServiceService'
 import ServiceValidator from 'App/Validators/Services/ServiceValidator'
 import ServiceApiValidator from 'App/Validators/Api/Services/ServiceValidator'
+import { Error } from 'Contracts/services'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
@@ -35,7 +37,16 @@ export default class ServicesController {
     const id: Service['id'] = params.id
 
     try {
-      const item: Service = await ServiceService.get(id)
+      const item: Service = await ServiceService.get(id, { relations: ['labels'] })
+
+      try {
+        await item.load('subService', (query) => {
+          query.preload('type')
+        })
+      } catch (err: any) {
+        Logger.error(err)
+        throw { message: ResponseMessages.ERROR, code: ResponseCodes.DATABASE_ERROR } as Error
+      }
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, item))
     } catch (err: Error | any) {
