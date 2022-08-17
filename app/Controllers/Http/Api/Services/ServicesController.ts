@@ -4,6 +4,7 @@ import ExceptionService from 'App/Services/ExceptionService'
 import ServiceService from 'App/Services/Services/ServiceService'
 import ServiceValidator from 'App/Validators/Services/ServiceValidator'
 import ServiceApiValidator from 'App/Validators/Api/Services/ServiceValidator'
+import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 
@@ -22,7 +23,7 @@ export default class ServicesController {
     }
 
     try {
-      let services: Service[] = await ServiceService.search(payload)
+      let services: ModelPaginatorContract<Service> = await ServiceService.search(payload)
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, services))
     } catch (err: Error | any) {

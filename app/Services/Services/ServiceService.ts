@@ -9,6 +9,7 @@ import ServiceValidator from 'App/Validators/Services/ServiceValidator'
 import ServiceApiValidator from 'App/Validators/Api/Services/ServiceValidator'
 import ServicesTypesSubService from 'App/Models/Services/ServicesTypesSubService'
 import { removeLastLetter } from '../../../helpers'
+import { PaginationConfig } from 'Contracts/database'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
@@ -188,9 +189,15 @@ export default class ServiceService extends BaseService {
     }
   }
 
-  public static async search(payload: ServiceApiValidator['schema']['props']): Promise<Service[]> {
+  public static async search(payload: ServiceApiValidator['schema']['props']): Promise<ModelPaginatorContract<Service>> {
     if (!payload.limit)
       payload.limit = 4
+
+    const paginatePayload: PaginationConfig = {
+      page: payload.page,
+      limit: payload.limit,
+      orderBy: payload.orderBy,
+    }
 
     try {
       let query = Service.query().preload('user').preload('labels')
@@ -258,7 +265,7 @@ export default class ServiceService extends BaseService {
         }
       }
 
-      return await query
+      return await query.get(paginatePayload)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
