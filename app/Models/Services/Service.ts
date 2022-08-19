@@ -7,9 +7,9 @@ import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
 import { EXPERIENCE_TYPES } from 'Config/services'
 import {
-  BaseModel, BelongsTo, belongsTo, column,
+  BaseModel, beforeDelete, BelongsTo, belongsTo,
   computed, HasMany, hasMany, ManyToMany,
-  manyToMany,
+  manyToMany, column,
 } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Service extends BaseModel {
@@ -77,4 +77,9 @@ export default class Service extends BaseModel {
     pivotTable: 'labels_services',
   })
   public labels: ManyToMany<typeof Label>
+
+  @beforeDelete()
+  public static async deleteAllRelations(item: Service) {
+    await item.related('labels').detach([])
+  }
 }
