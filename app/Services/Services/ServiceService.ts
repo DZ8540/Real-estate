@@ -220,7 +220,7 @@ export default class ServiceService extends BaseService {
 
             case 'experienceTypes':
               for (let item of payload[key]!) {
-                query = query.orWhere(removeLastLetter(key), item!)
+                query = query.andWhere(removeLastLetter(key), item!)
               }
               break
 
@@ -242,7 +242,7 @@ export default class ServiceService extends BaseService {
 
             case 'subServicesTypes':
               for (let item of payload[key]!) {
-                query = query.orWhereHas('subService', (query) => {
+                query = query.whereHas('subService', (query) => {
                   query.where('id', item)
                 })
               }
@@ -250,7 +250,7 @@ export default class ServiceService extends BaseService {
 
             case 'attributesTypes':
               for (let item of payload[key]!) {
-                query = query.orWhereHas('attribute', (query) => {
+                query = query.whereHas('attribute', (query) => {
                   query.where('id', item)
                 })
               }
@@ -258,7 +258,7 @@ export default class ServiceService extends BaseService {
 
             case 'labels':
               for (let item of payload[key]!) {
-                query = query.orWhereHas('labels', (labelQuery) => {
+                query = query.whereHas('labels', (labelQuery) => {
                   labelQuery.where('label_id', item)
                 })
               }

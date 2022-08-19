@@ -156,10 +156,10 @@ Route.group(() => {
     Route.post('/completed/:userId', 'Api/Services/ResponsesController.paginateCompleted')
 
     Route.post('/', 'Api/Services/ResponsesController.create')
-    Route.patch('/accept/:id', 'Api/Service s/ResponsesController.accept')
+    Route.patch('/accept/:id', 'Api/Services/ResponsesController.accept')
     Route.patch('/complete/:id', 'Api/Services/ResponsesController.complete')
     Route.delete('/:id', 'Api/Services/ResponsesController.reject')
 
-  }).prefix('responses').middleware('CheckAccessToken')
+  }).prefix('/responses').middleware('CheckAccessToken')
 
 }).prefix('/api')
