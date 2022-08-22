@@ -1,5 +1,4 @@
 import BaseValidator from 'App/Validators/BaseValidator'
-import { ResponsesPriceTypes } from 'Contracts/response'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { RESPONSES_DESCRIPTION_MAX_LENGTH } from 'Config/response'
@@ -29,8 +28,6 @@ export default class ResponseValidator extends BaseValidator {
    *    ```
    */
   public schema = schema.create({
-    price: schema.number([ rules.unsigned() ]),
-    priceType: schema.number([ rules.range(ResponsesPriceTypes.FOR_SERVICE, ResponsesPriceTypes.FOR_SQUARE_METER) ]),
     description: schema.string.optional({ trim: true }, [ rules.maxLength(RESPONSES_DESCRIPTION_MAX_LENGTH) ]),
     userId: schema.number([
       rules.unsigned(),
@@ -40,10 +37,6 @@ export default class ResponseValidator extends BaseValidator {
       rules.unsigned(),
       rules.exists({ table: 'services', column: 'id' }),
     ]),
-    // Not need use at now
-    // images: schema.array.optional().members(schema.file({
-    //   extnames: ['jpg', 'gif', 'png', 'jpeg', 'webp'],
-    // })),
   })
 
   /**

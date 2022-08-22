@@ -13,7 +13,7 @@ import RealEstate from 'App/Models/RealEstates/RealEstate'
 import ServicesType from 'App/Models/Services/ServicesType'
 import RealEstateType from 'App/Models/RealEstates/RealEstateType'
 import { OwnerTypes, Roles } from 'Config/users'
-import { ResponsesPriceTypes, ResponsesStatusTypes } from 'Contracts/response'
+import { ResponsesStatusTypes } from 'Contracts/response'
 import {
   BalconyTypes, ElevatorTypes, HouseBuildingTypes, HouseTypes,
   LayoutTypes, PrepaymentTypes, RepairTypes, RoomsTypes,
@@ -138,11 +138,6 @@ export const ResponseFactory = Factory
   .define(Response, ({ faker }) => {
     return {
       description: faker.lorem.paragraphs(2),
-      price: faker.datatype.number(),
-      priceType: faker.datatype.number({
-        min: ResponsesPriceTypes.FOR_SERVICE,
-        max: ResponsesPriceTypes.FOR_SERVICE,
-      }),
       status: faker.datatype.number({
         min: ResponsesStatusTypes.UNDER_CONSIDERATION,
         max: ResponsesStatusTypes.COMPLETED,

@@ -125,9 +125,3 @@ export enum ResponsesStatusTypes {
   IN_PROCESS = 1,
   COMPLETED = 2,
 }
-
-export enum ResponsesPriceTypes {
-  FOR_SERVICE = 0,
-  FOR_HOUR = 1,
-  FOR_SQUARE_METER = 2,
-}

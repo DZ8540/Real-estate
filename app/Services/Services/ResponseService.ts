@@ -3,7 +3,6 @@ import Logger from '@ioc:Adonis/Core/Logger'
 import Response from 'App/Models/Services/Response'
 import ApiValidator from 'App/Validators/Api/ApiValidator'
 import ResponseValidator from 'App/Validators/Api/Services/ResponseValidator'
-import Database, { TransactionClientContract } from '@ioc:Adonis/Lucid/Database'
 import { Error } from 'Contracts/services'
 import { ModelAttributes, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages, ResponsesStatusTypes } from 'Contracts/response'
@@ -37,11 +36,7 @@ export default class ResponseService {
   }
 
   public static async create(payload: ResponseValidator['schema']['props']): Promise<Response> {
-    let response: Response
-    const trx: TransactionClientContract = await Database.transaction()
     const responsePayload: Partial<ModelAttributes<Response>> = {
-      price: payload.price,
-      priceType: payload.priceType,
       userId: payload.userId,
       status: ResponsesStatusTypes.UNDER_CONSIDERATION,
       description: payload.description,
@@ -49,25 +44,10 @@ export default class ResponseService {
     }
 
     try {
-      response = await Response.create(responsePayload, { client: trx })
+      return await Response.create(responsePayload)
     } catch (err: any) {
-      await trx.rollback()
-
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
-    }
-
-    try {
-      // Not need use at now
-      // if (payload.images)
-      //   await this.createImages(response.id, payload.images, trx)
-
-      await trx.commit()
-      return response
-    } catch (err: Error | any) {
-      await trx.rollback()
-
-      throw err
     }
   }
 
@@ -136,29 +116,4 @@ export default class ResponseService {
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
   }
-
-  // Not need use at now
-  // private static async createImages(responseId: Response['id'], images: NonNullable<ResponseValidator['schema']['props']['images']>, trx: TransactionClientContract): Promise<void> {
-  //   const payload: Partial<ModelAttributes<ResponsesImage>>[] = []
-
-  //   try {
-  //     for (const item of images) {
-  //       await item.moveToDisk(RESPONSES_PATH)
-  //       payload.push({
-  //         responseId,
-  //         image: `${RESPONSES_PATH}/${item.fileName}`,
-  //       })
-  //     }
-  //   } catch (err: any) {
-  //     Logger.error(err)
-  //     throw { code: ResponseCodes.SERVER_ERROR, message: ResponseMessages.ERROR } as Error
-  //   }
-
-  //   try {
-  //     await ResponsesImage.createMany(payload, { client: trx })
-  //   } catch (err: any) {
-  //     Logger.error(err)
-  //     throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
-  //   }
-  // }
 }

@@ -12,12 +12,6 @@ export default class Responses extends BaseSchema {
         1 - выполняется
         2 - выполнен
       `)
-      table.integer('price').unsigned().notNullable()
-      table.integer('priceType').unsigned().notNullable().comment(`
-        0 - за услугу
-        1 - за час
-        2 - за кв. метр
-      `)
       table.string('description', RESPONSES_DESCRIPTION_MAX_LENGTH).nullable()
 
       table

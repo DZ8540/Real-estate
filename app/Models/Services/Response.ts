@@ -2,11 +2,9 @@ import User from '../Users/User'
 import Service from '../Services/Service'
 import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { RESPONSES_PRICE_TYPES } from 'Config/response'
-import { ResponsesPriceTypes } from 'Contracts/response'
 import {
   BaseModel, beforeFetch, beforeFind, BelongsTo,
-  belongsTo, column, computed, ModelQueryBuilderContract
+  belongsTo, column, ModelQueryBuilderContract,
 } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Response extends BaseModel {
@@ -18,12 +16,6 @@ export default class Response extends BaseModel {
 
   @column()
   public status: number
-
-  @column()
-  public price: number
-
-  @column()
-  public priceType: ResponsesPriceTypes
 
   @column()
   public description?: string
@@ -46,21 +38,11 @@ export default class Response extends BaseModel {
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
 
-  // Not need use at now
-  // @hasMany(() => ResponsesImage)
-  // public images: HasMany<typeof ResponsesImage>
-
   @beforeFind()
   @beforeFetch()
   public static async preloadRelations(query: ModelQueryBuilderContract<typeof Response>) {
     query
       .preload('user')
-      // .preload('images')
       .preload('service')
-  }
-
-  @computed()
-  public get priceTypeForUser(): string {
-    return RESPONSES_PRICE_TYPES[this.priceType]
   }
 }
