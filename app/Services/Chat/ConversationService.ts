@@ -158,15 +158,14 @@ export default class ConversationService {
 
   public static async create(payload: ConversationGetPayload, { trx }: ServiceConfig<Conversation> = {}): Promise<Conversation> {
     let conversationId: Conversation['id']
+    let checkAlreadyExistsConversation: Conversation | null = null
 
     try {
-      const checkAlreadyExistsConversation: Conversation = await this.getWithoutTopic(payload)
+      checkAlreadyExistsConversation = await this.getWithoutTopic(payload)
+    } catch (err: Error | any) {}
 
-      if (checkAlreadyExistsConversation)
-        throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.ERROR } as Error
-    } catch (err: Error | any) {
-      throw err
-    }
+    if (checkAlreadyExistsConversation)
+      throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.ERROR } as Error
 
     try {
       conversationId = (await Conversation.create(payload)).id
