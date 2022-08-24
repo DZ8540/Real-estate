@@ -118,6 +118,8 @@ export enum ResponseMessages {
 
   TOKEN_EXPIRED = 'Ваша сессия истекла!',
   TOKEN_SUCCESS = 'Токен успешно обновлен!',
+
+  SOCKET_USER_ID_UNDEFINED = 'ID пользователя при соединении не определен!',
 }
 
 export enum ResponsesStatusTypes {

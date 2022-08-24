@@ -1,18 +1,7 @@
-import BaseValidator from '../BaseValidator'
+import MessageWithoutTopicValidator from './MessageWithoutTopicValidator'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 
-export default class ApiValidator extends BaseValidator {
-  protected preParsedSchema = {
-    orderBy: schema.enum.optional(['asc', 'desc'] as const),
-    limit: schema.number.optional([
-      rules.unsigned(),
-      rules.range(1, 100),
-    ]),
-    page: schema.number([
-      rules.unsigned(),
-    ]),
-  }
-
+export default class MessageWithServiceTopicValidator extends MessageWithoutTopicValidator {
   constructor() {
     super()
   }
@@ -36,7 +25,10 @@ export default class ApiValidator extends BaseValidator {
    *     ])
    *    ```
    */
-  public schema = schema.create(this.preParsedSchema)
+  public schema = schema.create({
+    ...this.preParsedSchema,
+    serviceId: schema.number([ rules.unsigned() ]),
+  })
 
   /**
    * Custom messages for validation failures. You can make use of dot notation `(.)`

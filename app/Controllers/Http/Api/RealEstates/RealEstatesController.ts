@@ -85,6 +85,10 @@ export default class RealEstatesController {
     try {
       let fullItem: ModelObject
       const item: RealEstate = await RealEstateService.get(uuid, { relations: ['images'], isForApi: true })
+
+      await item.load('estate', (query) => {
+        query.preload('realEstateType')
+      })
       await item.load('user', (query) => {
         query.withCount('realEstates')
       })

@@ -1,5 +1,6 @@
 import cyrillicToTranslit from 'cyrillic-to-translit-js'
 import { string } from '@ioc:Adonis/Core/Helpers'
+import Conversation from 'App/Models/Chat/Conversation'
 
 export function camelCase(val: string): string {
   val = new cyrillicToTranslit().transform(val)
@@ -22,4 +23,8 @@ export function removeFirstWord(val: string, word: string): string {
   let valWithoutFirstLetter: string = valWithoutWord.join('')
 
   return firstLetterLowerCase + valWithoutFirstLetter
+}
+
+export function getConversationRoomName(id: Conversation['id']): string {
+  return `conversationRoom-${id}`
 }

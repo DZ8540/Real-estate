@@ -6,16 +6,21 @@ export default class Messages extends BaseSchema {
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.string('text', 4096).notNullable()
-      table.boolean('isRead').defaultTo(0).notNullable()
-      table.boolean('isFromDeleted').defaultTo(0).notNullable()
-      table.boolean('isToDeleted').defaultTo(0).notNullable()
-      table.boolean('isFromMessage').notNullable()
+      table.boolean('isViewed').defaultTo(0).notNullable()
+      table.string('text', 8192).notNullable()
 
       table
-        .integer('dialog_id')
+        .integer('conversation_id')
         .unsigned()
-        .references('dialogs.id')
+        .notNullable()
+        .references('conversations.id')
+        .onDelete('CASCADE')
+
+      table
+        .integer('user_id')
+        .unsigned()
+        .notNullable()
+        .references('users.id')
         .onDelete('CASCADE')
 
       /**
@@ -23,6 +28,8 @@ export default class Messages extends BaseSchema {
        */
       table.timestamp('createdAt', { useTz: true })
       table.timestamp('updatedAt', { useTz: true })
+      table.timestamp('fromDeletedAt', { useTz: true })
+      table.timestamp('toDeletedAt', { useTz: true })
     })
   }
 
