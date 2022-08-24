@@ -4,8 +4,6 @@ Route.group(() => {
 
   Route.post('/questions', 'Api/QuestionsController.create')
 
-  Route.post('/messages/addImages', 'Api/MessagesController.addImages')
-
   Route.post('/banners', 'Api/BannersController.getAll')
 
   Route.post('/cities', 'Api/CitiesController.getAll')

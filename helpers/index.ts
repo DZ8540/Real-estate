@@ -1,6 +1,6 @@
+import Conversation from 'App/Models/Chat/Conversation'
 import cyrillicToTranslit from 'cyrillic-to-translit-js'
 import { string } from '@ioc:Adonis/Core/Helpers'
-import Conversation from 'App/Models/Chat/Conversation'
 
 export function camelCase(val: string): string {
   val = new cyrillicToTranslit().transform(val)

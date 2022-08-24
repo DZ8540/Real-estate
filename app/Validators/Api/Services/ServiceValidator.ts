@@ -5,7 +5,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class ServiceValidator extends ApiValidator {
   constructor(protected ctx: HttpContextContract) {
-    super(ctx)
+    super()
   }
 
   /*

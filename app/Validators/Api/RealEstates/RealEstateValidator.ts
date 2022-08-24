@@ -9,7 +9,7 @@ import {
 
 export default class RealEstateValidator extends ApiValidator {
   constructor(protected ctx: HttpContextContract) {
-    super(ctx)
+    super()
   }
 
   /*
