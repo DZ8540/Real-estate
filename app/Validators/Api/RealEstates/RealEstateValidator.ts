@@ -33,8 +33,8 @@ export default class RealEstateValidator extends ApiValidator {
    */
   public schema = schema.create({
     ...this.preParsedSchema,
-    isHot: schema.boolean([ rules.toBoolean() ]),
-    isVip: schema.boolean([ rules.toBoolean() ]),
+    isHot: schema.boolean.optional([ rules.toBoolean() ]),
+    isVip: schema.boolean.optional([ rules.toBoolean() ]),
     estateId: schema.number.optional([
       rules.unsigned(),
       rules.exists({ table: 'estates', column: 'id' }),

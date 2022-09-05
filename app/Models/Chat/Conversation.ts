@@ -48,7 +48,7 @@ export default class Conversation extends BaseModel {
   @belongsTo(() => User, { localKey: 'to_id' })
   public toUser: BelongsTo<typeof User>
 
-  @belongsTo(() => RealEstate, { localKey: 'realEstate_id' })
+  @belongsTo(() => RealEstate)
   public realEstate: BelongsTo<typeof RealEstate>
 
   @belongsTo(() => Service)
