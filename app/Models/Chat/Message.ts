@@ -2,7 +2,7 @@ import User from '../Users/User'
 import Conversation from './Conversation'
 import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { BaseModel, column, scope } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeFetch, beforeFind, BelongsTo, belongsTo, column, ModelQueryBuilderContract, scope } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Message extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
@@ -39,6 +39,9 @@ export default class Message extends BaseModel {
   @column.dateTime()
   public toDeletedAt?: DateTime
 
+  @belongsTo(() => User)
+  public user: BelongsTo<typeof User>
+
   public static getNew = scope((query) => {
     query.where('isViewed', false)
   })
@@ -46,4 +49,10 @@ export default class Message extends BaseModel {
   public static notCurrentUser = scope((query, userId: User['id']) => {
     query.whereNot('user_id', userId)
   })
+
+  @beforeFind()
+  @beforeFetch()
+  public static preloadAndAggregateModels(query: ModelQueryBuilderContract<typeof Message>) {
+    query.preload('user')
+  }
 }

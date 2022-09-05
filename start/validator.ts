@@ -39,3 +39,7 @@ validator.rule('containUppercase', (val, _, options) => {
     )
   }
 })
+
+validator.rule('toBoolean', (val, _, options) => {
+  options.mutate(Boolean(val))
+})

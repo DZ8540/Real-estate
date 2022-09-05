@@ -48,6 +48,12 @@ export default class Conversation extends BaseModel {
   @belongsTo(() => User, { localKey: 'to_id' })
   public toUser: BelongsTo<typeof User>
 
+  @belongsTo(() => RealEstate, { localKey: 'realEstate_id' })
+  public realEstate: BelongsTo<typeof RealEstate>
+
+  @belongsTo(() => Service)
+  public service: BelongsTo<typeof Service>
+
   public static getById = scope((query, id: Conversation['id']) => {
     query.where('id', id)
   })
@@ -94,7 +100,10 @@ export default class Conversation extends BaseModel {
   @beforeFind()
   @beforeFetch()
   public static preloadAndAggregateModels(query: ModelQueryBuilderContract<typeof Conversation>) {
-    query.preload('lastMessage')
+    query
+      .preload('service')
+      .preload('realEstate')
+      .preload('lastMessage')
   }
 
   public async getForUser(currentUserId: User['id']): Promise<ModelObject> {
