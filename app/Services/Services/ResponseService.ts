@@ -1,11 +1,18 @@
 import User from 'App/Models/Users/User'
 import Logger from '@ioc:Adonis/Core/Logger'
+import ServiceService from './ServiceService'
+import Service from 'App/Models/Services/Service'
 import Response from 'App/Models/Services/Response'
 import ApiValidator from 'App/Validators/Api/ApiValidator'
 import ResponseValidator from 'App/Validators/Api/Services/ResponseValidator'
 import { Error } from 'Contracts/services'
 import { ModelAttributes, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages, ResponsesStatusTypes } from 'Contracts/response'
+
+type InProcessConfig = {
+  type: 'owner' | 'executor',
+  statusType: ResponsesStatusTypes,
+}
 
 export default class ResponseService {
   public static async paginateIncumings(userId: User['id'], payload: ApiValidator['schema']['props']): Promise<ModelPaginatorContract<Response>> {
@@ -29,6 +36,31 @@ export default class ResponseService {
         .where('status', statusType)
         .where('user_id', userId)
         .get(payload)
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+  }
+
+  public static async paginateUserConfigResponses(userId: User['id'], payload: ApiValidator['schema']['props'], config: InProcessConfig): Promise<ModelPaginatorContract<Response>> {
+    let query = Response
+      .query()
+      .where('status', config.statusType)
+
+    if (config.type === 'owner') {
+      try {
+        const servicesIds: Service['id'][] = await ServiceService.getUserServicesIds(userId)
+
+        query = query.whereIn('service_id', servicesIds)
+      } catch (err: Error | any) {
+        throw err
+      }
+    } else {
+      query = query.where('user_id', userId)
+    }
+
+    try {
+      return await query.get(payload)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error

@@ -1,4 +1,5 @@
 import BaseService from '../BaseService'
+import User from 'App/Models/Users/User'
 import LabelService from './LabelService'
 import Logger from '@ioc:Adonis/Core/Logger'
 import Label from 'App/Models/Services/Label'
@@ -54,6 +55,21 @@ export default class ServiceService extends BaseService {
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.CLIENT_ERROR, message: ResponseMessages.NEWS_NOT_FOUND } as Error
+    }
+  }
+
+  public static async getUserServicesIds(userId: User['id']): Promise<Service['id'][]> {
+    try {
+      const services: Service[] = await Service
+        .query()
+        .select(['id'])
+        .where('user_id', userId)
+        .pojo()
+
+      return services.map((item: Service) => item.id)
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     }
   }
 

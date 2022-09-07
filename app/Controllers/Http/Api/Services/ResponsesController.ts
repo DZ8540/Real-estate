@@ -57,29 +57,6 @@ export default class ResponsesController {
     }
   }
 
-  public async paginateInProcess({ request, response, params }: HttpContextContract) {
-    let payload: ApiValidator['schema']['props']
-    const userId: User['id'] = params.userId
-
-    try {
-      payload = await request.validate(ApiValidator)
-    } catch (err: any) {
-      throw new ExceptionService({
-        code: ResponseCodes.VALIDATION_ERROR,
-        message: ResponseMessages.VALIDATION_ERROR,
-        body: err.messages,
-      })
-    }
-
-    try {
-      const responses: ModelPaginatorContract<Response> = await ServiceResponseService.paginateUserResponses(userId, payload, ResponsesStatusTypes.IN_PROCESS)
-
-      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, responses))
-    } catch (err: Error | any) {
-      throw new ExceptionService(err)
-    }
-  }
-
   public async paginateCompleted({ request, response, params }: HttpContextContract) {
     let payload: ApiValidator['schema']['props']
     const userId: User['id'] = params.userId
@@ -156,6 +133,62 @@ export default class ResponsesController {
       await ServiceResponseService.reject(id)
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
+  /**
+   * * In process
+   */
+
+  public async paginateOwnerInProcess({ request, response, params }: HttpContextContract) {
+    let payload: ApiValidator['schema']['props']
+    const userId: User['id'] = params.userId
+
+    try {
+      payload = await request.validate(ApiValidator)
+    } catch (err: any) {
+      throw new ExceptionService({
+        code: ResponseCodes.VALIDATION_ERROR,
+        message: ResponseMessages.VALIDATION_ERROR,
+        body: err.messages,
+      })
+    }
+
+    try {
+      const responses: ModelPaginatorContract<Response> = await ServiceResponseService.paginateUserConfigResponses(userId, payload, {
+        type: 'owner',
+        statusType: ResponsesStatusTypes.IN_PROCESS,
+      })
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, responses))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
+  public async paginateExecutorInProcess({ request, response, params }: HttpContextContract) {
+    let payload: ApiValidator['schema']['props']
+    const userId: User['id'] = params.userId
+
+    try {
+      payload = await request.validate(ApiValidator)
+    } catch (err: any) {
+      throw new ExceptionService({
+        code: ResponseCodes.VALIDATION_ERROR,
+        message: ResponseMessages.VALIDATION_ERROR,
+        body: err.messages,
+      })
+    }
+
+    try {
+      const responses: ModelPaginatorContract<Response> = await ServiceResponseService.paginateUserConfigResponses(userId, payload, {
+        type: 'executor',
+        statusType: ResponsesStatusTypes.IN_PROCESS,
+      })
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, responses))
     } catch (err: Error | any) {
       throw new ExceptionService(err)
     }

@@ -150,8 +150,16 @@ Route.group(() => {
     Route.post('/incumings/:userId', 'Api/Services/ResponsesController.paginateIncumings')
     Route.post('/outgoings/:userId', 'Api/Services/ResponsesController.paginateOutgoings')
 
-    Route.post('/inProcess/:userId', 'Api/Services/ResponsesController.paginateInProcess')
     Route.post('/completed/:userId', 'Api/Services/ResponsesController.paginateCompleted')
+
+    Route.group(() => {
+
+      Route.post('/owner/:userId', 'Api/Services/ResponsesController.paginateOwnerInProcess')
+
+      Route.post('/executor/:userId', 'Api/Services/ResponsesController.paginateExecutorInProcess')
+
+    }).prefix('/inProcess')
+
 
     Route.post('/', 'Api/Services/ResponsesController.create')
     Route.patch('/accept/:id', 'Api/Services/ResponsesController.accept')

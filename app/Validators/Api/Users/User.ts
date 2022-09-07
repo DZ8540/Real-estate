@@ -1,9 +1,12 @@
+import User from 'App/Models/Users/User'
 import BaseValidator from 'App/Validators/BaseValidator'
 import { Sex } from 'Config/users'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class UserValidator extends BaseValidator {
+  private readonly uuid: User['uuid'] | undefined = this.ctx.params.uuid
+
   constructor(protected ctx: HttpContextContract) {
     super()
   }
@@ -45,9 +48,11 @@ export default class UserValidator extends BaseValidator {
     ]),
     phone: schema.string.optional({}, [
       rules.mobile(),
+      rules.unique({ column: 'phone', table: 'users', whereNot: { uuid: this.uuid } }),
     ]),
     email: schema.string({}, [
       rules.email(),
+      rules.unique({ column: 'email', table: 'users', whereNot: { uuid: this.uuid } }),
     ]),
     isSubscribed: schema.boolean.optional(),
     avatar: schema.file.nullableAndOptional({
