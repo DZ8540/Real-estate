@@ -21,9 +21,10 @@ export default class ResponseService {
         .query()
         .where('status', ResponsesStatusTypes.UNDER_CONSIDERATION)
         .whereHas('service', (query) => {
-          query
-            .preload('subService')
-            .where('user_id', userId)
+          query.where('user_id', userId)
+        })
+        .preload('service', (query) => {
+          query.preload('subService')
         })
         .get(payload)
     } catch (err: any) {
@@ -38,7 +39,7 @@ export default class ResponseService {
         .query()
         .where('status', statusType)
         .where('user_id', userId)
-        .whereHas('service', (query) => {
+        .preload('service', (query) => {
           query.preload('subService')
         })
         .get(payload)
@@ -67,7 +68,7 @@ export default class ResponseService {
 
     try {
       return await query
-        .whereHas('service', (query) => {
+        .preload('service', (query) => {
           query.preload('subService')
         })
         .get(payload)
