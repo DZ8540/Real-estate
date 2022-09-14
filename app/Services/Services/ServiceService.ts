@@ -205,7 +205,7 @@ export default class ServiceService extends BaseService {
     }
   }
 
-  public static async search(payload: ServiceApiValidator['schema']['props']): Promise<ModelPaginatorContract<Service>> {
+  public static async search(payload: ServiceApiValidator['schema']['props'], searchQuery: string): Promise<ModelPaginatorContract<Service>> {
     if (!payload.limit)
       payload.limit = 4
 
@@ -223,6 +223,12 @@ export default class ServiceService extends BaseService {
         .preload('subService', (query) => {
           query.preload('type')
         })
+
+      if (searchQuery) {
+        query = query.whereHas('user', (query) => {
+          query.withScopes((scopes) => scopes.search(searchQuery))
+        })
+      }
 
       for (let key in payload) {
         if (payload[key]) {

@@ -175,6 +175,7 @@ export default class RealEstateValidator extends BaseValidator {
         extnames: ['jpg', 'jpeg', 'png', 'webp'],
       })
     ),
+    cadastralNumber: schema.string.optional({ trim: true }),
   })
 
   /**

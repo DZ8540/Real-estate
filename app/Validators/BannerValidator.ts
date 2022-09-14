@@ -34,6 +34,7 @@ export default class BannerValidator extends BaseValidator {
     image: schema.file({
       extnames: ['jpg', 'png', 'jpeg'],
     }),
+    link: schema.string.optional({ trim: true }, [ rules.url() ])
   })
 
   /**

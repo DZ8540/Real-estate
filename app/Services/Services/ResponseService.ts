@@ -21,7 +21,9 @@ export default class ResponseService {
         .query()
         .where('status', ResponsesStatusTypes.UNDER_CONSIDERATION)
         .whereHas('service', (query) => {
-          query.where('user_id', userId)
+          query
+            .preload('subService')
+            .where('user_id', userId)
         })
         .get(payload)
     } catch (err: any) {
@@ -36,6 +38,9 @@ export default class ResponseService {
         .query()
         .where('status', statusType)
         .where('user_id', userId)
+        .whereHas('service', (query) => {
+          query.preload('subService')
+        })
         .get(payload)
     } catch (err: any) {
       Logger.error(err)
@@ -61,7 +66,11 @@ export default class ResponseService {
     }
 
     try {
-      return await query.get(payload)
+      return await query
+        .whereHas('service', (query) => {
+          query.preload('subService')
+        })
+        .get(payload)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error

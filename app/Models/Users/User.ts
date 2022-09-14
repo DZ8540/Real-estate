@@ -18,7 +18,7 @@ import {
   belongsTo, column, computed,
   HasMany,
   hasMany,
-  ManyToMany, manyToMany, ModelObject
+  ManyToMany, manyToMany, ModelObject, scope
 } from '@ioc:Adonis/Lucid/Orm'
 
 export default class User extends BaseModel {
@@ -142,6 +142,22 @@ export default class User extends BaseModel {
 
     return 'Не установлен'
   }
+
+  public static search = scope((query, text: string) => {
+    const parts: string[] = text.split(' ')
+
+    if (parts.length == 1) {
+      query
+        .where('firstName', 'ILIKE', `%${parts[0]}%`)
+        .orWhere('firstName', 'ILIKE', `%${parts[1]}%`)
+        .orWhere('lastName', 'ILIKE', `%${parts[0]}%`)
+        .orWhere('lastName', 'ILIKE', `%${parts[1]}%`)
+    } else {
+      query
+        .where('firstName', 'ILIKE', `%${parts[0]}%`)
+        .andWhere('lastName', 'ILIKE', `%${parts[1]}%`)
+    }
+  })
 
   @beforeSave()
   public static createUuid(user: User) {

@@ -26,7 +26,7 @@ export default class RealEstate extends BaseModel {
   public static readonly columns = [
     'id', 'uuid', 'transactionType', 'isCountersSeparately',
     'pledge', 'prepaymentType', 'commission',
-    'address', 'longitude', 'ceilingHeight',
+    'address', 'longitude', 'ceilingHeight', 'cadastralNumber',
     'latitude', 'houseType', 'roomType',
     'totalArea', 'floor', 'WCType',
     'balconyType', 'layoutType', 'repairType',
@@ -176,6 +176,9 @@ export default class RealEstate extends BaseModel {
 
   @column()
   public isBanned: boolean
+
+  @column()
+  public cadastralNumber: string | undefined
 
   @column()
   public image: string | undefined

@@ -13,6 +13,7 @@ import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 export default class ServicesController {
   public async all({ request, response }: HttpContextContract) {
     let payload: ServiceApiValidator['schema']['props']
+    const searchQuery: string = String(request.input('query', ''))
 
     try {
       payload = await request.validate(ServiceApiValidator)
@@ -25,7 +26,7 @@ export default class ServicesController {
     }
 
     try {
-      let services: ModelPaginatorContract<Service> = await ServiceService.search(payload)
+      let services: ModelPaginatorContract<Service> = await ServiceService.search(payload, searchQuery)
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, services))
     } catch (err: Error | any) {

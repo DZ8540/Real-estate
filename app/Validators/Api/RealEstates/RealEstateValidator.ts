@@ -142,6 +142,7 @@ export default class RealEstateValidator extends ApiValidator {
       rules.unsigned(),
       rules.range(3, 100),
     ]),
+    cadastralNumber: schema.string.optional({ trim: true }),
   })
 
   /**

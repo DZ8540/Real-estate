@@ -21,6 +21,9 @@ export default class Banner extends BaseModel {
   @column()
   public image: string
 
+  @column()
+  public link: string | undefined
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
