@@ -103,7 +103,7 @@ export default class AuthController {
 
     try {
       let data: { user: User, tokens: { access: string, refresh: string } } = await TokenService.refreshToken({ userToken, fingerprint, ua, ip, payload })
-      response.cookie(COOKIE_REFRESH_TOKEN_KEY, data.tokens.refresh, { path: '/api/auth' })
+      response.cookie(COOKIE_REFRESH_TOKEN_KEY, data.tokens.refresh, { maxAge: Env.get('REFRESH_TOKEN_TIME'), path: '/api/auth' })
 
       return response
         .status(200)

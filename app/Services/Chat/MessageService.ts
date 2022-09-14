@@ -10,6 +10,7 @@ import MessageWithServiceTopicValidator from 'App/Validators/Api/Message/Message
 import MessageWithRealEstateTopicValidator from 'App/Validators/Api/Message/MessageWithRealEstateTopicValidator'
 import { Error } from 'Contracts/services'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
+import { ConversationGetPayload } from 'Contracts/conversation'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { MessageCreateWithoutTopicPayload, ReturnMessageCreatePayload } from 'Contracts/message'
 
@@ -118,7 +119,12 @@ export default class MessageService {
 
     if (!conversation) {
       try {
-        conversation = await ConversationService.create(createPayload, { trx })
+        const createConversationPayload: ConversationGetPayload = {
+          ...createPayload,
+          realEstateId: payload.realEstateId,
+        }
+
+        conversation = await ConversationService.create(createConversationPayload, { trx })
       } catch (err: Error | any) {
         await trx.rollback()
 
@@ -162,7 +168,12 @@ export default class MessageService {
 
     if (!conversation) {
       try {
-        conversation = await ConversationService.create(createPayload, { trx })
+        const createConversationPayload: ConversationGetPayload = {
+          ...createPayload,
+          realEstateId: payload.serviceId,
+        }
+
+        conversation = await ConversationService.create(createConversationPayload, { trx })
       } catch (err: Error | any) {
         await trx.rollback()
 

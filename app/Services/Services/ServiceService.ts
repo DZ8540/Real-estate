@@ -257,19 +257,25 @@ export default class ServiceService extends BaseService {
               break
 
             case 'subServicesTypes':
-              for (let item of payload[key]!) {
-                query = query.whereHas('subService', (query) => {
+              query = query.whereHas('subService', (query) => {
+
+                for (let item of payload[key]!) {
                   query.where('id', item)
-                })
-              }
+                }
+
+              })
+
               break
 
             case 'attributesTypes':
-              for (let item of payload[key]!) {
-                query = query.whereHas('attribute', (query) => {
+              query = query.whereHas('attribute', (query) => {
+
+                for (let item of payload[key]!) {
                   query.where('id', item)
-                })
-              }
+                }
+
+              })
+
               break
 
             case 'labels':

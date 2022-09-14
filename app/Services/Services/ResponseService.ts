@@ -19,6 +19,7 @@ export default class ResponseService {
     try {
       return await Response
         .query()
+        .where('status', ResponsesStatusTypes.UNDER_CONSIDERATION)
         .whereHas('service', (query) => {
           query.where('user_id', userId)
         })

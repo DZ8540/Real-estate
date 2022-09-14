@@ -28,11 +28,11 @@ export default class TokenService extends BaseService {
     try {
       currentToken = await this.getRefreshToken('token', config.userToken)
 
-      if (currentToken.fingerprint != config.fingerprint || currentToken.ua != config.ua || currentToken.ip != config.ip)
-        throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+      // if (currentToken.fingerprint != config.fingerprint || currentToken.ua != config.ua || currentToken.ip != config.ip)
+      //   throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
     } catch (err: Error | any) {
-      if (currentToken!)
-        await currentToken.delete()
+      // if (currentToken!)
+      //   await currentToken.delete()
 
       throw err
     }
