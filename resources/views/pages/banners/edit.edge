@@ -30,7 +30,7 @@
 
             <div class="form-group">
               <label class="mb-1">Ссылка</label>
-              <input type="string" class="form-control" name="link" value="{{ flashMessages.get('link', item.link) ?? 0 }}">
+              <input type="string" class="form-control" name="link" value="{{ flashMessages.get('link', item.link) ?? '' }}">
 
               @if(flashMessages.has('errors.link'))
                 <div class="invalid-feedback d-block">
