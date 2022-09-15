@@ -23,9 +23,6 @@ export default class ResponseService {
         .whereHas('service', (query) => {
           query.where('user_id', userId)
         })
-        .preload('service', (query) => {
-          query.preload('subService')
-        })
         .get(payload)
     } catch (err: any) {
       Logger.error(err)
@@ -39,9 +36,6 @@ export default class ResponseService {
         .query()
         .where('status', statusType)
         .where('user_id', userId)
-        .preload('service', (query) => {
-          query.preload('subService')
-        })
         .get(payload)
     } catch (err: any) {
       Logger.error(err)
@@ -67,11 +61,7 @@ export default class ResponseService {
     }
 
     try {
-      return await query
-        .preload('service', (query) => {
-          query.preload('subService')
-        })
-        .get(payload)
+      return await query.get(payload)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error

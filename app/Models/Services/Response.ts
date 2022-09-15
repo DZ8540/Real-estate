@@ -43,6 +43,8 @@ export default class Response extends BaseModel {
   public static async preloadRelations(query: ModelQueryBuilderContract<typeof Response>) {
     query
       .preload('user')
-      .preload('service')
+      .preload('service', (query) => {
+        query.preload('subService')
+      })
   }
 }
