@@ -1,4 +1,4 @@
-export const OWNER_TYPES = ['Собственник', 'Агент'] as const
+export const OWNER_TYPES = ['Физ. лицо', 'Юр. лицо'] as const
 export enum OwnerTypes {
   OWNER = 0,
   AGENT = 1,

@@ -28,6 +28,7 @@ export default class User extends BaseModel {
     'sex', 'birthday', 'phone',
     'email', 'avatar', 'rating',
     'password', 'isSubscribed', 'isBanned',
+    'companyName', 'taxIdentificationNumber',
     'isActivated', 'roleId', 'createdAt', 'updatedAt'
   ] as const
 
@@ -60,6 +61,12 @@ export default class User extends BaseModel {
 
   @column()
   public avatar?: string | null
+
+  @column()
+  public companyName?: string
+
+  @column()
+  public taxIdentificationNumber?: number
 
   @column()
   public rating: number

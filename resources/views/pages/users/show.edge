@@ -78,6 +78,16 @@
           </div>
 
           <div class="form-group">
+            <label class="mb-1"><strong>Компания</strong></label>
+            <input type="string" class="form-control" value="{{ item.companyName ?? '' }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1"><strong>ИНН</strong></label>
+            <input type="string" class="form-control" value="{{ item.taxIdentificationNumber ?? '' }}" disabled>
+          </div>
+
+          <div class="form-group">
             <label class="mb-1"><strong>Дата рождения</strong></label>
             <input type="string" class="form-control" value="{{ item.birthdayForUser }}" disabled>
           </div>

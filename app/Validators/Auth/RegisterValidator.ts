@@ -51,6 +51,14 @@ export default class RegisterValidator extends BaseValidator {
       rules.containNumber(),
       rules.containUppercase(),
     ]),
+    companyName: schema.string.optional({}, [
+      rules.requiredWhen('ownerType', '=', OwnerTypes.AGENT)
+    ]),
+    taxIdentificationNumber: schema.number.optional([
+      rules.unsigned(),
+      rules.unique({ table: 'users', column: 'taxIdentificationNumber' }),
+      rules.requiredWhen('ownerType', '=', OwnerTypes.AGENT)
+    ]),
   })
 
   /**
