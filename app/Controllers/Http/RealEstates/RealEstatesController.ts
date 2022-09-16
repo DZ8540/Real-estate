@@ -18,7 +18,7 @@ export default class RealEstatesController {
     let baseURL: string = route!.pattern
     let page: number = request.input('page', 1)
 
-    let columns: typeof RealEstate['columns'][number][] = ['id', 'uuid', 'image', 'userId', 'roomType', 'price', 'totalArea', 'houseType', 'createdAt']
+    let columns: typeof RealEstate['columns'][number][] = ['id', 'uuid', 'image', 'userId', 'roomType', 'price', 'totalArea', 'houseType', 'districtId', 'createdAt']
     let realEstates: RealEstate[] = await RealEstateService.paginate({ baseURL, page, relations: ['user'] }, columns)
 
     return view.render('pages/realEstates/index', { realEstates })
