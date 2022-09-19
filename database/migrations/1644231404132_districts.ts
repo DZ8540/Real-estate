@@ -9,6 +9,8 @@ export default class Districts extends BaseSchema {
       table.string('name').notNullable()
       table.string('city').notNullable()
 
+      table.unique(['name', 'city'])
+
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
