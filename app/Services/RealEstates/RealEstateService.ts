@@ -444,8 +444,8 @@ export default class RealEstateService extends BaseService {
 
           case 'addressOrResidentalComplex':
             query = query
-              .where('residentalComplex', 'like', `%${payload[key]}%`)
-              .orWhere('address', 'like', `%${payload[key]}%`)
+              .where('residentalComplex', 'ILIKE', `%${payload[key]}%`)
+              .orWhere('address', 'ILIKE', `%${payload[key]}%`)
             break
 
           case 'ceilingHeight':
