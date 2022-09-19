@@ -104,28 +104,33 @@ export default class RealEstateService extends BaseService {
     }
   }
 
-  public static async create(payload: RealEstateValidator['schema']['props'], { trx }: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
+  public static async create(payload: RealEstateValidator['schema']['props']): Promise<RealEstate> {
     let item: RealEstate
     let image: string | undefined
     let imageBasePath: string
     let districtId: District['id']
     const { district, ...realEstatePayload } = payload
 
-    if (!trx)
-      trx = await Database.transaction()
+    district.name = district.name.toLowerCase()
+    district.city = district.city.toLowerCase()
+
+    // if (!trx)
+    //   trx = await Database.transaction()
 
     try {
-      districtId = (await DistrictService.create(payload.district.name, payload.district.city, { trx })).id
+      // districtId = (await DistrictService.create(payload.district.name, payload.district.city, { trx })).id
+      districtId = (await DistrictService.create(payload.district.name, payload.district.city)).id
     } catch (err: Error | any) {
       districtId = (await DistrictService.getByNameAndCity(payload.district.name, payload.district.city)).id
     }
 
     try {
-      item = await RealEstate.create({ ...realEstatePayload, image, districtId }, { client: trx })
+      // item = await RealEstate.create({ ...realEstatePayload, image, districtId }, { client: trx })
+      item = await RealEstate.create({ ...realEstatePayload, image, districtId })
 
       imageBasePath = `${REAL_ESTATE_PATH}/${item.uuid}`
     } catch (err: any) {
-      await trx.rollback()
+      // await trx.rollback()
 
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
@@ -148,41 +153,43 @@ export default class RealEstateService extends BaseService {
         }
       }
     } catch (err: any) {
-      await trx.rollback()
+      // await trx.rollback()
 
       Logger.error(err)
       throw { code: ResponseCodes.SERVER_ERROR, message: ResponseMessages.ERROR } as Error
     }
 
-    await trx.commit()
+    // await trx.commit()
     return item
   }
 
-  public static async update(uuid: RealEstate['uuid'], payload: ValidatorPayload, { trx }: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
+  public static async update(uuid: RealEstate['uuid'], payload: ValidatorPayload): Promise<RealEstate> {
     let item: RealEstate
     let image: string | undefined
     let imageBasePath: string
     let districtId: District['id']
     const { district, ...realEstatePayload } = payload
 
-    if (!trx)
-      trx = await Database.transaction()
+    district.name = district.name.toLowerCase()
+    district.city = district.city.toLowerCase()
+
+    // if (!trx)
+    //   trx = await Database.transaction()
 
     try {
-      districtId = (await DistrictService.create(payload.district.name, payload.district.city, { trx })).id
+      // districtId = (await DistrictService.create(payload.district.name, payload.district.city, { trx })).id
+      districtId = (await DistrictService.create(payload.district.name, payload.district.city)).id
     } catch (err: Error | any) {
       districtId = (await DistrictService.getByNameAndCity(payload.district.name, payload.district.city)).id
     }
 
-    if (!trx)
-      trx = await Database.transaction()
-
     try {
-      item = await this.get(uuid, { trx })
+      // item = await this.get(uuid, { trx })
+      item = await this.get(uuid)
 
       imageBasePath = `${REAL_ESTATE_PATH}/${item.uuid}`
     } catch (err: Error | any) {
-      await trx.rollback()
+      // await trx.rollback()
 
       throw err
     }
@@ -210,18 +217,18 @@ export default class RealEstateService extends BaseService {
         }
       }
     } catch (err: any) {
-      await trx.rollback()
+      // await trx.rollback()
 
       Logger.error(err)
       throw { code: ResponseCodes.SERVER_ERROR, message: ResponseMessages.ERROR } as Error
     }
 
     try {
-      await trx.commit()
+      // await trx.commit()
 
       return await item.merge({ ...realEstatePayload, image, districtId }).save()
     } catch (err: any) {
-      await trx.rollback()
+      // await trx.rollback()
 
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
