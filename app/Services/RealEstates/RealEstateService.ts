@@ -427,7 +427,7 @@ export default class RealEstateService extends BaseService {
 
   private static filter(payload: RealEstateGetForMapValidator['schema']['props'], query: ModelQueryBuilderContract<typeof RealEstate, RealEstate>): ModelQueryBuilderContract<typeof RealEstate, RealEstate> {
     for (const key in payload) {
-      if (payload[key]) {
+      if (String(payload[key])) {
         switch (key) {
           // Skip this api's keys
           case 'page':
@@ -436,10 +436,8 @@ export default class RealEstateService extends BaseService {
             break
           // Skip this api's keys
 
-          case 'districts':
-            for (const item of payload[key]!) {
-              query = query.orWhere('districtId', item)
-            }
+          case 'districts': // @ts-ignore
+            query = query.whereIn('districtId', payload[key])
             break
 
           case 'addressOrResidentalComplex':
