@@ -9,11 +9,12 @@ import ServicesTypeService from './ServicesTypeService'
 import ServiceValidator from 'App/Validators/Services/ServiceValidator'
 import ServiceApiValidator from 'App/Validators/Api/Services/ServiceValidator'
 import ServicesTypesSubService from 'App/Models/Services/ServicesTypesSubService'
-import { removeLastLetter } from '../../../helpers'
 import { PaginationConfig } from 'Contracts/database'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
+
+// import { removeLastLetter } from '../../../helpers'
 
 type Columns = typeof Service['columns'][number]
 type ValidatorPayload = ServiceValidator['schema']['props']
@@ -240,11 +241,11 @@ export default class ServiceService extends BaseService {
               break
             // Skip this api's keys
 
-            case 'experienceTypes':
-              for (let item of payload[key]!) {
-                query = query.andWhere(removeLastLetter(key), item!)
-              }
-              break
+            // case 'experienceTypes':
+            //   for (let item of payload[key]!) {
+            //     query = query.andWhere(removeLastLetter(key), item!)
+            //   }
+            //   break
 
             case 'rating':
               query = query

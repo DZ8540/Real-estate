@@ -1,10 +1,9 @@
-import ApiValidator from '../ApiValidator'
-import { rules, schema } from '@ioc:Adonis/Core/Validator'
+import BaseValidator from 'App/Validators/BaseValidator'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { RESPONSES_DESCRIPTION_MAX_LENGTH } from 'Config/response'
 
-// import { ExperienceTypes } from 'Contracts/services'
-
-export default class ServiceValidator extends ApiValidator {
+export default class RealEstateResponseValidator extends BaseValidator {
   constructor(protected ctx: HttpContextContract) {
     super()
   }
@@ -29,22 +28,16 @@ export default class ServiceValidator extends ApiValidator {
    *    ```
    */
   public schema = schema.create({
-    ...this.preParsedSchema,
-    // experienceTypes: schema.array.optional().members(schema.number([
-    //   rules.unsigned(),
-    //   rules.range(ExperienceTypes.BEFORE_ONE_YEAR, ExperienceTypes.BEFORE_TEN_YEAR),
-    // ])),
-    subServicesTypes: schema.array.optional().members(schema.number([ rules.unsigned() ])),
-    attributesTypes: schema.array.optional().members(schema.number([ rules.unsigned() ])),
-    servicesTypeId: schema.number.optional([
+    images: schema.array.optional().members(schema.file({ extnames: ['jpg', 'gif', 'png', 'jpeg', 'webp'] })),
+    description: schema.string.optional({ trim: true }, [ rules.maxLength(RESPONSES_DESCRIPTION_MAX_LENGTH) ]),
+    userId: schema.number([
       rules.unsigned(),
-      rules.exists({ table: 'servicesTypes', column: 'id' }),
+      rules.exists({ table: 'users', column: 'id' }),
     ]),
-    labels: schema.array.optional().members(schema.number([
+    serviceId: schema.number([
       rules.unsigned(),
-      rules.exists({ table: 'labels', column: 'id' })
-    ])),
-    rating: schema.enum.optional(['asc', 'desc'] as const),
+      rules.exists({ table: 'services', column: 'id' }),
+    ]),
   })
 
   /**

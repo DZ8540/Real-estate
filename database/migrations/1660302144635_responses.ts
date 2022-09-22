@@ -8,6 +8,7 @@ export default class Responses extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.integer('status').unsigned().notNullable().comment(`
+        Только для откликов на услуги
         0 - на рассмотрении
         1 - выполняется
         2 - выполнен
@@ -26,6 +27,13 @@ export default class Responses extends BaseSchema {
         .unsigned()
         .notNullable()
         .references('services.id')
+        .onDelete('CASCADE')
+
+      table
+        .integer('realEstate_id')
+        .unsigned()
+        .nullable()
+        .references('realEstates.id')
         .onDelete('CASCADE')
 
       /**

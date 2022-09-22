@@ -6,6 +6,7 @@ import {
   BaseModel, beforeFetch, beforeFind, BelongsTo,
   belongsTo, column, ModelQueryBuilderContract,
 } from '@ioc:Adonis/Lucid/Orm'
+import RealEstate from '../RealEstates/RealEstate'
 
 export default class Response extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
@@ -34,6 +35,9 @@ export default class Response extends BaseModel {
 
   @belongsTo(() => Service)
   public service: BelongsTo<typeof Service>
+
+  @belongsTo(() => RealEstate)
+  public realEstate: BelongsTo<typeof RealEstate>
 
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>

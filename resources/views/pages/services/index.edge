@@ -17,7 +17,7 @@
               <tr>
                 <th class="width80"><strong>#</strong></th>
 
-                <th><strong>Опыт работы</strong></th>
+                {{--  <th><strong>Опыт работы</strong></th>  --}}
                 <th><strong>Тип услуги</strong></th>
                 <th><strong>Создатель</strong></th>
 
@@ -29,7 +29,7 @@
               @each(item in services)
                 <tr>
                   <td><strong>{{ item.id }}</strong></td>
-                  <td>{{ item.experienceTypeForUser }}</td>
+                  {{--  <td>{{ item.experienceTypeForUser }}</td>  --}}
                   <td>{{ item.subService.name }}</td>
                   <td>{{ item.user.fullName }}</td>
 

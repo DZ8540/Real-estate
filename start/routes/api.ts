@@ -147,24 +147,31 @@ Route.group(() => {
 
   Route.group(() => {
 
-    Route.post('/incumings/:userId', 'Api/Services/ResponsesController.paginateIncumings')
-    Route.post('/outgoings/:userId', 'Api/Services/ResponsesController.paginateOutgoings')
+    Route.post('/realEstate/:realEstateId', 'Api/ResponsesController.paginateRealEstateResponses')
 
-    Route.post('/completed/:userId', 'Api/Services/ResponsesController.paginateCompleted')
+    Route.post('/incumings/:userId', 'Api/ResponsesController.paginateIncumings')
+    Route.post('/outgoings/:userId', 'Api/ResponsesController.paginateOutgoings')
+
+    Route.post('/completed/:userId', 'Api/ResponsesController.paginateCompleted')
 
     Route.group(() => {
 
-      Route.post('/owner/:userId', 'Api/Services/ResponsesController.paginateOwnerInProcess')
+      Route.post('/owner/:userId', 'Api/ResponsesController.paginateOwnerInProcess')
 
-      Route.post('/executor/:userId', 'Api/Services/ResponsesController.paginateExecutorInProcess')
+      Route.post('/executor/:userId', 'Api/ResponsesController.paginateExecutorInProcess')
 
     }).prefix('/inProcess')
 
+    Route.group(() => {
 
-    Route.post('/', 'Api/Services/ResponsesController.create')
-    Route.patch('/accept/:id', 'Api/Services/ResponsesController.accept')
-    Route.patch('/complete/:id', 'Api/Services/ResponsesController.complete')
-    Route.delete('/:id', 'Api/Services/ResponsesController.reject')
+      Route.post('/realEstate', 'Api/ResponsesController.createRealEstateResponse')
+      Route.post('/service', 'Api/ResponsesController.createServiceResponse')
+
+    }).prefix('create')
+
+    Route.patch('/accept/:id', 'Api/ResponsesController.accept')
+    Route.patch('/complete/:id', 'Api/ResponsesController.complete')
+    Route.delete('/:id', 'Api/ResponsesController.reject')
 
   }).prefix('/responses').middleware('CheckAccessToken')
 

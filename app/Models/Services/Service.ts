@@ -1,21 +1,22 @@
 import Label from './Label'
 import User from '../Users/User'
-import Response from './Response'
+import Response from '../Response/Response'
 import ServicesTypesAttribute from './ServicesTypesAttribute'
 import ServicesTypesSubService from './ServicesTypesSubService'
 import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
-import { EXPERIENCE_TYPES } from 'Config/services'
 import {
   BaseModel, beforeDelete, BelongsTo, belongsTo,
   computed, HasMany, hasMany, ManyToMany,
   manyToMany, column,
 } from '@ioc:Adonis/Lucid/Orm'
 
+// import { EXPERIENCE_TYPES } from 'Config/services'
+
 export default class Service extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
   public static readonly columns = [
-    'id', 'experienceType', 'description',
+    'id', 'description',
     'isBanned', 'userId', 'servicesTypesSubServiceId',
     'servicesTypesAttributeId', 'createdAt', 'updatedAt',
   ] as const
@@ -23,8 +24,8 @@ export default class Service extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column()
-  public experienceType: number
+  // @column()
+  // public experienceType: number
 
   @column()
   public description: string
@@ -51,10 +52,10 @@ export default class Service extends BaseModel {
   })
   public updatedAt: DateTime
 
-  @computed()
-  public get experienceTypeForUser(): typeof EXPERIENCE_TYPES[number] {
-    return EXPERIENCE_TYPES[this.experienceType]
-  }
+  // @computed()
+  // public get experienceTypeForUser(): typeof EXPERIENCE_TYPES[number] {
+  //   return EXPERIENCE_TYPES[this.experienceType]
+  // }
 
   @computed({ serializeAs: null })
   public get isBannedForUser(): string {

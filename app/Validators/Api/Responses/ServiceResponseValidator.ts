@@ -3,7 +3,7 @@ import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { RESPONSES_DESCRIPTION_MAX_LENGTH } from 'Config/response'
 
-export default class ResponseValidator extends BaseValidator {
+export default class ServiceResponseValidator extends BaseValidator {
   constructor(protected ctx: HttpContextContract) {
     super()
   }

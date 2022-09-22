@@ -1,6 +1,7 @@
+import User from 'App/Models/Users/User'
 import Logger from '@ioc:Adonis/Core/Logger'
 import AuthService from 'App/Services/AuthService'
-import { SESSION_USER_KEY, SessionUser } from 'Contracts/auth'
+import { SESSION_USER_KEY } from 'Contracts/auth'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class CheckUserForAdmin {
@@ -8,7 +9,7 @@ export default class CheckUserForAdmin {
     let errorMsg: string = 'Пользователь не найден!'
 
     try {
-      let currentUser: SessionUser = session.get(SESSION_USER_KEY)
+      let currentUser: User = session.get(SESSION_USER_KEY)
 
       if (!currentUser)
         throw new Error(errorMsg)

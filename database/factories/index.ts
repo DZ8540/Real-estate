@@ -6,7 +6,7 @@ import Label from 'App/Models/Services/Label'
 import Factory from '@ioc:Adonis/Lucid/Factory'
 import Service from 'App/Models/Services/Service'
 import Estate from 'App/Models/RealEstates/Estate'
-import Response from 'App/Models/Services/Response'
+import Response from 'App/Models/Response/Response'
 import UsersReview from 'App/Models/Users/UsersReview'
 import RoleService from 'App/Services/Users/RoleService'
 import RealEstate from 'App/Models/RealEstates/RealEstate'
@@ -75,7 +75,7 @@ export const LabelFactory = Factory
 export const ServicesFactory = Factory
   .define(Service, async ({ faker }) => {
     return {
-      experienceType: faker.datatype.number(3),
+      // experienceType: faker.datatype.number(3),
       description: faker.lorem.paragraphs(3),
       userId: (await User.query().random()).id,
       servicesTypesSubServiceId: (await ServicesType.query().random()).id,

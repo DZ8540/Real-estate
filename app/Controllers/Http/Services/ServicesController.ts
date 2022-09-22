@@ -4,16 +4,17 @@ import ServiceService from 'App/Services/Services/ServiceService'
 import ServiceValidator from 'App/Validators/Services/ServiceValidator'
 import ServicesTypeService from 'App/Services/Services/ServicesTypeService'
 import { Error } from 'Contracts/services'
-import { EXPERIENCE_TYPES } from 'Config/services'
 import { ResponseMessages } from 'Contracts/response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+
+// import { EXPERIENCE_TYPES } from 'Config/services'
 
 export default class ServicesController {
   public async index({ view, route, request }: HttpContextContract) {
     let baseURL: string = route!.pattern
     let page: number = request.input('page', 1)
 
-    let columns: typeof Service['columns'][number][] = ['id', 'experienceType', 'isBanned', 'userId', 'servicesTypesSubServiceId', 'createdAt']
+    let columns: typeof Service['columns'][number][] = ['id', 'isBanned', 'userId', 'servicesTypesSubServiceId', 'createdAt']
     let services: Service[] = await ServiceService.paginate({ baseURL, page, relations: ['subService', 'user'] }, columns)
 
     return view.render('pages/services/index', { services })
@@ -56,7 +57,7 @@ export default class ServicesController {
       }
       labels = labels.join(', ')
 
-      return view.render('pages/services/edit', { item, experienceTypes: EXPERIENCE_TYPES, servicesTypes, labels })
+      return view.render('pages/services/edit', { item, servicesTypes, labels })
     } catch (err: Error | any) {
       session.flash('error', err.message)
       return response.redirect().back()

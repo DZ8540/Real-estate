@@ -1,7 +1,8 @@
 import BaseValidator from '../BaseValidator'
-import { ExperienceTypes } from 'Contracts/services'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+
+// import { ExperienceTypes } from 'Contracts/services'
 
 export default class ServiceValidator extends BaseValidator {
   constructor(protected ctx: HttpContextContract) {
@@ -32,10 +33,10 @@ export default class ServiceValidator extends BaseValidator {
       rules.unsigned(),
       rules.exists({ table: 'users', column: 'id' }),
     ]),
-    experienceType: schema.number([
-      rules.unsigned(),
-      rules.range(ExperienceTypes.BEFORE_ONE_YEAR, ExperienceTypes.BEFORE_TEN_YEAR),
-    ]),
+    // experienceType: schema.number([
+    //   rules.unsigned(),
+    //   rules.range(ExperienceTypes.BEFORE_ONE_YEAR, ExperienceTypes.BEFORE_TEN_YEAR),
+    // ]),
     description: schema.string({}, [
       rules.maxLength(1024),
       rules.minLength(5),

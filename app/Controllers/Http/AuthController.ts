@@ -3,8 +3,8 @@ import Logger from '@ioc:Adonis/Core/Logger'
 import AuthService from 'App/Services/AuthService'
 import LoginValidator from 'App/Validators/Auth/LoginValidator'
 import { Error } from 'Contracts/services'
+import { SESSION_USER_KEY } from 'Contracts/auth'
 import { ResponseMessages } from 'Contracts/response'
-import { SessionUser, SESSION_USER_KEY } from 'Contracts/auth'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class AuthController {
@@ -31,7 +31,7 @@ export default class AuthController {
 
     try {
       let candidate: User = await AuthService.loginViaServer(payload)
-      session.put(SESSION_USER_KEY, { uuid: candidate.uuid, fullName: candidate.fullName } as SessionUser)
+      session.put(SESSION_USER_KEY, { ...candidate.toJSON(), avatar: await candidate.avatarUrl() })
 
       return response.redirect().toRoute('index')
     } catch (err: Error | any) {
