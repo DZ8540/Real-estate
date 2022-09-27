@@ -48,7 +48,47 @@
 
           <div class="form-group">
             <label class="mb-1">Объект</label>
-            <input type="string" class="form-control" value="{{ item.estate.name }}" disabled>
+            <input type="string" class="form-control" value="{{ item.estateTypeForUser }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Площадь участка</label>
+            <input type="string" class="form-control" value="{{ item.landArea ?? '' }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Тип участка</label>
+            <input type="string" class="form-control" value="{{ item.areaTypeForUser }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Срок аренды</label>
+            <input type="string" class="form-control" value="{{ item.rentalPeriodTypeForUser }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Окно</label>
+            <input type="string" class="form-control" value="{{ item.windowForUser }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Тип окна</label>
+            <input type="string" class="form-control" value="{{ item.windowTypeForUser }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Тип класса</label>
+            <input type="string" class="form-control" value="{{ item.gradeTypeForUser }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Тип здания</label>
+            <input type="string" class="form-control" value="{{ item.buildingTypeForUser }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Расположение</label>
+            <input type="string" class="form-control" value="{{ item.locationTypeForUser }}" disabled>
           </div>
 
           <div class="form-group">
@@ -95,7 +135,7 @@
 
           <div class="form-group">
             <label class="mb-1">Этаж</label>
-            <input type="string" class="form-control" value="{{ item.floor }}" disabled>
+            <input type="string" class="form-control" value="{{ item.floor ?? '' }}" disabled>
           </div>
 
           <div class="form-group">
@@ -116,6 +156,21 @@
           <div class="form-group">
             <label class="mb-1">Тип ремонта</label>
             <input type="string" class="form-control" value="{{ item.repairTypeForUser }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Хозпостройки</label>
+            <input type="string" class="form-control" value="{{ item.outBuildingTypeForUser }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Направление розы ветров</label>
+            <input type="string" class="form-control" value="{{ item.windRoseDirectionTypeForUser }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Направление</label>
+            <input type="string" class="form-control" value="{{ item.directionTypeForUser }}" disabled>
           </div>
 
           <div class="row">
@@ -139,6 +194,41 @@
               <div class="custom-control custom-checkbox mb-3 checkbox-success">
                 <input type="checkbox" class="custom-control-input" {{ item.hasFurniture ? 'checked' : '' }} id="hasFurniture" disabled>
                 <label class="custom-control-label" for="hasFurniture">Есть ли мебель</label>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                <input type="checkbox" class="custom-control-input" {{ item.hasVentilation ? 'checked' : '' }} id="hasVentilation" disabled>
+                <label class="custom-control-label" for="hasVentilation">Есть ли вентиляция</label>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                <input type="checkbox" class="custom-control-input" {{ item.hasBasement ? 'checked' : '' }} id="hasBasement" disabled>
+                <label class="custom-control-label" for="hasBasement">Есть ли подвал</label>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                <input type="checkbox" class="custom-control-input" {{ item.hasFireAlarm ? 'checked' : '' }} id="hasFireAlarm" disabled>
+                <label class="custom-control-label" for="hasFireAlarm">Есть ли пожарная сигнализация</label>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                <input type="checkbox" class="custom-control-input" {{ item.hasSecurityAlarm ? 'checked' : '' }} id="hasSecurityAlarm" disabled>
+                <label class="custom-control-label" for="hasSecurityAlarm">Есть ли охранная сигнализация</label>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                <input type="checkbox" class="custom-control-input" {{ item.hasSecurity ? 'checked' : '' }} id="hasSecurity" disabled>
+                <label class="custom-control-label" for="hasSecurity">Есть ли охранна</label>
               </div>
             </div>
 
@@ -249,6 +339,20 @@
 
             <div class="col-lg-4">
               <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                <input type="checkbox" class="custom-control-input" {{ item.hasYardParking ? 'checked' : '' }} id="hasMoreLayerParking" disabled>
+                <label class="custom-control-label" for="hasMoreLayerParking">Есть ли многоуровневая парковка</label>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="custom-control custom-checkbox mb-3 checkbox-success">
+                <input type="checkbox" class="custom-control-input" {{ item.hasBarrierParking ? 'checked' : '' }} id="hasMoreLayerParking" disabled>
+                <label class="custom-control-label" for="hasMoreLayerParking">Есть ли многоуровневая парковка</label>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="custom-control custom-checkbox mb-3 checkbox-success">
                 <input type="checkbox" class="custom-control-input" {{ item.isMortgage ? 'checked' : '' }} id="isMortgage" disabled>
                 <label class="custom-control-label" for="isMortgage">Есть ли ипотека</label>
               </div>
@@ -327,6 +431,16 @@
           <div class="form-group">
             <label class="mb-1">Максимальное кол-во этажей</label>
             <input type="string" class="form-control" value="{{ item.maxFloorForUser }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Площадь соток</label>
+            <input type="string" class="form-control" value="{{ item.acres ?? '' }}" disabled>
+          </div>
+
+          <div class="form-group">
+            <label class="mb-1">Расстояние до города</label>
+            <input type="string" class="form-control" value="{{ item.cityDistance ?? '' }}" disabled>
           </div>
 
           <div class="form-group">

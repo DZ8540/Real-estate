@@ -1,3 +1,4 @@
+import BaseValidator from 'App/Validators/BaseValidator'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import {
@@ -5,7 +6,6 @@ import {
   LayoutTypes, RentalTypes, RepairTypes,
   RoomsTypes, TransactionTypes, WCTypes
 } from 'Contracts/enums'
-import BaseValidator from 'App/Validators/BaseValidator'
 
 export default class RealEstateGetForMapValidator extends BaseValidator {
   constructor(protected ctx: HttpContextContract) {
@@ -38,7 +38,7 @@ export default class RealEstateGetForMapValidator extends BaseValidator {
     ]),
     transactionType: schema.number.optional([
       rules.unsigned(),
-      rules.range(0, TransactionTypes.SALE),
+      rules.range(0, TransactionTypes.ONLY_RENT),
     ]),
     districts: schema.array.optional().members(schema.number([
       rules.unsigned(),
@@ -48,7 +48,7 @@ export default class RealEstateGetForMapValidator extends BaseValidator {
     ]),
     roomTypes: schema.array.optional().members(schema.number([
       rules.unsigned(),
-      rules.range(0, RoomsTypes.MORE_FIVE_ROOMS),
+      rules.range(0, RoomsTypes.FREE),
     ])),
     startPrice: schema.number.optional([
       rules.unsigned(),
@@ -104,7 +104,7 @@ export default class RealEstateGetForMapValidator extends BaseValidator {
     ]),
     layoutTypes: schema.array.optional().members(schema.number([
       rules.unsigned(),
-      rules.range(0, LayoutTypes.FREE),
+      rules.range(0, LayoutTypes.ISOLATED_ADJACENT),
     ])),
     WCTypes: schema.array.optional().members(schema.number([
       rules.unsigned(),
@@ -124,11 +124,11 @@ export default class RealEstateGetForMapValidator extends BaseValidator {
     ]),
     balconyTypes: schema.array.optional().members(schema.number([
       rules.unsigned(),
-      rules.range(0, BalconyTypes.LOGGIE),
+      rules.range(0, BalconyTypes.SEVERAL),
     ])),
     houseBuildingTypes: schema.array.optional().members(schema.number([
       rules.unsigned(),
-      rules.range(0, HouseBuildingTypes.WOOD),
+      rules.range(0, HouseBuildingTypes.MIXED),
     ])),
     yearOfConstruction: schema.date.optional({ format: 'yyyy' }),
     elevatorTypes: schema.array.optional().members(schema.number([

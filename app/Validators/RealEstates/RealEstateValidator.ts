@@ -2,10 +2,12 @@ import BaseValidator from '../BaseValidator'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import {
-  BalconyTypes, ElevatorTypes, HouseBuildingTypes,
-  HouseTypes, LayoutTypes, PrepaymentTypes,
+  AreaType,
+  BalconyTypes, BuildingTypes, DirectionTypes, ElevatorTypes, EstateTypes, GradeTypes, HouseBuildingTypes,
+  HouseTypes, LayoutTypes, LocationTypes, OutBuildingTypes, PrepaymentTypes,
+  RentalPeriodTypes,
   RentalTypes, RepairTypes,
-  RoomsTypes, TransactionTypes, WCTypes
+  RoomsTypes, TransactionTypes, WCTypes, Window, WindowTypes, WindRoseDirectionTypes
 } from 'Contracts/enums'
 
 export default class RealEstateValidator extends BaseValidator {
@@ -43,7 +45,11 @@ export default class RealEstateValidator extends BaseValidator {
     ]),
     transactionType: schema.number([
       rules.unsigned(),
-      rules.range(0, TransactionTypes.SALE),
+      rules.range(0, TransactionTypes.ONLY_RENT),
+    ]),
+    rentalPeriod: schema.number([
+      rules.unsigned(),
+      rules.range(0, RentalPeriodTypes.SHORT_TIME),
     ]),
     pledge: schema.number([
       rules.unsigned(),
@@ -70,35 +76,63 @@ export default class RealEstateValidator extends BaseValidator {
     longitude: schema.string({ trim: true }, [
       rules.maxLength(255)
     ]),
-    houseType: schema.number([
+    houseType: schema.number.optional([
       rules.unsigned(),
       rules.range(0, HouseTypes.COMMERCIAL_APARTMENT),
     ]),
-    roomType: schema.number([
+    roomType: schema.number.optional([
       rules.unsigned(),
-      rules.range(0, RoomsTypes.MORE_FIVE_ROOMS),
+      rules.range(0, RoomsTypes.FREE),
     ]),
-    totalArea: schema.number([
-      rules.unsigned(),
-    ]),
-    floor: schema.number([
-      rules.unsigned(),
-    ]),
-    WCType: schema.number([
+    totalArea: schema.number.optional([ rules.unsigned() ]),
+    floor: schema.number.optional([ rules.unsigned() ]),
+    WCType: schema.number.optional([
       rules.unsigned(),
       rules.range(0, WCTypes.TWO_OR_MORE),
     ]),
-    balconyType: schema.number([
+    balconyType: schema.number.optional([
       rules.unsigned(),
-      rules.range(0, BalconyTypes.LOGGIE),
+      rules.range(0, BalconyTypes.SEVERAL),
     ]),
-    layoutType: schema.number([
+    layoutType: schema.number.optional([
       rules.unsigned(),
-      rules.range(0, LayoutTypes.FREE),
+      rules.range(0, LayoutTypes.ISOLATED_ADJACENT),
     ]),
-    repairType: schema.number([
+    window: schema.number.optional([
+      rules.unsigned(),
+      rules.range(0, Window.SEVERAL),
+    ]),
+    windowType: schema.number.optional([
+      rules.unsigned(),
+      rules.range(0, WindowTypes.SPECIAL),
+    ]),
+    repairType: schema.number.optional([
       rules.unsigned(),
       rules.range(0, RepairTypes.NO_REPAIR),
+    ]),
+    outBuildingType: schema.number.optional([
+      rules.unsigned(),
+      rules.range(0, OutBuildingTypes.OUT_BUILDING),
+    ]),
+    windRoseDirectionType: schema.number.optional([
+      rules.unsigned(),
+      rules.range(0, WindRoseDirectionTypes.SOUTH_WEST),
+    ]),
+    directionType: schema.number.optional([
+      rules.unsigned(),
+      rules.range(0, DirectionTypes.TRANS),
+    ]),
+    gradeType: schema.number.optional([
+      rules.unsigned(),
+      rules.range(0, GradeTypes.D),
+    ]),
+    buildingType: schema.number.optional([
+      rules.unsigned(),
+      rules.range(0, BuildingTypes.OTHER),
+    ]),
+    locationType: schema.number.optional([
+      rules.unsigned(),
+      rules.range(0, LocationTypes.COOPERATIVE),
     ]),
     isCountersSeparately: schema.boolean.optional(),
     hasKitchenFurniture: schema.boolean.optional(),
@@ -118,15 +152,22 @@ export default class RealEstateValidator extends BaseValidator {
     hasGroundParking: schema.boolean.optional(),
     hasUnderGroundParking: schema.boolean.optional(),
     hasMoreLayerParking: schema.boolean.optional(),
+    hasYardParking: schema.boolean.optional(),
+    hasBarrierParking: schema.boolean.optional(),
+    hasBasement: schema.boolean.optional(),
+    hasVentilation: schema.boolean.optional(),
+    hasFireAlarm: schema.boolean.optional(),
+    hasSecurityAlarm: schema.boolean.optional(),
+    hasSecurity: schema.boolean.optional(),
     isMortgage: schema.boolean.optional(),
     isEncumbrances: schema.boolean.optional(),
     description: schema.string({ trim: true }, [
       rules.minLength(2),
       rules.maxLength(4096),
     ]),
-    houseBuildingType: schema.number([
+    houseBuildingType: schema.number.optional([
       rules.unsigned(),
-      rules.range(0, HouseBuildingTypes.WOOD),
+      rules.range(0, HouseBuildingTypes.MIXED),
     ]),
     elevatorType: schema.number([
       rules.unsigned(),
@@ -135,6 +176,15 @@ export default class RealEstateValidator extends BaseValidator {
     price: schema.number([
       rules.unsigned(),
     ]),
+    estateType: schema.number.optional([
+      rules.unsigned(),
+      rules.range(EstateTypes.NEW_BUILDING, EstateTypes.OLD_BUILDING),
+    ]),
+    areaType: schema.number.optional([
+      rules.unsigned(),
+      rules.range(AreaType.SNT, AreaType.LPX),
+    ]),
+    landArea: schema.number.optional([ rules.unsigned() ]),
     isVip: schema.boolean.optional(),
     isHot: schema.boolean.optional(),
     prepaymentType: schema.number.optional([
@@ -157,9 +207,9 @@ export default class RealEstateValidator extends BaseValidator {
     kitchenArea: schema.number.optional([
       rules.unsigned(),
     ]),
-    maxFloor: schema.number.optional([
-      rules.unsigned(),
-    ]),
+    maxFloor: schema.number.optional([ rules.unsigned() ]),
+    acres: schema.number.optional([ rules.unsigned() ]),
+    cityDistance: schema.number.optional([ rules.unsigned() ]),
     yearOfConstruction: schema.date.optional({ format: 'yyyy' }, [
       rules.before('today'),
     ]),

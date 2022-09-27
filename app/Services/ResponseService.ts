@@ -1,19 +1,19 @@
 import User from 'App/Models/Users/User'
 import Logger from '@ioc:Adonis/Core/Logger'
-import ServiceService from './Services/ServiceService'
 import Service from 'App/Models/Services/Service'
 import Response from 'App/Models/Response/Response'
+import ServiceService from './Services/ServiceService'
 import ApiValidator from 'App/Validators/Api/ApiValidator'
+import RealEstate from 'App/Models/RealEstates/RealEstate'
+import ResponsesImage from 'App/Models/Response/ResponsesImage'
 import ServiceResponseValidator from 'App/Validators/Api/Responses/ServiceResponseValidator'
-import { Error } from 'Contracts/services'
-import { ModelAttributes, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
-import { ResponseApiError, ResponseCodes, ResponseMessages, ResponsesStatusTypes } from 'Contracts/response'
 import RealEstateResponseValidator from 'App/Validators/Api/Responses/RealEstateResponseValidator'
 import Database, { TransactionClientContract } from '@ioc:Adonis/Lucid/Database'
+import { Error } from 'Contracts/services'
 import { RESPONSES_PATH } from 'Config/drive'
 import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser'
-import ResponsesImage from 'App/Models/Response/ResponsesImage'
-import RealEstate from 'App/Models/RealEstates/RealEstate'
+import { ModelAttributes, ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
+import { ResponseApiError, ResponseCodes, ResponseMessages, ResponsesStatusTypes } from 'Contracts/response'
 
 type InProcessConfig = {
   type: 'owner' | 'executor',
@@ -110,6 +110,7 @@ export default class ResponseService {
       status: ResponsesStatusTypes.UNDER_CONSIDERATION,
       description: payload.description,
       serviceId: payload.serviceId,
+      realEstateId: payload.realEstateId,
     }
 
     if (payload.images)
@@ -134,6 +135,9 @@ export default class ResponseService {
         throw err
       }
     }
+
+    if (trx)
+      await trx.commit()
 
     return item
   }

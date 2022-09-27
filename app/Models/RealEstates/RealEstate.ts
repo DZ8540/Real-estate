@@ -15,10 +15,13 @@ import {
   hasMany, ModelObject, ModelQueryBuilderContract,
 } from '@ioc:Adonis/Lucid/Orm'
 import {
-  BALCONY_TYPES, ELEVATOR_TYPES, HOUSE_BUILDING_TYPES,
-  HOUSE_TYPES, LAYOUT_TYPES, PREPAYMENT_TYPES,
-  RENTAL_TYPES, REPAIR_TYPES, ROOM_TYPES,
-  TRANSACTION_TYPES, WC_TYPES,
+  AREA_TYPES, BALCONY_TYPES, BUILDING_TYPES,
+  DIRECTION_TYPES, ELEVATOR_TYPES, ESTATE_TYPES,
+  GRADE_TYPES, HOUSE_BUILDING_TYPES, HOUSE_TYPES,
+  LAYOUT_TYPES, LOCATION_TYPES, PREPAYMENT_TYPES,
+  RENTAL_PERIODS_TYPES, RENTAL_TYPES, REPAIR_TYPES, ROOM_TYPES,
+  TRANSACTION_TYPES, WC_TYPES, WINDOW, WINDOW_TYPES,
+  WIND_ROSE_DIRECTION_TYPES,
 } from 'Config/realEstatesTypes'
 
 export default class RealEstate extends BaseModel {
@@ -34,7 +37,7 @@ export default class RealEstate extends BaseModel {
     'hasWashingMachine', 'hasDishWasher', 'hasTv',
     'hasConditioner', 'hasInternet', 'hasBathroom',
     'hasShowerCabin', 'withKids', 'withPets',
-    'description', 'image', 'houseBuildingType',
+    'description', 'estateType', 'image', 'houseBuildingType',
     'elevatorType', 'hasRamp', 'hasGarbage',
     'hasGroundParking', 'hasUnderGroundParking', 'hasMoreLayerParking',
     'price', 'isMortgage', 'isEncumbrances',
@@ -55,6 +58,9 @@ export default class RealEstate extends BaseModel {
   public transactionType: number
 
   @column()
+  public rentalPeriod: number
+
+  @column()
   public isCountersSeparately: boolean
 
   @column()
@@ -64,37 +70,28 @@ export default class RealEstate extends BaseModel {
   public commission: number
 
   @column()
-  public address: string
-
-  @column()
   public longitude: string
 
   @column()
   public latitude: string
 
   @column()
-  public houseType: number
+  public roomType: number | undefined
 
   @column()
-  public roomType: number
+  public totalArea: number | undefined
 
   @column()
-  public totalArea: number
-
-  @column()
-  public floor: number
+  public floor: number | undefined
 
   @column({ columnName: 'WCType' })
-  public WCType: number
+  public WCType: number | undefined
 
   @column()
-  public balconyType: number
+  public balconyType: number | undefined
 
   @column()
-  public layoutType: number
-
-  @column()
-  public repairType: number
+  public layoutType: number | undefined
 
   @column()
   public hasKitchenFurniture: boolean
@@ -136,10 +133,10 @@ export default class RealEstate extends BaseModel {
   public description: string
 
   @column()
-  public houseBuildingType: number
+  public houseBuildingType: number | undefined
 
   @column()
-  public elevatorType: number
+  public elevatorType: number | undefined
 
   @column()
   public hasRamp: boolean
@@ -155,6 +152,27 @@ export default class RealEstate extends BaseModel {
 
   @column()
   public hasMoreLayerParking: boolean
+
+  @column()
+  public hasYardParking: boolean
+
+  @column()
+  public hasBarrierParking: boolean
+
+  @column()
+  public hasBasement: boolean
+
+  @column()
+  public hasVentilation: boolean
+
+  @column()
+  public hasFireAlarm: boolean
+
+  @column()
+  public hasSecurityAlarm: boolean
+
+  @column()
+  public hasSecurity: boolean
 
   @column()
   public price: number
@@ -176,6 +194,48 @@ export default class RealEstate extends BaseModel {
 
   @column()
   public isBanned: boolean
+
+  @column()
+  public estateType: number | undefined
+
+  @column()
+  public landArea: number | undefined
+
+  @column()
+  public areaType: number | undefined
+
+  @column()
+  public address: string
+
+  @column()
+  public houseType: number | undefined
+
+  @column()
+  public window: number | undefined
+
+  @column()
+  public windowType: number | undefined
+
+  @column()
+  public repairType: number | undefined
+
+  @column()
+  public outBuildingType: number | undefined
+
+  @column()
+  public windRoseDirectionType: number | undefined
+
+  @column()
+  public directionType: number | undefined
+
+  @column()
+  public gradeType: number | undefined
+
+  @column()
+  public buildingType: number | undefined
+
+  @column()
+  public locationType: number | undefined
 
   @column()
   public cadastralNumber: string | undefined
@@ -203,6 +263,12 @@ export default class RealEstate extends BaseModel {
 
   @column()
   public maxFloor: number | undefined
+
+  @column()
+  public acres: number | undefined
+
+  @column()
+  public cityDistance: number | undefined
 
   @column.date()
   public yearOfConstruction: DateTime | undefined
@@ -249,47 +315,97 @@ export default class RealEstate extends BaseModel {
 
   @computed()
   public get roomsForUser(): string {
-    return ROOM_TYPES[this.roomType]
+    return this.roomType ? ROOM_TYPES[this.roomType] : ''
   }
 
   @computed()
   public get houseTypeForUser(): string {
-    return HOUSE_TYPES[this.houseType]
+    return this.houseType ? HOUSE_TYPES[this.houseType] : ''
   }
 
   @computed()
   public get WCTypeForUser(): string {
-    return WC_TYPES[this.WCType]
+    return this.WCType ? WC_TYPES[this.WCType] : ''
   }
 
   @computed()
   public get balconyTypeForUser(): string {
-    return BALCONY_TYPES[this.balconyType]
+    return this.balconyType ? BALCONY_TYPES[this.balconyType] : ''
   }
 
   @computed()
   public get layoutForUser(): string {
-    return LAYOUT_TYPES[this.layoutType]
+    return this.layoutType ? LAYOUT_TYPES[this.layoutType] : ''
   }
 
   @computed()
   public get repairTypeForUser(): string {
-    return REPAIR_TYPES[this.repairType]
+    return this.repairType ? REPAIR_TYPES[this.repairType] : ''
   }
 
   @computed()
   public get houseBuildingTypeForUser(): string {
-    return HOUSE_BUILDING_TYPES[this.houseBuildingType]
+    return this.houseBuildingType ? HOUSE_BUILDING_TYPES[this.houseBuildingType] : ''
   }
 
   @computed()
   public get elevatorTypeForUser(): string {
-    return ELEVATOR_TYPES[this.elevatorType]
+    return this.elevatorType ? ELEVATOR_TYPES[this.elevatorType] : ''
   }
 
   @computed()
   public get rentalTypeForUser(): string {
     return this.rentalType ? RENTAL_TYPES[this.rentalType] : 'Не установлено'
+  }
+
+  @computed()
+  public get estateTypeForUser(): string {
+    return this.estateType ? ESTATE_TYPES[this.estateType] : 'Не установлено'
+  }
+
+  @computed()
+  public get areaTypeForUser(): string {
+    return this.areaType ? AREA_TYPES[this.areaType] : 'Не установлено'
+  }
+
+  @computed()
+  public get rentalPeriodTypeForUser(): string {
+    return this.rentalPeriod ? RENTAL_PERIODS_TYPES[this.rentalPeriod] : 'Не установлено'
+  }
+
+  @computed()
+  public get windowForUser(): string {
+    return this.window ? WINDOW[this.window] : 'Не установлено'
+  }
+
+  @computed()
+  public get windowTypeForUser(): string {
+    return this.windowType ? WINDOW_TYPES[this.windowType] : 'Не установлено'
+  }
+
+  @computed()
+  public get windRoseDirectionTypeForUser(): string {
+    return this.windRoseDirectionType ? WIND_ROSE_DIRECTION_TYPES[this.windRoseDirectionType] : 'Не установлено'
+  }
+
+  @computed()
+  public get directionTypeForUser(): string {
+    return this.directionType ? DIRECTION_TYPES[this.directionType] : 'Не установлено'
+  }
+
+  @computed()
+  public get gradeTypeForUser(): string {
+    return this.gradeType ? GRADE_TYPES[this.gradeType] : 'Не установлено'
+  }
+
+  @computed()
+  public get buildingTypeForUser(): string {
+    return this.buildingType ? BUILDING_TYPES[this.buildingType] : 'Не установлено'
+  }
+
+  @computed()
+  public get locationTypeForUser(): string {
+    return this.locationType ? LOCATION_TYPES[this.locationType] : 'Не установлено'
   }
 
   @computed()
@@ -370,7 +486,8 @@ export default class RealEstate extends BaseModel {
     if (realEstate.commission > 100)
       realEstate.commission = 100
 
-    realEstate.address = realEstate.address.toLowerCase()
+    if (realEstate.address)
+      realEstate.address = realEstate.address.toLowerCase()
   }
 
   @beforeFind()

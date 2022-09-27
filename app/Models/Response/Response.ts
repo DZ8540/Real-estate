@@ -1,12 +1,13 @@
 import User from '../Users/User'
 import Service from '../Services/Service'
+import ResponsesImage from './ResponsesImage'
+import RealEstate from '../RealEstates/RealEstate'
 import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
 import {
   BaseModel, beforeFetch, beforeFind, BelongsTo,
-  belongsTo, column, ModelQueryBuilderContract,
+  belongsTo, column, hasMany, HasMany, ModelQueryBuilderContract,
 } from '@ioc:Adonis/Lucid/Orm'
-import RealEstate from '../RealEstates/RealEstate'
 
 export default class Response extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
@@ -27,11 +28,17 @@ export default class Response extends BaseModel {
   @column({ columnName: 'service_id' })
   public serviceId: Service['id']
 
+  @column({ columnName: 'realEstate_id' })
+  public realEstateId: RealEstate['id']
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @hasMany(() => ResponsesImage)
+  public images: HasMany<typeof ResponsesImage>
 
   @belongsTo(() => Service)
   public service: BelongsTo<typeof Service>
@@ -46,6 +53,7 @@ export default class Response extends BaseModel {
   @beforeFetch()
   public static async preloadRelations(query: ModelQueryBuilderContract<typeof Response>) {
     query
+      .preload('images')
       .preload('user')
       .preload('service', (query) => {
         query.preload('subService')

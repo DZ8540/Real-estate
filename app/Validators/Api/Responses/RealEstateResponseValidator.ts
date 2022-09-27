@@ -38,6 +38,10 @@ export default class RealEstateResponseValidator extends BaseValidator {
       rules.unsigned(),
       rules.exists({ table: 'services', column: 'id' }),
     ]),
+    realEstateId: schema.number([
+      rules.unsigned(),
+      rules.exists({ table: 'realEstates', column: 'id' }),
+    ]),
   })
 
   /**
