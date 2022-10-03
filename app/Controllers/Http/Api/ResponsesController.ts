@@ -131,6 +131,7 @@ export default class ResponsesController {
 
     try {
       payload = await request.validate(RealEstateResponseValidator)
+      console.log(payload, request.all())
     } catch (err: any) {
       throw new ExceptionService({
         code: ResponseCodes.VALIDATION_ERROR,

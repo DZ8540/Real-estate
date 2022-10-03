@@ -11,7 +11,7 @@ import {
 
 export default class Response extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
-  public static readonly columns = ['id', 'status', 'userId', 'serviceId', 'createdAt', 'updatedAt'] as const
+  public static readonly columns = ['id', 'status', 'userId', 'serviceId', 'realEstateId', 'createdAt', 'updatedAt'] as const
 
   @column({ isPrimary: true })
   public id: number

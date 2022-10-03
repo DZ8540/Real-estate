@@ -2,6 +2,8 @@ import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
 
+  Route.get('/checkServer', 'Api/IndexController.checkServer')
+
   Route.post('/questions', 'Api/QuestionsController.create')
 
   Route.post('/banners', 'Api/BannersController.getAll')
@@ -167,7 +169,7 @@ Route.group(() => {
       Route.post('/realEstate', 'Api/ResponsesController.createRealEstateResponse')
       Route.post('/service', 'Api/ResponsesController.createServiceResponse')
 
-    }).prefix('create')
+    }).prefix('/create')
 
     Route.patch('/accept/:id', 'Api/ResponsesController.accept')
     Route.patch('/complete/:id', 'Api/ResponsesController.complete')
