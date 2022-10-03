@@ -28,7 +28,7 @@ export default class RealEstateResponseValidator extends BaseValidator {
    *    ```
    */
   public schema = schema.create({
-    images: schema.array().members(schema.file({ extnames: ['jpg', 'gif', 'png', 'jpeg', 'webp'] })),
+    images: schema.array.optional().members(schema.file({ extnames: ['jpg', 'gif', 'png', 'jpeg', 'webp'] })),
     description: schema.string.optional({ trim: true }, [ rules.maxLength(RESPONSES_DESCRIPTION_MAX_LENGTH) ]),
     userId: schema.number([
       rules.unsigned(),
