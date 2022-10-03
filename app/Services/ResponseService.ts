@@ -213,7 +213,7 @@ export default class ResponseService {
 
     try {
       for (const image of images) {
-        await image.moveToDisk(RESPONSES_PATH)
+        await image.moveToDisk(`${RESPONSES_PATH}/${responseId}`)
 
         responseImages.push({ responseId, image: `${RESPONSES_PATH}/${responseId}/${image.fileName}` })
       }
