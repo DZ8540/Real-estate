@@ -169,7 +169,7 @@ export default class RealEstateValidator extends BaseValidator {
       rules.unsigned(),
       rules.range(0, HouseBuildingTypes.MIXED),
     ]),
-    elevatorType: schema.number([
+    elevatorType: schema.number.optional([
       rules.unsigned(),
       rules.range(0, ElevatorTypes.PASSENGER_CARGO),
     ]),
