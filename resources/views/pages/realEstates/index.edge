@@ -52,7 +52,7 @@
                       </button>
                       <div class="dropdown-menu" style="">
                         <a class="dropdown-item" href="{{ route('real_estates.show', { id: item.uuid }) }}">Показать</a>
-                        <a class="dropdown-item" href="{{ route('real_estates.edit', { id: item.uuid }) }}">Редактировать</a>
+                        {{--  <a class="dropdown-item" href="{{ route('real_estates.edit', { id: item.uuid }) }}">Редактировать</a>  --}}
 
                         <form action="{{ route('real_estates.destroy', { id: item.uuid }, { qs: { _method: 'DELETE' } }) }}" method="POST">
                           <button type="submit" class="dropdown-item">Удалить</button>

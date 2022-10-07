@@ -37,6 +37,17 @@ export default class RealEstates extends BaseSchema {
         6 - 5+ (больше 5)
         7 - свободная планировка
       `)
+      table.integer('sellersType').unsigned().notNullable().comment(`
+        1 - собственник
+        2 - застройщики
+        3 - агенства
+        4 - неважно
+      `)
+      table.integer('saleType').unsigned().notNullable().comment(`
+        1 - прямая
+        2 - альтернативная
+        3 - не важно
+      `)
       table.integer('totalArea').unsigned().nullable().comment('Общая площадь')
       table.integer('floor').unsigned().nullable().comment('Этаж')
       table.integer('WCType').unsigned().nullable().comment(`

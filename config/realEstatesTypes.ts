@@ -20,3 +20,5 @@ export const LOCATION_TYPES = ['Отдельный', 'Кооперативный
 export const HOUSE_BUILDING_TYPES = ['Кирпичный', 'Панельный', 'Монолитный', 'Блочный', 'Деревянный', 'Кирпично-монолитный', 'Керамзитный', 'Газоблок', 'Пеноблок', 'Армалитовые блоки', 'Сип-панели', 'Смешанные'] as const
 export const ELEVATOR_TYPES = ['Нет', 'Пассажирский', 'Грузовой', 'Пассажирский/грузовой'] as const
 export const RENTAL_TYPES = ['Длительно', 'Несколько месяцев', 'Посуточно'] as const
+export const SELLERS_TYPES = ['Собственник', 'Застройщики', 'Агенства', 'Неважно'] as const
+export const SALE_TYPES = ['Прямая', 'Альтернативная', 'Неважно'] as const

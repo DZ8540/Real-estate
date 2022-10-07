@@ -4,10 +4,9 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import {
   AreaType,
   BalconyTypes, BuildingTypes, DirectionTypes, ElevatorTypes, EstateTypes, GradeTypes, HouseBuildingTypes,
-  HouseTypes, LayoutTypes, LocationTypes, OutBuildingTypes, PrepaymentTypes,
-  RentalPeriodTypes,
-  RentalTypes, RepairTypes,
-  RoomsTypes, TransactionTypes, WCTypes, Window, WindowTypes, WindRoseDirectionTypes
+  HouseTypes, LayoutTypes, LocationTypes, OutBuildingTypes, PrepaymentTypes, RentalPeriodTypes,
+  RentalTypes, RepairTypes, RoomsTypes, SaleTypes, SellersTypes, TransactionTypes, WCTypes,
+  Window, WindowTypes, WindRoseDirectionTypes,
 } from 'Contracts/enums'
 
 export default class RealEstateValidator extends BaseValidator {
@@ -172,6 +171,14 @@ export default class RealEstateValidator extends BaseValidator {
     elevatorType: schema.number.optional([
       rules.unsigned(),
       rules.range(0, ElevatorTypes.PASSENGER_CARGO),
+    ]),
+    sellerType: schema.number([
+      rules.unsigned(),
+      rules.range(0, SellersTypes.NOT_IMPORTANT),
+    ]),
+    saleType: schema.number([
+      rules.unsigned(),
+      rules.range(0, SaleTypes.NOT_IMPORTANT),
     ]),
     price: schema.number([
       rules.unsigned(),

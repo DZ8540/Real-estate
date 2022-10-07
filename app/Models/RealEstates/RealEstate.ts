@@ -21,7 +21,7 @@ import {
   LAYOUT_TYPES, LOCATION_TYPES, PREPAYMENT_TYPES,
   RENTAL_PERIODS_TYPES, RENTAL_TYPES, REPAIR_TYPES, ROOM_TYPES,
   TRANSACTION_TYPES, WC_TYPES, WINDOW, WINDOW_TYPES,
-  WIND_ROSE_DIRECTION_TYPES,
+  WIND_ROSE_DIRECTION_TYPES, SALE_TYPES, SELLERS_TYPES,
 } from 'Config/realEstatesTypes'
 
 export default class RealEstate extends BaseModel {
@@ -45,6 +45,7 @@ export default class RealEstate extends BaseModel {
     'rentalType', 'communalPrice', 'residentalComplex',
     'livingArea', 'kitchenArea', 'maxFloor',
     'yearOfConstruction', 'userId', 'estateId',
+    'sellerType', 'saleType',
     'districtId', 'createdAt', 'updatedAt'
   ] as const
 
@@ -187,6 +188,12 @@ export default class RealEstate extends BaseModel {
   public viewsCount: number
 
   @column()
+  public sellerType: number
+
+  @column()
+  public saleType: number
+
+  @column()
   public isVip: boolean
 
   @column()
@@ -302,7 +309,7 @@ export default class RealEstate extends BaseModel {
 
   @computed()
   public get prepaymentTypeForUser(): string {
-    if (this.prepaymentType)
+    if (this.prepaymentType !== undefined && this.prepaymentType !== null)
       return PREPAYMENT_TYPES[this.prepaymentType]
 
     return 'Нету'
@@ -315,97 +322,164 @@ export default class RealEstate extends BaseModel {
 
   @computed()
   public get roomsForUser(): string {
-    return this.roomType ? ROOM_TYPES[this.roomType] : ''
+    if (this.roomType !== undefined && this.roomType !== null)
+      return ROOM_TYPES[this.roomType]
+
+    return ''
   }
 
   @computed()
   public get houseTypeForUser(): string {
-    return this.houseType ? HOUSE_TYPES[this.houseType] : ''
+    if (this.houseType !== undefined && this.houseType !== null)
+      return HOUSE_TYPES[this.houseType]
+
+    return ''
   }
 
   @computed()
   public get WCTypeForUser(): string {
-    return this.WCType ? WC_TYPES[this.WCType] : ''
+    if (this.WCType !== undefined && this.WCType !== null)
+      return WC_TYPES[this.WCType]
+
+    return ''
   }
 
   @computed()
   public get balconyTypeForUser(): string {
-    return this.balconyType ? BALCONY_TYPES[this.balconyType] : ''
+    if (this.balconyType !== undefined && this.balconyType !== null)
+      return BALCONY_TYPES[this.balconyType]
+
+    return ''
   }
 
   @computed()
   public get layoutForUser(): string {
-    return this.layoutType ? LAYOUT_TYPES[this.layoutType] : ''
+    if (this.layoutType !== undefined && this.layoutType !== null)
+      return LAYOUT_TYPES[this.layoutType]
+
+    return ''
   }
 
   @computed()
   public get repairTypeForUser(): string {
-    return this.repairType ? REPAIR_TYPES[this.repairType] : ''
+    if (this.repairType !== undefined && this.repairType !== null)
+      return REPAIR_TYPES[this.repairType]
+
+    return ''
   }
 
   @computed()
   public get houseBuildingTypeForUser(): string {
-    return this.houseBuildingType ? HOUSE_BUILDING_TYPES[this.houseBuildingType] : ''
+    if (this.houseBuildingType !== undefined && this.houseBuildingType !== null)
+      return HOUSE_BUILDING_TYPES[this.houseBuildingType]
+
+    return ''
   }
 
   @computed()
   public get elevatorTypeForUser(): string {
-    return this.elevatorType ? ELEVATOR_TYPES[this.elevatorType] : ''
+    if (this.elevatorType !== undefined && this.elevatorType !== null)
+      return ELEVATOR_TYPES[this.elevatorType]
+
+    return ''
   }
 
   @computed()
   public get rentalTypeForUser(): string {
-    return this.rentalType ? RENTAL_TYPES[this.rentalType] : 'Не установлено'
+    if (this.rentalType !== undefined && this.rentalType !== null)
+      return RENTAL_TYPES[this.rentalType]
+
+    return 'Не установлено'
   }
 
   @computed()
   public get estateTypeForUser(): string {
-    return this.estateType ? ESTATE_TYPES[this.estateType] : 'Не установлено'
+    if (this.estateType !== undefined && this.estateType !== null)
+      return ESTATE_TYPES[this.estateType]
+
+    return 'Не установлено'
   }
 
   @computed()
   public get areaTypeForUser(): string {
-    return this.areaType ? AREA_TYPES[this.areaType] : 'Не установлено'
+    if (this.areaType !== undefined && this.areaType !== null)
+      return AREA_TYPES[this.areaType]
+
+    return 'Не установлено'
   }
 
   @computed()
   public get rentalPeriodTypeForUser(): string {
-    return this.rentalPeriod ? RENTAL_PERIODS_TYPES[this.rentalPeriod] : 'Не установлено'
+    if (this.rentalPeriod !== undefined && this.rentalPeriod !== null)
+      return RENTAL_PERIODS_TYPES[this.rentalPeriod]
+
+    return 'Не установлено'
   }
 
   @computed()
   public get windowForUser(): string {
-    return this.window ? WINDOW[this.window] : 'Не установлено'
+    if (this.window !== undefined && this.window !== null)
+      return WINDOW[this.window]
+
+    return 'Не установлено'
   }
 
   @computed()
   public get windowTypeForUser(): string {
-    return this.windowType ? WINDOW_TYPES[this.windowType] : 'Не установлено'
+    if (this.windowType !== undefined && this.windowType !== null)
+      return WINDOW_TYPES[this.windowType]
+
+    return 'Не установлено'
   }
 
   @computed()
   public get windRoseDirectionTypeForUser(): string {
-    return this.windRoseDirectionType ? WIND_ROSE_DIRECTION_TYPES[this.windRoseDirectionType] : 'Не установлено'
+    if (this.windRoseDirectionType !== undefined && this.windRoseDirectionType !== null)
+      return WIND_ROSE_DIRECTION_TYPES[this.windRoseDirectionType]
+
+    return 'Не установлено'
   }
 
   @computed()
   public get directionTypeForUser(): string {
-    return this.directionType ? DIRECTION_TYPES[this.directionType] : 'Не установлено'
+    if (this.directionType !== undefined && this.directionType !== null)
+      return DIRECTION_TYPES[this.directionType]
+
+    return 'Не установлено'
   }
 
   @computed()
   public get gradeTypeForUser(): string {
-    return this.gradeType ? GRADE_TYPES[this.gradeType] : 'Не установлено'
+    if (this.gradeType !== undefined && this.gradeType !== null)
+      return GRADE_TYPES[this.gradeType]
+
+    return 'Не установлено'
   }
 
   @computed()
   public get buildingTypeForUser(): string {
-    return this.buildingType ? BUILDING_TYPES[this.buildingType] : 'Не установлено'
+    if (this.buildingType !== undefined && this.buildingType !== null)
+      return BUILDING_TYPES[this.buildingType]
+
+    return 'Не установлено'
   }
 
   @computed()
   public get locationTypeForUser(): string {
-    return this.locationType ? LOCATION_TYPES[this.locationType] : 'Не установлено'
+    if (this.locationType !== undefined && this.locationType !== null)
+      return LOCATION_TYPES[this.locationType]
+
+    return 'Не установлено'
+  }
+
+  @computed()
+  public get sellerTypeForUser(): string {
+    return SELLERS_TYPES[this.sellerType]
+  }
+
+  @computed()
+  public get saleTypeForUser(): string {
+    return SALE_TYPES[this.saleType]
   }
 
   @computed()

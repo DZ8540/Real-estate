@@ -22,6 +22,19 @@ export enum RentalPeriodTypes {
   SHORT_TIME = 3,
 }
 
+export enum SellersTypes {
+  OWNER = 0,
+  DEVELOPERS = 1,
+  AGENCIES = 2,
+  NOT_IMPORTANT = 3,
+}
+
+export enum SaleTypes {
+  STRAIGHT = 0,
+  ALTERNATIVE = 1,
+  NOT_IMPORTANT = 2,
+}
+
 export enum PrepaymentTypes {
   ONE_MONTH = 0,
   TWO_MONTH = 1,
