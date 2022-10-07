@@ -531,6 +531,8 @@ export default class RealEstate extends BaseModel {
       room = 'Студия'
     else if (this.roomType == 6)
       room = '5+ - к'
+    else if (this.roomType == 7)
+      room = 'Свободная планировка'
     else
       room = `${this.roomType}-к`
 

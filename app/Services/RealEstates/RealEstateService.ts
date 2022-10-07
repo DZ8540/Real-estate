@@ -301,6 +301,7 @@ export default class RealEstateService extends BaseService {
     try {
       let query = RealEstate
         .query()
+        .preload('estate')
         .whereHas('district', (query) => {
           query.where('city', city)
         })
@@ -397,7 +398,7 @@ export default class RealEstateService extends BaseService {
     }
 
     try {
-      return await user.related('realEstates').query().get(config)
+      return await user.related('realEstates').query().preload('estate').get(config)
     } catch (err: any) {
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
