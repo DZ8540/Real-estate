@@ -17,7 +17,7 @@ import { ResponsesStatusTypes } from 'Contracts/response'
 import {
   BalconyTypes, ElevatorTypes, HouseBuildingTypes, HouseTypes,
   LayoutTypes, PrepaymentTypes, RepairTypes, RoomsTypes,
-  WCTypes, TransactionTypes, RentalPeriodTypes,
+  WCTypes, TransactionTypes, RentalPeriodTypes, SellersTypes, SaleTypes,
 } from 'Contracts/enums'
 
 export const UserFactory = Factory
@@ -112,6 +112,8 @@ export const RealEstateFactory = Factory
       estateId: (await Estate.query().random()).id,
       districtId: (await District.query().random()).id,
       rentalPeriod: faker.datatype.number(RentalPeriodTypes.SHORT_TIME),
+      sellerType: faker.datatype.number(SellersTypes.NOT_IMPORTANT),
+      saleType: faker.datatype.number(SaleTypes.NOT_IMPORTANT),
     }
   })
   .build()
