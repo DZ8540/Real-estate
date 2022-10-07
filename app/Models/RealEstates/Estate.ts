@@ -2,7 +2,7 @@ import RealEstateType from './RealEstateType'
 import CamelCaseNamingStrategy from '../../../start/CamelCaseNamingStrategy'
 import { DateTime } from 'luxon'
 import { camelCase } from '../../../helpers'
-import { BaseModel, beforeSave, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeFetch, beforeFind, beforeSave, BelongsTo, belongsTo, column, computed, ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Estate extends BaseModel {
   public static namingStrategy = new CamelCaseNamingStrategy()
@@ -38,6 +38,12 @@ export default class Estate extends BaseModel {
 
     if (!estate.slug)
       estate.slug = camelCase(estate.name)
+  }
+
+  @beforeFind()
+  @beforeFetch()
+  public static async preloadRelations(query: ModelQueryBuilderContract<typeof Estate>) {
+    query.preload('realEstateType')
   }
 
   @belongsTo(() => RealEstateType)

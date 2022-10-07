@@ -21,7 +21,7 @@ import {
   LAYOUT_TYPES, LOCATION_TYPES, PREPAYMENT_TYPES,
   RENTAL_PERIODS_TYPES, RENTAL_TYPES, REPAIR_TYPES, ROOM_TYPES,
   TRANSACTION_TYPES, WC_TYPES, WINDOW, WINDOW_TYPES,
-  WIND_ROSE_DIRECTION_TYPES, SALE_TYPES, SELLERS_TYPES,
+  WIND_ROSE_DIRECTION_TYPES, SALE_TYPES, SELLERS_TYPES, OUT_BUILDING_TYPES,
 } from 'Config/realEstatesTypes'
 
 export default class RealEstate extends BaseModel {
@@ -324,6 +324,14 @@ export default class RealEstate extends BaseModel {
   public get roomsForUser(): string {
     if (this.roomType !== undefined && this.roomType !== null)
       return ROOM_TYPES[this.roomType]
+
+    return ''
+  }
+
+  @computed()
+  public get outBuildingTypeForUser(): string {
+    if (this.outBuildingType !== undefined && this.outBuildingType !== null)
+      return OUT_BUILDING_TYPES[this.outBuildingType]
 
     return ''
   }
