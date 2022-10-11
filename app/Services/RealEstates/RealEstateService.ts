@@ -295,6 +295,38 @@ export default class RealEstateService extends BaseService {
     }
   }
 
+  public static async makeHot(uuid: RealEstate['uuid'], { trx }: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
+    try {
+      return (await this.get(uuid, { trx })).merge({ isHot: true }).save()
+    } catch (err: Error | any) {
+      throw err
+    }
+  }
+
+  public static async unmakeHot(uuid: RealEstate['uuid'], { trx }: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
+    try {
+      return (await this.get(uuid, { trx })).merge({ isHot: false }).save()
+    } catch (err: Error | any) {
+      throw err
+    }
+  }
+
+  public static async makeVip(uuid: RealEstate['uuid'], { trx }: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
+    try {
+      return (await this.get(uuid, { trx })).merge({ isVip: true }).save()
+    } catch (err: Error | any) {
+      throw err
+    }
+  }
+
+  public static async unmakeVip(uuid: RealEstate['uuid'], { trx }: ServiceConfig<RealEstate> = {}): Promise<RealEstate> {
+    try {
+      return (await this.get(uuid, { trx })).merge({ isVip: false }).save()
+    } catch (err: Error | any) {
+      throw err
+    }
+  }
+
   public static async search(city: string, payload: RealEstateApiValidator['schema']['props']): Promise<JSONPaginate> {
     if (!payload.limit)
       payload.limit = 15

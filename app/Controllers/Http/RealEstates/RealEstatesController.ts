@@ -117,4 +117,60 @@ export default class RealEstatesController {
 
     return response.redirect().back()
   }
+
+  public async makeHot({ params, response, session }: HttpContextContract) {
+    let uuid: RealEstate['uuid'] = params.id
+
+    try {
+      await RealEstateService.makeHot(uuid)
+
+      session.flash('success', ResponseMessages.SUCCESS)
+    } catch (err: Error | any) {
+      session.flash('error', err.message)
+    }
+
+    return response.redirect().back()
+  }
+
+  public async unmakeHot({ params, response, session }: HttpContextContract) {
+    let uuid: RealEstate['uuid'] = params.id
+
+    try {
+      await RealEstateService.unmakeHot(uuid)
+
+      session.flash('success', ResponseMessages.SUCCESS)
+    } catch (err: Error | any) {
+      session.flash('error', err.message)
+    }
+
+    return response.redirect().back()
+  }
+
+  public async makeVip({ params, response, session }: HttpContextContract) {
+    let uuid: RealEstate['uuid'] = params.id
+
+    try {
+      await RealEstateService.makeVip(uuid)
+
+      session.flash('success', ResponseMessages.SUCCESS)
+    } catch (err: Error | any) {
+      session.flash('error', err.message)
+    }
+
+    return response.redirect().back()
+  }
+
+  public async unmakeVip({ params, response, session }: HttpContextContract) {
+    let uuid: RealEstate['uuid'] = params.id
+
+    try {
+      await RealEstateService.unmakeVip(uuid)
+
+      session.flash('success', ResponseMessages.SUCCESS)
+    } catch (err: Error | any) {
+      session.flash('error', err.message)
+    }
+
+    return response.redirect().back()
+  }
 }

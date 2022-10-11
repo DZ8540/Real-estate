@@ -14,14 +14,38 @@
 
         <div class="d-flex">
           @if(item.isBanned)
-            <form action="{{ route('real_estates.unblock', { id: item.uuid }) }}" method="POST">
+            <form class="ml-3" action="{{ route('real_estates.unblock', { id: item.uuid }) }}" method="POST">
               {{ csrfField() }}
               <button type="submit" class="btn btn-primary btn-sm">Разблокировать</button>
             </form>
           @else
-            <form action="{{ route('real_estates.block', { id: item.uuid }) }}" method="POST">
+            <form class="ml-3" action="{{ route('real_estates.block', { id: item.uuid }) }}" method="POST">
               {{ csrfField() }}
               <button type="submit" class="btn btn-danger btn-sm">Заблокировать</button>
+            </form>
+          @endif
+
+          @if(item.isHot)
+            <form class="ml-3" action="{{ route('real_estates.unmakeHot', { id: item.uuid }) }}" method="POST">
+              {{ csrfField() }}
+              <button type="submit" class="btn btn-primary btn-sm">Hot</button>
+            </form>
+          @else
+            <form class="ml-3" action="{{ route('real_estates.makeHot', { id: item.uuid }) }}" method="POST">
+              {{ csrfField() }}
+              <button type="submit" class="btn btn-danger btn-sm">Не hot</button>
+            </form>
+          @endif
+
+          @if(item.isVip)
+            <form class="ml-3" action="{{ route('real_estates.unmakeVip', { id: item.uuid }) }}" method="POST">
+              {{ csrfField() }}
+              <button type="submit" class="btn btn-primary btn-sm">VIP</button>
+            </form>
+          @else
+            <form class="ml-3" action="{{ route('real_estates.makeVip', { id: item.uuid }) }}" method="POST">
+              {{ csrfField() }}
+              <button type="submit" class="btn btn-danger btn-sm">Не VIP</button>
             </form>
           @endif
 

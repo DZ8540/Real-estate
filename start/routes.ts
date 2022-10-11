@@ -44,6 +44,10 @@ Route.group(() => {
   Route.resource('/realEstates', 'RealEstates/RealEstatesController').except(['create', 'store'])
   Route.post('/realEstates/block/:id', 'RealEstates/RealEstatesController.block').as('real_estates.block')
   Route.post('/realEstates/unblock/:id', 'RealEstates/RealEstatesController.unblock').as('real_estates.unblock')
+  Route.post('/realEstates/makeHot/:id', 'RealEstates/RealEstatesController.makeHot').as('real_estates.makeHot')
+  Route.post('/realEstates/unmakeHot/:id', 'RealEstates/RealEstatesController.unmakeHot').as('real_estates.unmakeHot')
+  Route.post('/realEstates/makeVip/:id', 'RealEstates/RealEstatesController.makeVip').as('real_estates.makeVip')
+  Route.post('/realEstates/unmakeVip/:id', 'RealEstates/RealEstatesController.unmakeVip').as('real_estates.unmakeVip')
 
   Route.group(() => {
 
