@@ -3,6 +3,7 @@ import Service from 'App/Models/Services/Service'
 import UserService from 'App/Services/Users/UserService'
 import UserValidator from 'App/Validators/Api/Users/User'
 import ResponseService from 'App/Services/ResponseService'
+import RealEstate from 'App/Models/RealEstates/RealEstate'
 import ExceptionService from 'App/Services/ExceptionService'
 import { Error } from 'Contracts/services'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
@@ -15,7 +16,12 @@ export default class UsersController {
     const currentUserId: User['id'] | undefined = params.currentUserId
 
     try {
-      let item: User | ModelObject = await UserService.getById(id, { relations: ['realEstates'] })
+      let item: User | ModelObject = await UserService.getById(id)
+
+      await item.load('realEstates', (query: ModelQueryBuilderContract<typeof RealEstate>) => {
+        query.preload('estate')
+      })
+
       await item.load('services', (query: ModelQueryBuilderContract<typeof Service>) => {
         query
           .preload('labels')
