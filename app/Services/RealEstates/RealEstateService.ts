@@ -43,6 +43,7 @@ export default class RealEstateService extends BaseService {
     try {
       let query = RealEstate
         .query()
+        .preload('estate')
         .whereHas('district', (query) => {
           query.where('city', city)
         })
