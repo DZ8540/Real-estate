@@ -170,7 +170,7 @@ export default class MessageService {
       try {
         const createConversationPayload: ConversationGetPayload = {
           ...createPayload,
-          realEstateId: payload.serviceId,
+          serviceId: payload.serviceId,
         }
 
         conversation = await ConversationService.create(createConversationPayload, { trx })

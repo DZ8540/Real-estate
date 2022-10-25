@@ -58,7 +58,9 @@ Route.group(() => {
 
     Route.post('/create', 'Api/RealEstates/RealEstatesController.create').middleware('CheckAccessToken')
     Route.patch('/update/:uuid', 'Api/RealEstates/RealEstatesController.update').middleware('CheckAccessToken')
+
     Route.delete('/delete/:uuid', 'Api/RealEstates/RealEstatesController.delete').middleware('CheckAccessToken')
+    Route.delete('/deleteImage/:imageId', 'Api/RealEstates/RealEstatesController.deleteImage').middleware('CheckAccessToken')
 
     Route.post('/getForMap/:city', 'Api/RealEstates/RealEstatesController.getForMap')
     Route.post('/getFromMap/:currentUserId?', 'Api/RealEstates/RealEstatesController.getFromMap')

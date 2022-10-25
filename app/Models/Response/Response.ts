@@ -56,7 +56,9 @@ export default class Response extends BaseModel {
       .preload('images')
       .preload('user')
       .preload('service', (query) => {
-        query.preload('subService')
+        query
+          .preload('subService')
+          .preload('user')
       })
   }
 }

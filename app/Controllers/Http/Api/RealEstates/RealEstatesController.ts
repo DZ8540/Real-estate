@@ -3,6 +3,7 @@ import RealEstate from 'App/Models/RealEstates/RealEstate'
 import ResponseService from 'App/Services/ResponseService'
 import ApiValidator from 'App/Validators/Api/ApiValidator'
 import ExceptionService from 'App/Services/ExceptionService'
+import RealEstateImage from 'App/Models/RealEstates/RealEstateImage'
 import RealEstateService from 'App/Services/RealEstates/RealEstateService'
 import RealEstateValidator from 'App/Validators/RealEstates/RealEstateValidator'
 import RealEstateApiValidator from 'App/Validators/Api/RealEstates/RealEstateValidator'
@@ -155,6 +156,18 @@ export default class RealEstatesController {
 
     try {
       await RealEstateService.delete(uuid)
+
+      return response.status(200).send(ResponseService.success(ResponseMessages.REAL_ESTATE_DELETED))
+    } catch (err: Error | any) {
+      throw new ExceptionService(err)
+    }
+  }
+
+  public async deleteImage({ response, params }: HttpContextContract) {
+    const imageId: RealEstateImage['id'] = params.imageId
+
+    try {
+      await RealEstateService.deleteImage(imageId)
 
       return response.status(200).send(ResponseService.success(ResponseMessages.REAL_ESTATE_DELETED))
     } catch (err: Error | any) {

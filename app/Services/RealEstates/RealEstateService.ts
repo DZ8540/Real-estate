@@ -10,6 +10,7 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import Estate from 'App/Models/RealEstates/Estate'
 import RealEstate from 'App/Models/RealEstates/RealEstate'
 import ApiValidator from 'App/Validators/Api/ApiValidator'
+import RealEstateImage from 'App/Models/RealEstates/RealEstateImage'
 import RealEstateValidator from 'App/Validators/RealEstates/RealEstateValidator'
 import RealEstateApiValidator from 'App/Validators/Api/RealEstates/RealEstateValidator'
 import RealEstateGetForMapValidator from 'App/Validators/Api/RealEstates/RealEstateGetForMapValidator'
@@ -205,11 +206,6 @@ export default class RealEstateService extends BaseService {
       }
 
       if (payload.images) {
-        for (const value of item.images) {
-          await Drive.delete(value.image)
-          await value.delete()
-        }
-
         for (const imageItem of payload.images) {
           if (imageItem) {
             await imageItem.moveToDisk(`${imageBasePath}/images`)
@@ -359,6 +355,7 @@ export default class RealEstateService extends BaseService {
     try {
       return await RealEstate
         .query()
+        .preload('estate')
         .whereHas('district', (query) => {
           query.where('city', city)
         })
@@ -384,14 +381,14 @@ export default class RealEstateService extends BaseService {
           const random: number = Math.floor(Math.random() * user.realEstatesWishList.length)
           const estateId: Estate['id'] = user.realEstatesWishList[random - 1].estateId
 
-          const realEstateItem: RealEstate = await RealEstate.query().where('estateId', estateId).random()
+          const realEstateItem: RealEstate = await RealEstate.query().preload('estate').where('estateId', estateId).random()
           recommended.push(realEstateItem)
         }
       } else {
         const popular = await this.popular(city, payload.limit)
 
         for (const item of popular) {
-          const realEstateItem: RealEstate = await RealEstate.query().where('estateId', item.estateId).random()
+          const realEstateItem: RealEstate = await RealEstate.query().preload('estate').where('estateId', item.estateId).random()
           recommended.push(realEstateItem)
         }
       }
@@ -455,8 +452,30 @@ export default class RealEstateService extends BaseService {
     }
   }
 
+  public static async deleteImage(imageId: RealEstateImage['id']): Promise<void> {
+    let image: RealEstateImage | null
+
+    try {
+      image = await RealEstateImage.find(imageId)
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+
+    if (!image)
+      throw { code: ResponseCodes.SERVER_ERROR, message: ResponseMessages.ERROR } as Error
+
+    try {
+      await Drive.delete(image.image)
+      await image.delete()
+    } catch (err: any) {
+      Logger.error(err)
+      throw { code: ResponseCodes.SERVER_ERROR, message: ResponseMessages.ERROR } as Error
+    }
+  }
+
   /**
-   * * Private method
+   * * Private methods
    */
 
   private static filter(payload: RealEstateGetForMapValidator['schema']['props'], query: ModelQueryBuilderContract<typeof RealEstate, RealEstate>): ModelQueryBuilderContract<typeof RealEstate, RealEstate> {
