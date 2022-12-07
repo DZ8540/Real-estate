@@ -27,6 +27,7 @@ export enum SellersTypes {
   DEVELOPERS = 1,
   AGENCIES = 2,
   NOT_IMPORTANT = 3,
+  PRIVATE_REALTOR = 4,
 }
 
 export enum SaleTypes {

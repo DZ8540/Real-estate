@@ -8,7 +8,7 @@ export default class ServicesTypeSeeder extends BaseSeeder {
       await ServicesType.createMany([
         { name: 'Услуги риелтора' },
         { name: 'Дизайн' },
-        { name: 'Ремонт' },
+        { name: 'Ремонт / строительство' },
         { name: 'Грузоперевозки' },
       ])
     } catch (err: any) {

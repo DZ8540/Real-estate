@@ -11,8 +11,8 @@ import { IMG_PLACEHOLDER } from 'Config/drive'
 import {
   BaseModel, beforeFetch, beforeFind,
   beforeSave, BelongsTo, belongsTo,
-  column, computed, HasMany,
-  hasMany, ModelObject, ModelQueryBuilderContract,
+  column, computed, ExtractModelRelations, HasMany,
+  hasMany, ManyToMany, manyToMany, ModelObject, ModelQueryBuilderContract,
 } from '@ioc:Adonis/Lucid/Orm'
 import {
   AREA_TYPES, BALCONY_TYPES, BUILDING_TYPES,
@@ -559,6 +559,9 @@ export default class RealEstate extends BaseModel {
   @hasMany(() => RealEstateImage)
   public images: HasMany<typeof RealEstateImage>
 
+  @manyToMany(() => User, { pivotTable: 'realEstatesViews' })
+  public realEstatesViews: ManyToMany<typeof User>
+
   @beforeSave()
   public static createUuid(realEstate: RealEstate) {
     if (!realEstate.uuid)
@@ -590,6 +593,10 @@ export default class RealEstate extends BaseModel {
   public async getForUser(currentUserId: User['id']): Promise<ModelObject> {
     const item: ModelObject = { ...this.serialize() }
 
+    try { // @ts-ignore
+      await this.related('realEstatesViews' as ExtractModelRelations<RealEstate>).attach([ currentUserId ])
+    } catch (err: any) {}
+
     const isInWishlist = await Database
       .from('realEstatesWishlists')
       .where('user_id', currentUserId)
@@ -602,8 +609,15 @@ export default class RealEstate extends BaseModel {
       .andWhere('realEstate_id', item.id)
       .first()
 
+    const isViewed = await Database
+      .from('realEstatesViews')
+      .where('user_id', currentUserId)
+      .andWhere('realEstate_id', item.id)
+      .first()
+
     item.wishlistStatus = isInWishlist ? true : false
     item.reportStatus = isInReports ? true : false
+    item.isViewed = isViewed ? true : false
 
     return item
   }

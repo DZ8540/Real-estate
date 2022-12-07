@@ -4,7 +4,6 @@ import LabelService from './LabelService'
 import Logger from '@ioc:Adonis/Core/Logger'
 import Label from 'App/Models/Services/Label'
 import Service from 'App/Models/Services/Service'
-import Database from '@ioc:Adonis/Lucid/Database'
 import ServicesTypeService from './ServicesTypeService'
 import ServiceValidator from 'App/Validators/Services/ServiceValidator'
 import ServiceApiValidator from 'App/Validators/Api/Services/ServiceValidator'
@@ -13,6 +12,8 @@ import { PaginationConfig } from 'Contracts/database'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
+import District from 'App/Models/District'
+import DistrictService from '../DistrictService'
 
 // import { removeLastLetter } from '../../../helpers'
 
@@ -76,6 +77,11 @@ export default class ServiceService extends BaseService {
 
   public static async create(payload: ValidatorPayload, { trx }: ServiceConfig<Service> = {}): Promise<Service> {
     let item: Service
+    let districtId: District['id']
+    const { district, ...servicePayload } = payload
+
+    district.name = district.name.toLowerCase()
+    district.city = district.city.toLowerCase()
 
     // try {
     //   await this.checkUserServiceType(payload.userId, payload.servicesTypeId)
@@ -83,13 +89,20 @@ export default class ServiceService extends BaseService {
     //   throw err
     // }
 
-    if (!trx)
-      trx = await Database.transaction()
+    // if (!trx)
+    //   trx = await Database.transaction()
 
     try {
-      item = await Service.create(payload, { client: trx })
+      // districtId = (await DistrictService.create(payload.district.name, payload.district.city, { trx })).id
+      districtId = (await DistrictService.create(payload.district.name, payload.district.city)).id
+    } catch (err: Error | any) {
+      districtId = (await DistrictService.getByNameAndCity(payload.district.name, payload.district.city)).id
+    }
+
+    try {
+      item = await Service.create({ ...servicePayload, districtId }, { client: trx })
     } catch (err: any) {
-      await trx.rollback()
+      // await trx.rollback()
 
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
@@ -111,19 +124,24 @@ export default class ServiceService extends BaseService {
       try {
         await item.related('labels').attach(labelsId)
       } catch (err: any) {
-        await trx.rollback()
+        // await trx.rollback()
 
         Logger.error(err)
         throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
       }
     }
 
-    await trx.commit()
+    // await trx.commit()
     return item
   }
 
   public static async update(id: Service['id'], payload: ValidatorPayload, config: ServiceConfig<Service> = {}): Promise<Service> {
     let item: Service
+    let districtId: District['id']
+    const { district, ...servicePayload } = payload
+
+    district.name = district.name.toLowerCase()
+    district.city = district.city.toLowerCase()
 
     // try {
     //   await this.checkUserServiceType(payload.userId, payload.servicesTypeId)
@@ -131,13 +149,20 @@ export default class ServiceService extends BaseService {
     //   throw err
     // }
 
-    if (!config.trx)
-      config.trx = await Database.transaction()
+    // if (!config.trx)
+    //   config.trx = await Database.transaction()
+
+    try {
+      // districtId = (await DistrictService.create(payload.district.name, payload.district.city, { trx })).id
+      districtId = (await DistrictService.create(payload.district.name, payload.district.city)).id
+    } catch (err: Error | any) {
+      districtId = (await DistrictService.getByNameAndCity(payload.district.name, payload.district.city)).id
+    }
 
     try {
       item = await this.get(id, config)
     } catch (err: any) {
-      await config.trx.rollback()
+      // await config.trx.rollback()
 
       Logger.error(err)
       throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
@@ -147,7 +172,7 @@ export default class ServiceService extends BaseService {
       try {
         await item.related('labels').detach()
       } catch (err: any) {
-        await config.trx.rollback()
+        // await config.trx.rollback()
 
         Logger.error(err)
         throw { code: ResponseCodes.SERVER_ERROR, message: ResponseMessages.ERROR } as Error
@@ -168,7 +193,7 @@ export default class ServiceService extends BaseService {
       try {
         await item.related('labels').attach(labelsId)
       } catch (err: any) {
-        await config.trx.rollback()
+        // await config.trx.rollback()
 
         Logger.error(err)
         throw { code: ResponseCodes.DATABASE_ERROR, message: ResponseMessages.ERROR } as Error
@@ -176,12 +201,12 @@ export default class ServiceService extends BaseService {
     }
 
     try {
-      item = await item.merge(payload).save()
+      item = await item.merge({ ...servicePayload, districtId }).save()
 
-      await config.trx.commit()
+      // await config.trx.commit()
       return item
     } catch (err: any) {
-      await config.trx.rollback()
+      // await config.trx.rollback()
 
       Logger.error(err)
       throw { code: ResponseCodes.SERVER_ERROR, message: ResponseMessages.ERROR } as Error
@@ -252,6 +277,10 @@ export default class ServiceService extends BaseService {
                 .join('users', 'services.user_id', 'users.id')
                 .select('services.*')
                 .orderBy('users.rating', payload[key])
+              break
+
+            case 'districts': // @ts-ignore
+              query = query.whereIn('districtId', payload[key])
               break
 
             case 'servicesTypeId':

@@ -45,6 +45,14 @@ export default class ServiceValidator extends BaseValidator {
     servicesTypesSubServiceId: schema.number([ rules.unsigned() ]),
     servicesTypesAttributeId: schema.number.optional([ rules.unsigned() ]),
     labels: schema.string.optional({}, []),
+    district: schema.object().members({
+      name: schema.string({ trim: true }, [
+        rules.maxLength(255),
+      ]),
+      city: schema.string({ trim: true }, [
+        rules.maxLength(255),
+      ])
+    }),
   })
 
   /**

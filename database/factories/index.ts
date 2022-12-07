@@ -78,6 +78,7 @@ export const ServicesFactory = Factory
       // experienceType: faker.datatype.number(3),
       description: faker.lorem.paragraphs(3),
       userId: (await User.query().random()).id,
+      districtId: (await District.query().random()).id,
       servicesTypesSubServiceId: (await ServicesType.query().random()).id,
     }
   })

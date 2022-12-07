@@ -10,6 +10,7 @@ import {
   computed, HasMany, hasMany, ManyToMany,
   manyToMany, column,
 } from '@ioc:Adonis/Lucid/Orm'
+import District from '../District'
 
 // import { EXPERIENCE_TYPES } from 'Config/services'
 
@@ -35,6 +36,9 @@ export default class Service extends BaseModel {
 
   @column({ columnName: 'user_id' })
   public userId: User['id']
+
+  @column({ columnName: 'district_id' })
+  public districtId: District['id']
 
   @column({ columnName: 'servicesTypesSubService_id' })
   public servicesTypesSubServiceId: ServicesTypesSubService['id']

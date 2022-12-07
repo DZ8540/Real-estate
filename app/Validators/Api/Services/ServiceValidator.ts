@@ -45,6 +45,9 @@ export default class ServiceValidator extends ApiValidator {
       rules.exists({ table: 'labels', column: 'id' })
     ])),
     rating: schema.enum.optional(['asc', 'desc'] as const),
+    districts: schema.array.optional().members(schema.number([
+      rules.unsigned(),
+    ])),
   })
 
   /**

@@ -24,6 +24,13 @@ export default class Services extends BaseSchema {
         .onDelete('CASCADE')
 
       table
+        .integer('district_id')
+        .unsigned()
+        .notNullable()
+        .references('districts.id')
+        .onDelete('CASCADE')
+
+      table
         .integer('servicesTypesSubService_id')
         .unsigned()
         .notNullable()
