@@ -11,7 +11,7 @@ import { IMG_PLACEHOLDER } from 'Config/drive'
 import {
   BaseModel, beforeFetch, beforeFind,
   beforeSave, BelongsTo, belongsTo,
-  column, computed, ExtractModelRelations, HasMany,
+  column, computed, HasMany,
   hasMany, ManyToMany, manyToMany, ModelObject, ModelQueryBuilderContract,
 } from '@ioc:Adonis/Lucid/Orm'
 import {
@@ -593,8 +593,8 @@ export default class RealEstate extends BaseModel {
   public async getForUser(currentUserId: User['id']): Promise<ModelObject> {
     const item: ModelObject = { ...this.serialize() }
 
-    try { // @ts-ignore
-      await this.related('realEstatesViews' as ExtractModelRelations<RealEstate>).attach([ currentUserId ])
+    try {
+      await (this as RealEstate).related('realEstatesViews').attach([ currentUserId ])
     } catch (err: any) {}
 
     const isInWishlist = await Database
