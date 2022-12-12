@@ -27,6 +27,7 @@ export default class ServicesTypesSubServiceSeeder extends BaseSeeder {
         { name: 'установка техники', servicesTypeId: 3 },
         { name: 'уборка', servicesTypeId: 3 },
         { name: 'строительство', servicesTypeId: 3 },
+        { name: 'интернет', servicesTypeId: 3 },
 
         { name: 'по городу', servicesTypeId: 4 },
         { name: 'межгород', servicesTypeId: 4 },
