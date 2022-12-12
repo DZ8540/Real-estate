@@ -31,6 +31,9 @@ export default class Service extends BaseModel {
   @column()
   public description: string
 
+  @column()
+  public address: string
+
   @column({ serializeAs: null })
   public isBanned: boolean
 

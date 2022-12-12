@@ -53,6 +53,10 @@ export default class ServiceValidator extends BaseValidator {
         rules.maxLength(255),
       ])
     }),
+    address: schema.string({ trim: true }, [
+      rules.minLength(2),
+      rules.maxLength(255),
+    ]),
   })
 
   /**

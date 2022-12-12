@@ -48,6 +48,10 @@ export default class ServiceValidator extends ApiValidator {
     districts: schema.array.optional().members(schema.number([
       rules.unsigned(),
     ])),
+    address: schema.string({ trim: true }, [
+      rules.minLength(2),
+      rules.maxLength(255),
+    ]),
   })
 
   /**

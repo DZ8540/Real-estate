@@ -15,6 +15,7 @@ export default class Services extends BaseSchema {
       // `)
       table.string('description', 1024).notNullable()
       table.boolean('isBanned').defaultTo(0).notNullable().comment('0 - нет, 1 - да')
+      table.string('address', 1024).notNullable()
 
       table
         .integer('user_id')
