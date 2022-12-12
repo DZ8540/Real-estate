@@ -1,8 +1,10 @@
 import BaseService from '../BaseService'
 import User from 'App/Models/Users/User'
 import LabelService from './LabelService'
+import District from 'App/Models/District'
 import Logger from '@ioc:Adonis/Core/Logger'
 import Label from 'App/Models/Services/Label'
+import DistrictService from '../DistrictService'
 import Service from 'App/Models/Services/Service'
 import ServicesTypeService from './ServicesTypeService'
 import ServiceValidator from 'App/Validators/Services/ServiceValidator'
@@ -12,8 +14,6 @@ import { PaginationConfig } from 'Contracts/database'
 import { ModelPaginatorContract } from '@ioc:Adonis/Lucid/Orm'
 import { ResponseCodes, ResponseMessages } from 'Contracts/response'
 import { Error, PaginateConfig, ServiceConfig } from 'Contracts/services'
-import District from 'App/Models/District'
-import DistrictService from '../DistrictService'
 
 // import { removeLastLetter } from '../../../helpers'
 
@@ -246,6 +246,7 @@ export default class ServiceService extends BaseService {
         .query()
         .preload('user')
         .preload('labels')
+        .preload('district')
         .preload('subService', (query) => {
           query.preload('type')
         })

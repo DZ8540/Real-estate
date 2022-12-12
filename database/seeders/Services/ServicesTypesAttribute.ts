@@ -15,6 +15,8 @@ export default class ServicesTypesAttributeSeeder extends BaseSeeder {
         { name: 'только дизайн', servicesTypeId: 2 },
         { name: 'дизайн + сопровождение', servicesTypeId: 2 },
 
+        { name: 'интернет', servicesTypeId: 3 },
+
         { name: 'да', servicesTypeId: 4 },
         { name: 'нет', servicesTypeId: 4 },
       ])

@@ -28,7 +28,7 @@ export default class ServicesTypeService extends BaseService {
     }
   }
 
-  public static async getAllAttributesTypes(serviceTypeId: ServicesType['id']): Promise<ServicesTypesSubService[]> {
+  public static async getAllAttributesTypes(serviceTypeId: ServicesType['id']): Promise<ServicesTypesAttribute[]> {
     try {
       return await ServicesTypesAttribute.query().where('servicesType_id', serviceTypeId)
     } catch (err: any) {

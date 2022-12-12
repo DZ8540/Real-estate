@@ -1,5 +1,6 @@
 import Label from './Label'
 import User from '../Users/User'
+import District from '../District'
 import Response from '../Response/Response'
 import ServicesTypesAttribute from './ServicesTypesAttribute'
 import ServicesTypesSubService from './ServicesTypesSubService'
@@ -10,7 +11,6 @@ import {
   computed, HasMany, hasMany, ManyToMany,
   manyToMany, column,
 } from '@ioc:Adonis/Lucid/Orm'
-import District from '../District'
 
 // import { EXPERIENCE_TYPES } from 'Config/services'
 
@@ -68,6 +68,9 @@ export default class Service extends BaseModel {
 
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
+
+  @belongsTo(() => District)
+  public district: BelongsTo<typeof District>
 
   @belongsTo(() => ServicesTypesSubService)
   public subService: BelongsTo<typeof ServicesTypesSubService>

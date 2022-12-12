@@ -38,7 +38,7 @@ export default class ServicesController {
     const id: Service['id'] = params.id
 
     try {
-      const item: Service = await ServiceService.get(id, { relations: ['labels'] })
+      const item: Service = await ServiceService.get(id, { relations: ['labels', 'district'] })
 
       try {
         await item.load('subService', (query) => {
