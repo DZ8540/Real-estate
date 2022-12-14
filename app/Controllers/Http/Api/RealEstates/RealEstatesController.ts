@@ -46,6 +46,7 @@ export default class RealEstatesController {
   public async getForMap({ request, response, params }: HttpContextContract) {
     let payload: RealEstateGetForMapValidator['schema']['props']
     const city: string = decodeURIComponent(params.city)
+    const currentUserId: User['id'] | undefined = params.currentUserId
 
     try {
       payload = await request.validate(RealEstateGetForMapValidator)
@@ -58,7 +59,10 @@ export default class RealEstatesController {
     }
 
     try {
-      const realEstates: RealEstate[] = await RealEstateService.getForMap(city, payload)
+      let realEstates: (RealEstate | ModelObject)[] = await RealEstateService.getForMap(city, payload)
+
+      if (currentUserId)
+        realEstates = await Promise.all(realEstates.map(async (item) => await item.getForUser(currentUserId)))
 
       return response.status(200).send(ResponseService.success(ResponseMessages.SUCCESS, realEstates))
     } catch (err: Error | any) {

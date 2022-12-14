@@ -62,7 +62,7 @@ Route.group(() => {
     Route.delete('/delete/:uuid', 'Api/RealEstates/RealEstatesController.delete').middleware('CheckAccessToken')
     Route.delete('/deleteImage/:imageId', 'Api/RealEstates/RealEstatesController.deleteImage').middleware('CheckAccessToken')
 
-    Route.post('/getForMap/:city', 'Api/RealEstates/RealEstatesController.getForMap')
+    Route.post('/getForMap/:city/:currentUserId?', 'Api/RealEstates/RealEstatesController.getForMap')
     Route.post('/getFromMap/:currentUserId?', 'Api/RealEstates/RealEstatesController.getFromMap')
     Route.post('/paginate/:city/:currentUserId?', 'Api/RealEstates/RealEstatesController.all')
     Route.post('/popular/:city/:currentUserId?', 'Api/RealEstates/RealEstatesController.popular')
